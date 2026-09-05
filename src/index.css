@@ -41,3 +41,24 @@
 .image-zoom img { transition: transform .7s cubic-bezier(.2,.8,.2,1); }
 .image-zoom:hover img { transform: scale(1.045); }
 ::selection { color: #0d0d0d; background: #c6a15b; }
+
+/* Custom unique scrollbar */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 9999px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #c6a15b;
+  border-radius: 9999px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #e0c083;
+}
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #c6a15b rgba(255, 255, 255, 0.05);
+}
