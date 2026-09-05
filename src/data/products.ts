@@ -74,7 +74,7 @@ export const productsData: Product[] = [
   // ==========================================================
   {
     slug: 'termo-67',
-    title: 'TERMO 67',
+    title: 'Akfa TERMO 67',
     subtitle: 'Теплая алюминиевая оконно-дверная система 67 мм',
     brand: 'Akfa',
     brandCountry: 'Узбекистан 🇺🇿',
@@ -108,7 +108,7 @@ export const productsData: Product[] = [
   },
   {
     slug: 'termo-70',
-    title: 'TERMO 70',
+    title: 'Akfa TERMO 70',
     subtitle: 'Усиленная теплая алюминиевая система 70 мм',
     brand: 'Akfa',
     brandCountry: 'Узбекистан 🇺🇿',
@@ -140,7 +140,7 @@ export const productsData: Product[] = [
   },
   {
     slug: 'thermo-65',
-    title: 'THERMO 65',
+    title: 'Akfa THERMO 65',
     subtitle: 'Энергоэффективная оконно-дверная система 64 мм',
     brand: 'Akfa',
     brandCountry: 'Узбекистан 🇺🇿',
@@ -169,7 +169,7 @@ export const productsData: Product[] = [
   },
   {
     slug: 'termo-77',
-    title: 'TERMO 77',
+    title: 'Akfa TERMO 77',
     subtitle: 'Флагманская теплая алюминиевая система 77 мм',
     brand: 'Akfa',
     brandCountry: 'Узбекистан 🇺🇿',
@@ -201,7 +201,7 @@ export const productsData: Product[] = [
   },
   {
     slug: 'termo-98',
-    title: 'TERMO 98',
+    title: 'Akfa TERMO 98',
     subtitle: 'Сверхпрочная архитектурная термо-система 70 мм',
     brand: 'Akfa',
     brandCountry: 'Узбекистан 🇺🇿',
@@ -231,7 +231,7 @@ export const productsData: Product[] = [
   },
   {
     slug: 'ywd-78-thermo',
-    title: 'YWD 78 THERMO',
+    title: 'Akfa YWD 78 THERMO',
     subtitle: 'Премиальная термо-серия 75.5 мм для окон и входных групп',
     brand: 'Akfa',
     brandCountry: 'Узбекистан 🇺🇿',
@@ -261,7 +261,7 @@ export const productsData: Product[] = [
   },
   {
     slug: 'aldox',
-    title: 'Aldox',
+    title: 'Akfa Aldox',
     subtitle: 'Классическая алюминиевая система 45.5 мм',
     brand: 'Akfa',
     brandCountry: 'Узбекистан 🇺🇿',
@@ -290,7 +290,7 @@ export const productsData: Product[] = [
   },
   {
     slug: 'aldox-2',
-    title: 'Aldox 2',
+    title: 'Akfa Aldox 2',
     subtitle: 'Модернизированная алюминиевая система 45.5 мм',
     brand: 'Akfa',
     brandCountry: 'Узбекистан 🇺🇿',
@@ -319,7 +319,7 @@ export const productsData: Product[] = [
   },
   {
     slug: 'akf-47-champion',
-    title: 'AKF 47 CHAMPION',
+    title: 'Akfa AKF 47 CHAMPION',
     subtitle: 'Усиленная алюминиевая система 47 мм повышенной прочности',
     brand: 'Akfa',
     brandCountry: 'Узбекистан 🇺🇿',
@@ -434,7 +434,7 @@ export const productsData: Product[] = [
   // ==========================================================
   {
     slug: 'engelberg-7000',
-    title: 'Engelberg 7000',
+    title: 'Akfa Engelberg 7000',
     subtitle: '5-камерная ПВХ система 70 мм премиум-класса',
     brand: 'Engelberg',
     brandCountry: 'Швейцарские технологии 🇨🇭',
@@ -463,7 +463,7 @@ export const productsData: Product[] = [
   },
   {
     slug: 'engelberg-7600',
-    title: 'Engelberg 7600',
+    title: 'Akfa Engelberg 7600',
     subtitle: '6-камерная ПВХ система 76 мм · Армирование 2,0 мм',
     brand: 'Engelberg',
     brandCountry: 'Швейцарские технологии 🇨🇭',
@@ -491,7 +491,7 @@ export const productsData: Product[] = [
   },
   {
     slug: 'engelberg-8000',
-    title: 'Engelberg 8000',
+    title: 'Akfa Engelberg 8000',
     subtitle: 'Флагманская 6-камерная ПВХ система 80 мм · Армирование 2,0 мм',
     brand: 'Engelberg',
     brandCountry: 'Швейцарские технологии 🇨🇭',
@@ -519,7 +519,7 @@ export const productsData: Product[] = [
   },
   {
     slug: 'akfa-trio-6000',
-    title: 'Trio 6000',
+    title: 'Akfa Trio 6000',
     subtitle: '3-камерная ПВХ система 60 мм для окон и дверей',
     brand: 'Akfa',
     brandCountry: 'Узбекистан 🇺🇿',
@@ -548,7 +548,7 @@ export const productsData: Product[] = [
   },
   {
     slug: 'akfa-quattro-5800',
-    title: 'Quattro 5800',
+    title: 'Akfa Quattro 5800',
     subtitle: '4-камерная ПВХ система 58 мм',
     brand: 'Akfa',
     brandCountry: 'Узбекистан 🇺🇿',
@@ -577,7 +577,7 @@ export const productsData: Product[] = [
   },
   {
     slug: 'akfa-quattro-6000',
-    title: 'Quattro 6000',
+    title: 'Akfa Quattro 6000',
     subtitle: '4-камерная ПВХ система 60 мм со створкой до 110 кг',
     brand: 'Akfa',
     brandCountry: 'Узбекистан 🇺🇿',
@@ -606,7 +606,7 @@ export const productsData: Product[] = [
   },
   {
     slug: 'akfa-trio-5800',
-    title: 'Trio 5800',
+    title: 'Akfa Trio 5800',
     subtitle: '3-камерная компактная ПВХ система 58 мм',
     brand: 'Akfa',
     brandCountry: 'Узбекистан 🇺🇿',
@@ -635,7 +635,7 @@ export const productsData: Product[] = [
   },
   {
     slug: 'akfa-quattro-5200',
-    title: 'Quattro 5200',
+    title: 'Akfa Quattro 5200',
     subtitle: '4-камерная компактная ПВХ система 52 мм',
     brand: 'Akfa',
     brandCountry: 'Узбекистан 🇺🇿',
@@ -721,7 +721,7 @@ export const productsData: Product[] = [
   // ==========================================================
   {
     slug: 'econom-bkg-40',
-    title: 'Econom BKG 40',
+    title: 'Akfa Econom BKG 40',
     subtitle: 'Экономичная раздвижная алюминиевая система 40 мм',
     brand: 'Akfa',
     brandCountry: 'Узбекистан 🇺🇿',
@@ -750,7 +750,7 @@ export const productsData: Product[] = [
   },
   {
     slug: 'standart-bkh-38',
-    title: 'Standart BKH 38',
+    title: 'Akfa Standart BKH 38',
     subtitle: 'Теплая раздвижная система (2 и 3 рельса) · Термомост 14 мм',
     brand: 'Akfa',
     brandCountry: 'Узбекистан 🇺🇿',
@@ -866,7 +866,7 @@ export const productsData: Product[] = [
   // ==========================================================
   {
     slug: 'econom-bkf-48',
-    title: 'Econom BKF 48',
+    title: 'Akfa Econom BKF 48',
     subtitle: 'Фасадная стоечно-ригельная система 48 мм',
     brand: 'Akfa',
     brandCountry: 'Узбекистан 🇺🇿',
@@ -895,7 +895,7 @@ export const productsData: Product[] = [
   },
   {
     slug: 'premium-bkf-50',
-    title: 'Premium BKF 50',
+    title: 'Akfa Premium BKF 50',
     subtitle: 'Сейсмостойкий фасад 50 мм (до 9 баллов) со стеклопакетом до 62 мм',
     brand: 'Akfa',
     brandCountry: 'Узбекистан 🇺🇿',
@@ -923,7 +923,7 @@ export const productsData: Product[] = [
   },
   {
     slug: 'premium-bkf-max',
-    title: 'Premium BKF Max',
+    title: 'Akfa Premium BKF MAX',
     subtitle: 'Минималистичная фасадная система со сверхтонкой стойкой 22 мм',
     brand: 'Akfa',
     brandCountry: 'Узбекистан 🇺🇿',
@@ -975,7 +975,7 @@ export const productsData: Product[] = [
   // ==========================================================
   {
     slug: 'bko-38',
-    title: 'BKO 38',
+    title: 'Akfa BKO 38',
     subtitle: 'Интерьерные офисные перегородки 38 мм с ПВХ прижимом',
     brand: 'Akfa',
     brandCountry: 'Узбекистан 🇺🇿',
@@ -1001,7 +1001,7 @@ export const productsData: Product[] = [
   },
   {
     slug: 'bko-40',
-    title: 'BKO 40',
+    title: 'Akfa BKO 40',
     subtitle: 'Усиленные офисные перегородки 40 мм с кронштейным креплением',
     brand: 'Akfa',
     brandCountry: 'Узбекистан 🇺🇿',
