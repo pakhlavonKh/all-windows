@@ -347,6 +347,61 @@ export const productsData: Product[] = [
     related: ['aldox', 'aldox-2', 'thermo-65']
   },
   {
+    slug: 'sistem-wh65',
+    title: 'Sistem Aluminium WH65',
+    subtitle: 'Thermal Architectural System · 65 серия (Турция)',
+    brand: 'Sistem Aluminium',
+    brandCountry: 'Турция 🇹🇷',
+    category: 'aluminium',
+    subcategory: 'Sistem Aluminium',
+    series: '65 серия',
+    image: '/imgs/sistemAl65.jpg',
+    specs: [
+      { label: 'Монтажная глубина рамы', value: '65 мм' },
+      { label: 'Монтажная глубина створки', value: '75 мм' },
+      { label: 'Ширина термомоста (полиамид)', value: '20–24 мм' },
+      { label: 'Толщина стеклопакета', value: 'До 44 мм' },
+      { label: 'Теплоизоляция Uf', value: '1.8 – 2.2 W/m²K' },
+      { label: 'Шумоизоляция', value: 'до 42 дБ' }
+    ],
+    quickSpecs: ['65 мм глубина', 'Термомост 20-24 мм', 'Стеклопакет до 44 мм', 'Европейский стандарт'],
+    description: 'Оконно-дверная система Sistem Aluminium WH65 с терморазрывом. Сочетает высокую технологичность, элегантный узкий фальц и проверенную надежность турецкого концерна Sistem Aluminium.',
+    advantages: [
+      'Европейский паз под фурнитуру ведущих брендов Roto и Master',
+      'Оптимальная тепло- и звукоизоляция для умеренного и жаркого климата',
+      'Высокая прочность профиля при малом визуальном сечении'
+    ],
+    recommendedFor: 'Жилые комплексы, коттеджи, офисные здания и коммерческие объекты.',
+    related: ['sistem-wh75', 'sistem-wh85', 'asas-rwt64', 'termo-67']
+  },
+  {
+    slug: 'sistem-wh75',
+    title: 'Sistem Aluminium WH75',
+    subtitle: 'High Performance Insulated Serie · 75 серия (Турция)',
+    brand: 'Sistem Aluminium',
+    brandCountry: 'Турция 🇹🇷',
+    category: 'aluminium',
+    subcategory: 'Sistem Aluminium',
+    series: '75 серия',
+    image: '/imgs/sistemAl75.jpg',
+    specs: [
+      { label: 'Монтажная глубина рамы', value: '75 мм' },
+      { label: 'Монтажная глубина створки', value: '85 мм' },
+      { label: 'Терморазрыв', value: '24–30 мм полиамидные вставки' },
+      { label: 'Толщина стеклопакета', value: 'До 52 мм' },
+      { label: 'Теплоизоляция Uf', value: '1.4 – 1.7 W/m²K' }
+    ],
+    quickSpecs: ['75 мм глубина', 'Терморазрыв 24-30 мм', 'Стеклопакет до 52 мм', 'Высокая прочность'],
+    description: 'Высокоэффективная теплая алюминиевая система 75 серии для окон и дверей от Sistem Aluminium (Турция).',
+    advantages: [
+      'Оптимальный баланс жесткости и теплофизики',
+      'Устойчивость к ветровым нагрузкам на верхних этажах',
+      'Европейский паз под фурнитуру Roto / Master'
+    ],
+    recommendedFor: 'Современные жилые комплексы, панорамные квартиры, загородные дома.',
+    related: ['sistem-wh85', 'sistem-wh65', 'asas-rwt75', 'termo-77']
+  },
+  {
     slug: 'sistem-wh85',
     title: 'Sistem Aluminium WH85',
     subtitle: 'Ultra Performance Hinged System · 85 серия (Турция)',
@@ -355,7 +410,7 @@ export const productsData: Product[] = [
     category: 'aluminium',
     subcategory: 'Sistem Aluminium',
     series: '85 серия',
-    image: '/imgs/img-1600585154340-be.jpg',
+    image: '/imgs/sistemAL85.jpg',
     specs: [
       { label: 'Монтажная глубина рамы', value: '85 мм' },
       { label: 'Монтажная глубина створки', value: '95 мм' },
@@ -372,34 +427,35 @@ export const productsData: Product[] = [
       'Премиальная фурнитура с весом створки до 200 кг'
     ],
     recommendedFor: 'Элитные коттеджи, пентхаусы, премиальные жилые комплексы.',
-    related: ['sistem-wh70', 'termo-77', 'asas-rwt75']
+    related: ['sistem-wh75', 'sistem-wh65', 'asas-rwt75', 'termo-77']
   },
   {
-    slug: 'sistem-wh70',
-    title: 'Sistem Aluminium WH70 / W75',
-    subtitle: 'High Performance Insulated Serie · 75 серия (Турция)',
-    brand: 'Sistem Aluminium',
+    slug: 'asas-rwt64',
+    title: 'ASAŞ Rescara RWT 64',
+    subtitle: 'High Performance Thermal Aluminium System · 64 серия (Турция)',
+    brand: 'ASAŞ',
     brandCountry: 'Турция 🇹🇷',
     category: 'aluminium',
-    subcategory: 'Sistem Aluminium',
-    series: '75 серия',
-    image: '/imgs/img-1600607687939-ce.jpg',
+    subcategory: 'ASAŞ Rescara',
+    series: '64 серия',
+    image: '/imgs/asas64.png',
     specs: [
-      { label: 'Монтажная глубина рамы', value: '75 мм' },
-      { label: 'Монтажная глубина створки', value: '85 мм' },
-      { label: 'Терморазрыв', value: '24–30 мм полиамидные вставки' },
-      { label: 'Толщина стеклопакета', value: 'До 52 мм' },
-      { label: 'Теплоизоляция Uf', value: '1.4 – 1.7 W/m²K' }
+      { label: 'Монтажная глубина рамы', value: '64 мм' },
+      { label: 'Монтажная глубина створки', value: '74 мм' },
+      { label: 'Ширина полиамидного термомоста', value: '24 мм' },
+      { label: 'Толщина стеклопакета', value: 'До 44 мм' },
+      { label: 'Теплоизоляция Uf', value: '1.9 – 2.4 W/m²K' },
+      { label: 'Акустическая изоляция', value: 'до 40 дБ' }
     ],
-    quickSpecs: ['75 мм глубина', 'Терморазрыв 24-30 мм', 'Стеклопакет до 52 мм', 'Высокая прочность'],
-    description: 'Высокоэффективная теплая алюминиевая система 75 серии для окон и дверей.',
+    quickSpecs: ['64 мм глубина', 'Термомост 24 мм', 'Стеклопакет до 44 мм', 'ASAŞ Rescara Турция'],
+    description: 'Теплая архитектурная алюминиевая система ASAŞ Rescara RWT 64. Надежный выбор турецкого качества для широкого спектра фасадных и оконно-дверных конструкций.',
     advantages: [
-      'Оптимальный баланс жесткости и теплофизики',
-      'Устойчивость к ветровым нагрузкам на верхних этажах',
-      'Европейский паз под фурнитуру Roto / Master'
+      'Европейское качество экструзии и геометрии профиля ASAŞ',
+      'Полиамидный термомост 24 мм для снижения энергозатрат',
+      'Отличная устойчивость к статическим и ветровым нагрузкам'
     ],
-    recommendedFor: 'Современные жилые комплексы, панорамные квартиры, загородные дома.',
-    related: ['sistem-wh85', 'termo-70', 'asas-rwt75']
+    recommendedFor: 'Жилые комплексы, торговые центры, административные здания.',
+    related: ['asas-rwt75', 'sistem-wh65', 'sistem-wh75', 'termo-67']
   },
   {
     slug: 'asas-rwt75',
@@ -410,7 +466,7 @@ export const productsData: Product[] = [
     category: 'aluminium',
     subcategory: 'ASAŞ Rescara',
     series: '75 серия',
-    image: '/imgs/img-1541123437800-1b.jpg',
+    image: '/imgs/asas75.png',
     specs: [
       { label: 'Монтажная глубина рамы', value: '75 мм' },
       { label: 'Монтажная глубина створки', value: '85 мм' },
@@ -426,7 +482,7 @@ export const productsData: Product[] = [
       'Специальная геометрия дренажных каналов'
     ],
     recommendedFor: 'Элитные высотные башни, гостиницы, загородные виллы.',
-    related: ['termo-77', 'sistem-wh85', 'termo-70']
+    related: ['asas-rwt64', 'sistem-wh85', 'sistem-wh75', 'termo-77']
   },
 
   // ==========================================================
@@ -831,7 +887,37 @@ export const productsData: Product[] = [
       'Широкая 3-рельсовая конфигурация рамы 232 мм'
     ],
     recommendedFor: 'Элитные резиденции, загородные виллы, панорамные пентхаусы.',
-    related: ['standart-bkh-60', 'sistem-bf85', 'standart-bkh-38']
+    related: ['standart-bkh-60', 'sistem-bf85', 'standart-bkh-38', 'guillotine-system']
+  },
+  {
+    slug: 'guillotine-system',
+    title: 'Автоматическая гильотинная система (Guillotine Glass)',
+    subtitle: 'Моторизованное вертикально-сдвижное панорамное остекление',
+    brand: 'ALL WINDOWS',
+    brandCountry: 'Узбекистан / Европа 🇺🇿🇪🇺',
+    category: 'sliding',
+    subcategory: 'Гильотинные системы',
+    series: 'Guillotine Motion',
+    image: '/imgs/guillotine.jpg',
+    specs: [
+      { label: 'Тип открывания', value: 'Вертикально-сдвижное (2, 3 или 4 панели)' },
+      { label: 'Управление', value: 'Электропривод Somfy / Becker с пульта ДУ' },
+      { label: 'Остекление', value: 'Закаленное стекло 8-10 мм или стеклопакет 20-28 мм' },
+      { label: 'Максимальная ширина секции', value: 'до 4000 мм' },
+      { label: 'Максимальная высота секции', value: 'до 3500 мм' },
+      { label: 'Функция ограждения', value: 'Нижняя секция образует безопасный стеклянный парапет' },
+      { label: 'Материал профиля', value: 'Экструдированный алюминиевый сплав 6063-T6' }
+    ],
+    quickSpecs: ['Электропривод Somfy', 'Стеклопакет / Триплекс', 'Ширина до 4 м', 'Встроенное ограждение'],
+    description: 'Премиальное автоматическое гильотинное остекление с вертикальным движением створок. Идеальное решение для террас ресторанов, кафе, загородных беседок и остекления бассейнов. Стекла бесшумно опускаются и поднимаются по нажатию кнопки, сохраняя панорамный обзор.',
+    advantages: [
+      'Плавный бесшумный моторизованный подъем и опускание',
+      'Нижняя створка работает как прочное безопасное ограждение',
+      'Устойчивость к сильным порывам ветра и ливням',
+      'Управление с настенной клавиши или радиопульта'
+    ],
+    recommendedFor: 'Рестораны, кафе, веранды, террасы загородных домов, бассейны.',
+    related: ['premium-bkh-65', 'standart-bkh-60', 'sistem-bf85']
   },
   {
     slug: 'sistem-bf85',

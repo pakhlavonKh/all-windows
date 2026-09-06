@@ -39,6 +39,13 @@ import imgBkfMax from './bkfMax.jpg';
 import imgBko38 from './bko38.jpg';
 import imgBko40 from './bko40.jpg';
 
+import imgSistemAl65 from './sistemAl65.jpg';
+import imgSistemAl75 from './sistemAl75.jpg';
+import imgSistemAl85 from './sistemAl85.jpg';
+import imgAsas64 from './asas64.png';
+import imgAsas75 from './asas75.png';
+import imgGuillotine from './guillotine.jpg';
+
 export const localImages = {
   hero: imgHero,
   tower: imgTower,
@@ -80,6 +87,14 @@ export const localImages = {
 
   bko38: imgBko38,
   bko40: imgBko40,
+
+  sistemAl65: imgSistemAl65,
+  sistemAl75: imgSistemAl75,
+  sistemAl85: imgSistemAl85,
+  sistemAL85: imgSistemAl85,
+  asas64: imgAsas64,
+  asas75: imgAsas75,
+  guillotine: imgGuillotine,
 };
 
 export default localImages;
