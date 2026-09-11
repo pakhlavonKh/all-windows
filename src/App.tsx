@@ -56,14 +56,14 @@ export const categories: Category[] = [
     title: 'Алюминиевые окна и двери', 
     subtitle: 'Sistem Aluminium · ASAŞ · Akfa TERMO · Aldox', 
     image: pics.termo77, 
-    description: 'Лёгкие и тёплые алюминиевые конструкции: флагманские турецкие системы Sistem Aluminium (65, 75, 85 серии) и ASAŞ Rescara (64, 75 серии), энергосберегающие серии Akfa TERMO с полиамидными термомостами (67, 70, 77, 98, 65, 78), а также классические системы Aldox, Aldox 2 и AKF 47 Champion.' 
+    description: 'Лёгкие и тёплые алюминиевые конструкции: флагманские турецкие системы Sistem Aluminium (65, 75, 85 серии) и ASAŞ Rescara (64, 75 серии), энергосберегающие серии Akfa TERMO с полиамидными термомостами (70, 77, 78, 98), а также классические системы Aldox, Aldox 2 и AKF 47 Champion.' 
   },
   { 
     slug: 'pvc', 
     title: 'ПВХ окна и двери', 
-    subtitle: 'Akfa Engelberg · Trio · Quattro', 
-    image: pics.interior, 
-    description: 'Теплосберегающие и шумозащитные ПВХ окна Akfa: швейцарские системы Engelberg (7000, 7600, 8000), а также практичные серии Akfa Trio (5800, 6000) и Akfa Quattro (5200, 5800, 6000).' 
+    subtitle: 'Deceuninck · Akfa Engelberg · Trio · Quattro', 
+    image: pics.deceuninck8000, 
+    description: 'Теплосберегающие и шумозащитные ПВХ окна: бельгийские инновационные системы Deceuninck (6000, 7000, 8000 серии), швейцарские системы Engelberg (7000, 7600, 8000), а также практичные серии Akfa Trio (5800, 6000) и Akfa Quattro (5200, 5800, 6000).' 
   },
   { 
     slug: 'sliding', 
@@ -121,30 +121,6 @@ export const products: Product[] = [
   // --- 1. АЛЮМИНИЕВЫЕ ОКНА И ДВЕРИ (ALUMINIUM) ---
   // ==========================================
   {
-    slug: 'termo-67',
-    categorySlug: 'aluminium',
-    subcategory: 'TERMO серия',
-    title: 'Akfa TERMO 67',
-    brand: 'Akfa',
-    brandCountry: 'Узбекистан 🇺🇿',
-    subtitle: 'Теплая оконно-дверная система 67 мм с термомостом 24 мм',
-    image: pics.termo67,
-    specs: [
-      'Монтажная глубина рамы: 59 мм',
-      'Ширина профиля створки: 67 мм',
-      'Толщина стеклопакета (min/max): 16 мм / 42 мм',
-      'Ширина термомоста (полиамид): 24 мм',
-      'Максимальный вес створки: окна 100 кг / двери 160 кг',
-      'Максимальная ширина створки: 1600 мм',
-      'Максимальная высота створки: 2500 мм',
-      'Применение для окон: до 2200 мм × 1200 мм',
-      'Системное дверное решение: до 3000 мм × 1600 мм',
-      'Цветовая палитра: +450 оттенков и фактур по шкале RAL'
-    ],
-    description: 'Высокоэффективная теплая алюминиевая система Akfa TERMO 67 с полиамидным терморазрывом 24 мм. Спроектирована для масштабного энергосберегающего остекления оконных и входных дверных конструкций.',
-    related: ['termo-70', 'thermo-65', 'termo-77']
-  },
-  {
     slug: 'termo-70',
     categorySlug: 'aluminium',
     subcategory: 'TERMO серия',
@@ -165,28 +141,7 @@ export const products: Product[] = [
       'Системное дверное решение: до 2800 мм × 1400 мм'
     ],
     description: 'Премиальная система Akfa TERMO 70 с повышенной жесткостью и звукоизоляцией. Позволяет устанавливать двухкамерные энергосберегающие стеклопакеты толщиной до 50 мм.',
-    related: ['termo-67', 'termo-77', 'termo-98']
-  },
-  {
-    slug: 'thermo-65',
-    categorySlug: 'aluminium',
-    subcategory: 'TERMO серия',
-    title: 'Akfa THERMO 65',
-    brand: 'Akfa',
-    brandCountry: 'Узбекистан 🇺🇿',
-    subtitle: 'Энергоэффективная оконно-дверная система 64 мм',
-    image: pics.termo65,
-    specs: [
-      'Монтажная глубина рамы: 64 мм',
-      'Толщина стеклопакета (min/max): 6 мм / 32 мм',
-      'Максимальный вес створки (окна): 100 кг',
-      'Максимальный размер створки (окна): 2200 мм × 1200 мм',
-      'Максимальный размер створки (двери): 2800 мм × 1400 мм',
-      'Применение для окон: до 2200 мм × 1200 мм',
-      'Системное дверное решение: до 2800 мм × 1400 мм'
-    ],
-    description: 'Оконно-дверная серия Akfa THERMO 65 — сбалансированное решение для жилых и коммерческих объектов с высокой степенью защиты от температурных перепадов и продуваний.',
-    related: ['termo-67', 'ywd-78-thermo', 'aldox']
+    related: ['termo-77', 'termo-98', 'ywd-78-thermo']
   },
   {
     slug: 'termo-77',
@@ -251,7 +206,7 @@ export const products: Product[] = [
       'Системное дверное решение: до 2800 мм × 1400 мм'
     ],
     description: 'Специализированная серия Akfa YWD 78 THERMO с монтажной глубиной 75.5 мм, обеспечивающая высочайшую стабильность геометрии при интенсивной ежедневной эксплуатации.',
-    related: ['termo-77', 'termo-70', 'termo-67']
+    related: ['termo-77', 'termo-70', 'termo-98']
   },
   {
     slug: 'aldox',
@@ -272,7 +227,7 @@ export const products: Product[] = [
       'Системное дверное решение: до 2500 мм × 1500 мм'
     ],
     description: 'Проверенная временем алюминиевая система Akfa Aldox 45.5 мм для балконов, тамбуров, коммерческих входных групп и легких витражей.',
-    related: ['aldox-2', 'akf-47-champion', 'thermo-65']
+    related: ['aldox-2', 'akf-47-champion', 'termo-70']
   },
   {
     slug: 'aldox-2',
@@ -293,7 +248,7 @@ export const products: Product[] = [
       'Применение для дверей: до 2500 мм × 1500 мм'
     ],
     description: 'Обновленная модификация системы Akfa Aldox 2 с улучшенной геометрией фальца под фурнитуру и расширенными возможностями интеграции створок.',
-    related: ['aldox', 'akf-47-champion', 'thermo-65']
+    related: ['aldox', 'akf-47-champion', 'termo-70']
   },
   {
     slug: 'akf-47-champion',
@@ -314,7 +269,7 @@ export const products: Product[] = [
       'Системное дверное решение: до 2600 мм × 1200 мм'
     ],
     description: 'Усиленная алюминиевая система Akfa AKF 47 Champion. Отличается повышенной несущей способностью дверных петель (до 160 кг) и увеличенными габаритами створок.',
-    related: ['aldox', 'aldox-2', 'thermo-65']
+    related: ['aldox', 'aldox-2', 'termo-70']
   },
   {
     slug: 'sistem-wh65',
@@ -335,7 +290,7 @@ export const products: Product[] = [
       'Европейский паз под фурнитуру: Roto / Master'
     ],
     description: 'Высокотехнологичная оконно-дверная система Sistem Aluminium WH65 с терморазрывом. Проверенное турецкое качество для жилых комплексов и коммерческих зданий.',
-    related: ['sistem-wh75', 'sistem-wh85', 'asas-rwt64', 'termo-67']
+    related: ['sistem-wh75', 'sistem-wh85', 'asas-rwt64', 'termo-70']
   },
   {
     slug: 'sistem-wh75',
@@ -396,7 +351,7 @@ export const products: Product[] = [
       'Акустическая изоляция: до 40 дБ'
     ],
     description: 'Теплая архитектурная алюминиевая система ASAŞ Rescara RWT 64 от ведущего турецкого металлургического концерна ASAŞ. Отличная геометрия, надежность и европейские стандарты.',
-    related: ['asas-rwt75', 'sistem-wh65', 'sistem-wh75', 'termo-67']
+    related: ['asas-rwt75', 'sistem-wh65', 'sistem-wh75', 'termo-70']
   },
   {
     slug: 'asas-rwt75',
@@ -422,6 +377,71 @@ export const products: Product[] = [
   // ==========================================
   // --- 2. ПВХ ОКНА И ДВЕРИ (PVC) ---
   // ==========================================
+  {
+    slug: 'deceuninck-6000',
+    categorySlug: 'pvc',
+    subcategory: 'Deceuninck',
+    title: 'Deceuninck 6000',
+    brand: 'Deceuninck',
+    brandCountry: 'Бельгия 🇧🇪',
+    subtitle: 'Надежная 5-камерная ПВХ система 71 мм · 6000 серия (Бельгия)',
+    image: pics.deceuninck6000,
+    specs: [
+      'Монтажная глубина рамы: 71 мм',
+      'Количество воздушных камер: 5 камер',
+      'Толщина стеклопакета (min/max): 24 мм / 47 мм',
+      'Класс профиля: Класс А (толщина стенок 3 мм)',
+      'Коэффициент сопротивления теплопередаче: 0.88 м²·°C/Вт',
+      'Шумоизоляция: до 40 дБ',
+      'Экологическая рецептура EcoLogic без свинца'
+    ],
+    description: 'Инновационная 5-камерная ПВХ система Deceuninck 6000 (Бельгия). Оптимальная монтажная глубина 71 мм обеспечивает превосходную тепло- и шумоизоляцию для комфортного микроклимата.',
+    related: ['deceuninck-7000', 'deceuninck-8000', 'engelberg-7000']
+  },
+  {
+    slug: 'deceuninck-7000',
+    categorySlug: 'pvc',
+    subcategory: 'Deceuninck',
+    title: 'Deceuninck 7000',
+    brand: 'Deceuninck',
+    brandCountry: 'Бельгия 🇧🇪',
+    subtitle: 'Энергоэффективная 5-камерная ПВХ система 71 мм · 7000 серия (Бельгия)',
+    image: pics.deceuninck7000,
+    specs: [
+      'Монтажная глубина рамы: 71 мм',
+      'Количество воздушных камер: 5 камер',
+      'Толщина стеклопакета (min/max): 24 мм / 47 мм',
+      'Контуры уплотнения: 2 контура долговечного TPE-уплотнителя',
+      'Высота наплава створки: 20 мм (защита от краевого промерзания)',
+      'Класс профиля: Класс А',
+      'Коэффициент сопротивления теплопередаче: 0.91 м²·°C/Вт',
+      'Шумоизоляция: до 42 дБ'
+    ],
+    description: 'Энергосберегающая оконная система Deceuninck 7000. Сочетает бельгийскую надежность, увеличенный наплав створки 20 мм для защиты от продуваний и возможность установки теплопакетов до 47 мм.',
+    related: ['deceuninck-8000', 'deceuninck-6000', 'engelberg-7600']
+  },
+  {
+    slug: 'deceuninck-8000',
+    categorySlug: 'pvc',
+    subcategory: 'Deceuninck',
+    title: 'Deceuninck 8000',
+    brand: 'Deceuninck',
+    brandCountry: 'Бельгия 🇧🇪',
+    subtitle: 'Флагманская 6-камерная ПВХ система 76 мм с 3 контурами · 8000 серия (Бельгия)',
+    image: pics.deceuninck8000,
+    specs: [
+      'Монтажная глубина рамы: 76 мм',
+      'Количество воздушных камер: 6 камер',
+      'Толщина стеклопакета (min/max): 24 мм / 50 мм',
+      'Контуры уплотнения: 3 контура уплотнения (центральный термо-лепесток)',
+      'Класс профиля: Класс А (высший европейский стандарт)',
+      'Коэффициент сопротивления теплопередаче: 1.05 м²·°C/Вт',
+      'Шумоизоляция: до 44 дБ',
+      'Штапик на двух ножках для защиты от выдавливания'
+    ],
+    description: 'Флагманская премиальная система Deceuninck 8000. 6 воздушных камер, монтажная глубина 76 мм и 3 инновационных контура уплотнения гарантируют эталонную тишину и максимальное энергосбережение.',
+    related: ['deceuninck-7000', 'deceuninck-6000', 'engelberg-8000']
+  },
   {
     slug: 'engelberg-7000',
     categorySlug: 'pvc',
@@ -481,7 +501,7 @@ export const products: Product[] = [
       'Максимальный размер створки (окно): 2000 мм × 1000 мм'
     ],
     description: 'Флагман модельного ряда Akfa Engelberg — ширина 80 мм, 6 камер и усиленный 2.0 мм металл для максимального энергосбережения и жесткости.',
-    related: ['engelberg-7600', 'akfa-quattro-6000', 'akfa-quattro-5800']
+    related: ['engelberg-7600', 'deceuninck-8000', 'deceuninck-7000']
   },
   {
     slug: 'akfa-trio-6000',
@@ -1187,12 +1207,12 @@ function ModalDarkSelect({
   value,
   onChange,
   options,
-  placeholder = 'Выберите решение',
+  placeholder = 'Выберите...',
   testId = 'select-estimate-product',
 }: {
   value: string;
   onChange: (val: string) => void;
-  options: { label: string; value: string }[];
+  options: { label: string; value: string; badge?: string; desc?: string }[];
   placeholder?: string;
   testId?: string;
 }) {
@@ -1216,8 +1236,8 @@ function ModalDarkSelect({
       <button
         type="button"
         onClick={() => setOpen(!open)}
-        className={`flex w-full items-center justify-between gap-2 rounded-lg border bg-[#0e0e0e] px-3.5 py-2.5 text-left text-xs sm:text-sm transition cursor-pointer outline-none ${
-          open ? 'border-[#c6a15b] ring-1 ring-[#c6a15b]/40 shadow-[0_0_15px_rgba(198,161,91,0.15)]' : 'border-white/10 hover:border-white/25'
+        className={`flex w-full items-center justify-between gap-2 rounded-lg border bg-[#0e0e0e] px-3 py-2 text-left text-xs sm:text-sm transition cursor-pointer outline-none ${
+          open ? 'border-[#c6a15b] ring-1 ring-[#c6a15b]/40 shadow-[0_0_12px_rgba(198,161,91,0.15)]' : 'border-white/10 hover:border-white/25'
         }`}
         data-testid={testId}
       >
@@ -1225,7 +1245,7 @@ function ModalDarkSelect({
           {selected ? selected.label : placeholder}
         </span>
         <ChevronDown
-          size={16}
+          size={15}
           className={`shrink-0 text-white/50 transition-transform duration-200 ${open ? 'rotate-180 text-[#d4b16a]' : ''}`}
         />
       </button>
@@ -1237,24 +1257,9 @@ function ModalDarkSelect({
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -4, scale: 0.98 }}
             transition={{ duration: 0.15 }}
-            className="absolute left-0 right-0 top-[calc(100%+6px)] z-100 overflow-hidden rounded-xl border border-[#c6a15b]/40 bg-[#161616] shadow-[0_12px_32px_rgba(0,0,0,0.85)] backdrop-blur-xl"
+            className="absolute left-0 right-0 top-[calc(100%+4px)] z-50 overflow-hidden rounded-xl border border-[#c6a15b]/40 bg-[#161616] shadow-[0_12px_32px_rgba(0,0,0,0.9)] backdrop-blur-xl"
           >
-            <div className="custom-scrollbar max-h-56 overflow-y-auto p-1.5 space-y-0.5">
-              <button
-                type="button"
-                onClick={() => {
-                  onChange('');
-                  setOpen(false);
-                }}
-                className={`flex w-full items-center justify-between rounded-lg px-3 py-2 text-left text-xs sm:text-sm transition cursor-pointer ${
-                  !value
-                    ? 'bg-[#c6a15b] font-semibold text-black shadow-xs'
-                    : 'text-white/50 hover:bg-white/10 hover:text-white'
-                }`}
-              >
-                <span>{placeholder}</span>
-                {!value && <Check size={14} className="text-black" />}
-              </button>
+            <div className="custom-scrollbar max-h-48 overflow-y-auto p-1.5 space-y-0.5">
               {options.map((opt) => {
                 const isSelected = value === opt.value || value === opt.label;
                 return (
@@ -1265,14 +1270,30 @@ function ModalDarkSelect({
                       onChange(opt.value);
                       setOpen(false);
                     }}
-                    className={`flex w-full items-center justify-between rounded-lg px-3 py-2 text-left text-xs sm:text-sm transition cursor-pointer ${
+                    className={`flex w-full items-center justify-between rounded-lg px-2.5 py-1.5 text-left text-xs transition cursor-pointer ${
                       isSelected
                         ? 'bg-[#c6a15b] font-semibold text-black shadow-xs'
                         : 'text-white/85 hover:bg-[#c6a15b]/15 hover:text-[#d4b16a]'
                     }`}
                   >
-                    <span className="truncate">{opt.label}</span>
-                    {isSelected && <Check size={14} className="shrink-0 text-black ml-2" />}
+                    <div className="flex flex-col truncate pr-1">
+                      <span className="truncate">{opt.label}</span>
+                      {opt.desc && (
+                        <span className={`text-[9.5px] truncate ${isSelected ? 'text-black/75' : 'text-white/40'}`}>
+                          {opt.desc}
+                        </span>
+                      )}
+                    </div>
+                    <div className="flex items-center gap-1.5 shrink-0 ml-1">
+                      {opt.badge && (
+                        <span className={`rounded-full px-1.5 py-0.5 text-[8.5px] font-mono ${
+                          isSelected ? 'bg-black/20 text-black' : 'bg-white/10 text-white/60'
+                        }`}>
+                          {opt.badge}
+                        </span>
+                      )}
+                      {isSelected && <Check size={13} className="shrink-0 text-black" />}
+                    </div>
                   </button>
                 );
               })}
@@ -1284,90 +1305,313 @@ function ModalDarkSelect({
   );
 }
 
+function ModalNumberInput({
+  label,
+  value,
+  onChange,
+  placeholder = '1800',
+  step = 50,
+  min = 100,
+  max = 10000,
+  testId,
+}: {
+  label: string;
+  value: string;
+  onChange: (val: string) => void;
+  placeholder?: string;
+  step?: number;
+  min?: number;
+  max?: number;
+  testId?: string;
+}) {
+  const handleStep = (delta: number) => {
+    const current = parseInt(value, 10) || parseInt(placeholder, 10) || 0;
+    const next = Math.max(min, Math.min(max, current + delta));
+    onChange(String(next));
+  };
+
+  return (
+    <div>
+      <span className="block text-[11px] font-medium text-white/60 mb-1">{label}</span>
+      <div className="flex items-center justify-between gap-1 rounded-lg border border-white/10 bg-[#0e0e0e] px-2.5 py-1.5 transition focus-within:border-[#c6a15b]">
+        <input
+          type="number"
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          placeholder={placeholder}
+          min={min}
+          max={max}
+          className="w-full bg-transparent text-xs sm:text-sm font-semibold text-white outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none placeholder:text-white/30"
+          data-testid={testId}
+        />
+        <div className="flex items-center gap-0.5 shrink-0">
+          <button
+            type="button"
+            onClick={() => handleStep(-step)}
+            aria-label="Уменьшить"
+            className="flex size-5 items-center justify-center rounded bg-white/5 text-white/60 hover:bg-[#c6a15b] hover:text-black transition-colors cursor-pointer active:scale-95"
+          >
+            <ChevronDown size={11} strokeWidth={2.5} />
+          </button>
+          <button
+            type="button"
+            onClick={() => handleStep(step)}
+            aria-label="Увеличить"
+            className="flex size-5 items-center justify-center rounded bg-white/5 text-white/60 hover:bg-[#c6a15b] hover:text-black transition-colors cursor-pointer active:scale-95"
+          >
+            <ChevronUp size={11} strokeWidth={2.5} />
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+const modalGlassOptions = [
+  { label: 'Двухкамерный энергосберегающий Low-E', value: 'Двухкамерный энергосберегающий', desc: 'Максимальная теплоизоляция для жилья' },
+  { label: 'Двухкамерный мультифункциональный', value: 'Двухкамерный мультифункциональный', desc: 'Защита от солнца летом и тепла зимой' },
+  { label: 'Однокамерный стандартный', value: 'Однокамерный стандартный', desc: 'Для веранд, тамбуров и террас' },
+  { label: 'Триплекс безопасный (ламинированный)', value: 'Триплекс безопасный (ламинированный)', desc: 'Повышенная безопасность и защита' },
+  { label: 'Закаленное стекло (Tempered)', value: 'Закаленное стекло', desc: 'Для перегородок и витражей' },
+];
+
 function EstimateModal({ open, onClose, initialProduct = '' }: { open: boolean; onClose: () => void; initialProduct?: string }) {
   const [status, setStatus] = useState<'form' | 'loading' | 'done'>('form');
+  const [categorySlug, setCategorySlug] = useState<string>(categories[0]?.slug || 'aluminium');
+  const [productSlug, setProductSlug] = useState<string>('');
+  const [glass, setGlass] = useState('Двухкамерный энергосберегающий');
+  const [width, setWidth] = useState('1800');
+  const [height, setHeight] = useState('1400');
   const [name, setName] = useState(''); 
   const [phone, setPhone] = useState(''); 
-  const [product, setProduct] = useState(initialProduct); 
   const [comment, setComment] = useState('');
 
   useEffect(() => { 
     if (open) { 
       setStatus('form'); 
-      setProduct(initialProduct); 
+      if (initialProduct) {
+        const pMatch = products.find(
+          p => p.title.toLowerCase() === initialProduct.toLowerCase() || 
+               p.slug.toLowerCase() === initialProduct.toLowerCase()
+        );
+        const cMatch = categories.find(
+          c => c.title.toLowerCase() === initialProduct.toLowerCase() || 
+               c.slug.toLowerCase() === initialProduct.toLowerCase()
+        );
+        if (pMatch) {
+          setCategorySlug(pMatch.categorySlug);
+          setProductSlug(pMatch.slug);
+        } else if (cMatch) {
+          setCategorySlug(cMatch.slug);
+          const firstInCat = products.find(p => p.categorySlug === cMatch.slug);
+          setProductSlug(firstInCat?.slug || '');
+        } else {
+          setCategorySlug(categories[0]?.slug || 'aluminium');
+          const firstInCat = products.find(p => p.categorySlug === (categories[0]?.slug || 'aluminium'));
+          setProductSlug(firstInCat?.slug || '');
+        }
+      } else {
+        const cat = categories[0]?.slug || 'aluminium';
+        setCategorySlug(cat);
+        const firstInCat = products.find(p => p.categorySlug === cat);
+        setProductSlug(firstInCat?.slug || '');
+      }
     } 
   }, [open, initialProduct]);
+
+  const onCategoryChange = (newCatSlug: string) => {
+    setCategorySlug(newCatSlug);
+    const catProds = products.filter(p => p.categorySlug === newCatSlug);
+    if (catProds.length > 0) {
+      setProductSlug(catProds[0].slug);
+    } else {
+      setProductSlug('');
+    }
+  };
+
+  const availableProducts = products.filter(p => p.categorySlug === categorySlug);
+  const selectedProductObj = products.find(p => p.slug === productSlug) || availableProducts[0];
+  const selectedCategoryObj = categories.find(c => c.slug === categorySlug) || categories[0];
+
+  const categoryOptions = categories.map(c => {
+    const count = products.filter(p => p.categorySlug === c.slug).length;
+    return {
+      label: c.title,
+      value: c.slug,
+      desc: c.subtitle,
+      badge: `${count}`,
+    };
+  });
+
+  const productOptions = availableProducts.map(p => ({
+    label: p.title,
+    value: p.slug,
+    badge: p.brandCountry || p.brand,
+    desc: p.subtitle,
+  }));
 
   const submit = (e: FormEvent) => { 
     e.preventDefault(); 
     if (!name.trim() || phone.replace(/\D/g, '').length < 9) return; 
     setStatus('loading'); 
-    window.setTimeout(() => setStatus('done'), 900); 
+    window.setTimeout(() => setStatus('done'), 800); 
   };
-
-  const productOptions = categories.map(c => ({ label: c.title, value: c.title }));
 
   return (
     <AnimatePresence>
       {open && (
         <motion.div 
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 p-4 backdrop-blur-sm" 
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-3 sm:p-4 backdrop-blur-md overflow-y-auto" 
           initial={{ opacity: 0 }} 
           animate={{ opacity: 1 }} 
           exit={{ opacity: 0 }} 
           onClick={onClose}
         >
           <motion.div 
-            className="relative w-full max-w-md rounded-2xl border border-[#c6a15b]/30 bg-[#171717] p-5 sm:p-7 max-h-[90svh] overflow-y-auto custom-scrollbar shadow-2xl" 
-            initial={{ opacity: 0, y: 20 }} 
-            animate={{ opacity: 1, y: 0 }} 
+            className="relative my-auto w-full max-w-xl rounded-2xl border border-[#c6a15b]/35 bg-[#151515] p-5 sm:p-6.5 shadow-2xl max-h-[92svh] overflow-y-auto custom-scrollbar" 
+            initial={{ opacity: 0, y: 18, scale: 0.98 }} 
+            animate={{ opacity: 1, y: 0, scale: 1 }} 
+            exit={{ opacity: 0, y: 14, scale: 0.98 }}
+            transition={{ duration: 0.2 }}
             onClick={e => e.stopPropagation()}
           >
-            <button onClick={onClose} className="absolute right-4 top-4 text-white/50 hover:text-[#d4b16a] transition cursor-pointer" aria-label="Закрыть" data-testid="button-close-modal">
+            <button onClick={onClose} className="absolute right-4 top-4 text-white/50 hover:text-[#d4b16a] transition cursor-pointer p-1 rounded-lg hover:bg-white/5" aria-label="Закрыть" data-testid="button-close-modal">
               <X size={18} />
             </button>
             {status === 'done' ? (
               <div className="py-8 text-center">
-                <div className="mx-auto mb-4 grid size-12 place-items-center rounded-full bg-[#c6a15b] text-[#101010]">
-                  <Check size={22} />
+                <div className="mx-auto mb-4 grid size-14 place-items-center rounded-full bg-[#c6a15b] text-[#101010] shadow-lg">
+                  <Check size={26} />
                 </div>
-                <h2 className="font-display text-2xl font-extrabold">Заявка принята</h2>
-                <p className="mt-2 text-xs sm:text-sm text-white/60">Спасибо, {name}. Специалист ALL WINDOWS свяжется с вами в рабочее время.</p>
-                <button onClick={onClose} className="mt-6 border-b border-[#c6a15b] pb-1 text-xs sm:text-sm text-[#d4b16a] cursor-pointer" data-testid="button-modal-done">
+                <h2 className="font-display text-2xl sm:text-3xl font-extrabold text-white">Заявка принята!</h2>
+                <p className="mt-2.5 text-xs sm:text-sm text-white/70 max-w-md mx-auto leading-relaxed">
+                  Спасибо, {name}. Заявка на расчёт системы «{selectedProductObj?.title || selectedCategoryObj?.title}» ({selectedCategoryObj?.title}) успешно получена. Специалист ALL WINDOWS свяжется с вами в течение рабочего дня.
+                </p>
+                <div className="mt-4 flex flex-wrap justify-center gap-2 text-[11px] text-white/40">
+                  <span>Размер: {width} × {height} мм</span>
+                  <span>•</span>
+                  <span>Стекло: {glass}</span>
+                </div>
+                <button onClick={onClose} className="mt-6 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-6 py-2.5 text-xs sm:text-sm font-semibold text-white hover:bg-white/20 transition cursor-pointer" data-testid="button-modal-done">
                   Вернуться на сайт
                 </button>
               </div>
             ) : (
               <>
                 <p className="mb-1 text-[9px] uppercase tracking-[.25em] text-[#d4b16a]">ALL WINDOWS / 01</p>
-                <h2 className="font-display text-2xl sm:text-3xl font-extrabold leading-tight">Рассчитать проект</h2>
-                <p className="mt-1.5 text-xs leading-relaxed text-white/55">Оставьте контакты — подготовим предварительную стоимость и предложим время замера.</p>
-                <form onSubmit={submit} className="mt-4 space-y-2.5">
-                  <label className="block text-[11px] font-medium text-white/60">
-                    Ваше имя *
-                    <input value={name} onChange={e => setName(e.target.value)} required placeholder="Имя" className="mt-1 w-full rounded-lg border border-white/10 bg-[#0e0e0e] px-3.5 py-2 text-xs sm:text-sm outline-none transition focus:border-[#c6a15b]" data-testid="input-estimate-name" />
-                  </label>
-                  <label className="block text-[11px] font-medium text-white/60">
-                    Телефон *
-                    <input value={phone} onChange={e => setPhone(e.target.value)} required placeholder="+998 (__) ___-__-__" className="mt-1 w-full rounded-lg border border-white/10 bg-[#0e0e0e] px-3.5 py-2 text-xs sm:text-sm outline-none transition focus:border-[#c6a15b]" data-testid="input-estimate-phone" />
-                  </label>
-                  <div className="block text-[11px] font-medium text-white/60">
-                    <span>Тип продукции / Система</span>
-                    <ModalDarkSelect
-                      value={product}
-                      onChange={setProduct}
-                      options={productOptions}
-                      placeholder="Выберите решение"
-                      testId="select-estimate-product"
-                    />
+                <h2 className="font-display text-2xl sm:text-3xl font-extrabold leading-tight text-white">Рассчитать проект</h2>
+                <p className="mt-1 text-xs leading-relaxed text-white/55">
+                  Укажите параметры конструкции и контакты — подготовим предварительную смету и согласуем время замера.
+                </p>
+                <form onSubmit={submit} className="mt-4 space-y-3">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3">
+                    <div>
+                      <span className="block text-[11px] font-medium text-white/60 mb-1">1. Категория продукции</span>
+                      <ModalDarkSelect
+                        value={categorySlug}
+                        onChange={onCategoryChange}
+                        options={categoryOptions}
+                        placeholder="Выберите категорию"
+                        testId="select-estimate-category"
+                      />
+                    </div>
+
+                    <div>
+                      <span className="block text-[11px] font-medium text-white/60 mb-1">2. Система / Продукт</span>
+                      <ModalDarkSelect
+                        value={productSlug}
+                        onChange={setProductSlug}
+                        options={productOptions}
+                        placeholder="Выберите систему..."
+                        testId="select-estimate-product"
+                      />
+                    </div>
+
+                    <div>
+                      <span className="block text-[11px] font-medium text-white/60 mb-1">3. Стеклопакет / Заполнение</span>
+                      <ModalDarkSelect
+                        value={glass}
+                        onChange={setGlass}
+                        options={modalGlassOptions}
+                        placeholder="Тип стеклопакета"
+                        testId="select-estimate-glass"
+                      />
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-2">
+                      <ModalNumberInput
+                        label="Ширина, мм"
+                        value={width}
+                        onChange={setWidth}
+                        placeholder="1800"
+                        step={50}
+                        testId="input-estimate-width"
+                      />
+                      <ModalNumberInput
+                        label="Высота, мм"
+                        value={height}
+                        onChange={setHeight}
+                        placeholder="1400"
+                        step={50}
+                        testId="input-estimate-height"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-[11px] font-medium text-white/60">
+                        Ваше имя *
+                        <input 
+                          required 
+                          value={name} 
+                          onChange={e => setName(e.target.value)} 
+                          placeholder="Имя" 
+                          className="mt-1 w-full rounded-lg border border-white/10 bg-[#0e0e0e] px-3 py-2 text-xs sm:text-sm text-white outline-none transition focus:border-[#c6a15b] placeholder:text-white/30" 
+                          data-testid="input-estimate-name" 
+                        />
+                      </label>
+                    </div>
+
+                    <div>
+                      <label className="block text-[11px] font-medium text-white/60">
+                        Телефон *
+                        <input 
+                          required 
+                          type="tel"
+                          value={phone} 
+                          onChange={e => setPhone(e.target.value)} 
+                          placeholder="+998 (__) ___-__-__" 
+                          className="mt-1 w-full rounded-lg border border-white/10 bg-[#0e0e0e] px-3 py-2 text-xs sm:text-sm text-white outline-none transition focus:border-[#c6a15b] placeholder:text-white/30" 
+                          data-testid="input-estimate-phone" 
+                        />
+                      </label>
+                    </div>
                   </div>
-                  <label className="block text-[11px] font-medium text-white/60">
-                    Комментарий
-                    <textarea value={comment} onChange={e => setComment(e.target.value)} placeholder="Площадь, адрес или задача" rows={2} className="mt-1 w-full resize-none rounded-lg border border-white/10 bg-[#0e0e0e] px-3.5 py-2 text-xs sm:text-sm outline-none focus:border-[#c6a15b]" data-testid="textarea-estimate-comment" />
-                  </label>
-                  <button disabled={status === 'loading'} className="gold-gradient mt-2 flex w-full items-center justify-center gap-2 rounded-full py-2.5 sm:py-3 text-xs sm:text-sm font-bold text-[#121212] transition hover:brightness-105 cursor-pointer disabled:opacity-60" data-testid="button-submit-estimate">
-                    {status === 'loading' ? 'Отправляем…' : <>Отправить заявку <ArrowRight size={15} /></>}
-                  </button>
+
+                  <div>
+                    <label className="block text-[11px] font-medium text-white/60">
+                      Комментарий или адрес объекта
+                      <textarea 
+                        value={comment} 
+                        onChange={e => setComment(e.target.value)} 
+                        placeholder="Количество проёмов, этаж, адрес замера или пожелания" 
+                        rows={2} 
+                        className="mt-1 w-full resize-none rounded-lg border border-white/10 bg-[#0e0e0e] px-3 py-2 text-xs sm:text-sm text-white outline-none transition focus:border-[#c6a15b] placeholder:text-white/30" 
+                        data-testid="textarea-estimate-comment" 
+                      />
+                    </label>
+                  </div>
+
+                  <div className="pt-1">
+                    <button 
+                      disabled={status === 'loading'} 
+                      type="submit" 
+                      className="gold-gradient flex w-full items-center justify-center gap-2 rounded-full py-2.5 sm:py-3 text-xs sm:text-sm font-bold text-[#121212] transition hover:brightness-105 cursor-pointer disabled:opacity-60 shadow-lg" 
+                      data-testid="button-submit-estimate"
+                    >
+                      {status === 'loading' ? 'Отправляем…' : <>Отправить заявку на расчёт <ArrowRight size={15} /></>}
+                    </button>
+                    <p className="mt-2 text-center text-[10.5px] text-white/40">Бесплатный расчет сметы и выезд замерщика в Ташкенте</p>
+                  </div>
                 </form>
               </>
             )}

@@ -46,6 +46,10 @@ import imgAsas64 from './asas64.png';
 import imgAsas75 from './asas75.png';
 import imgGuillotine from './guillotine.jpg';
 
+import imgDeceuninck6000 from './Deceuninck6000.png';
+import imgDeceuninck7000 from './Deceuninck7000.png';
+import imgDeceuninck8000 from './Deceuninck8000.png';
+
 export const localImages = {
   hero: imgHero,
   tower: imgTower,
@@ -95,6 +99,9 @@ export const localImages = {
   asas64: imgAsas64,
   asas75: imgAsas75,
   guillotine: imgGuillotine,
+  deceuninck6000: imgDeceuninck6000,
+  deceuninck7000: imgDeceuninck7000,
+  deceuninck8000: imgDeceuninck8000,
 };
 
 export default localImages;
