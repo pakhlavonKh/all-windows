@@ -3,7 +3,7 @@ import { AnimatePresence, motion, useInView, animate } from 'framer-motion';
 import { Link, Route, Switch, useLocation, useParams } from 'wouter';
 import { 
   ArrowRight, ArrowUpRight, Award, Check, CheckCircle2, ChevronDown, ChevronLeft, ChevronRight, ChevronUp,
-  ExternalLink, Factory, FileCheck2, GlassWater, Instagram, MapPin, Maximize2, Menu, Phone, Ruler, Send, 
+  ExternalLink, Factory, FileCheck2, GlassWater, Images, Instagram, MapPin, Maximize2, Menu, Phone, Ruler, Send, 
   ShieldCheck, Sparkles, X, Wrench, Zap 
 } from 'lucide-react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -14,6 +14,10 @@ import NotFound from '@/pages/not-found';
 import '@/index.css';
 
 import { localImages as pics } from '@/assets/imgs';
+import { projects, type Project } from '@/data/projects';
+import { ProjectGalleryModal } from '@/components/ProjectGalleryModal';
+import { windowColors, type WindowColor } from '@/data/colors';
+import { ColorPicker } from '@/components/ColorPicker';
 
 type Lang = 'ru' | 'uz';
 const queryClient = new QueryClient();
@@ -949,13 +953,6 @@ export const products: Product[] = [
   }
 ];
 
-const projects = [
-  { slug: 'fazo-residence', title: 'ЖК «Fazo Residence»', type: 'Жилые комплексы', city: 'Ташкент', image: pics.residence, text: 'Панорамные окна и раздвижные системы для приватных террас.', systems: 'Engelberg 8000 · Lift-slide' },
-  { slug: 'aminar-house', title: 'ЖК «Aminar House»', type: 'Жилые комплексы', city: 'Ташкент', image: pics.tower, text: 'Фасадное остекление и алюминиевые окна для жилого комплекса в центре Ташкента.', systems: 'JP façade · Aldoks Neo' },
-  { slug: 'apex-bank', title: 'Apex Bank', type: 'Коммерческие', city: 'Ташкент', image: pics.facade, text: 'Структурное остекление входной группы и стеклянные ограждения.', systems: 'JP façade · Triplex' },
-  { slug: 'gulsanam', title: 'ЖК «Gulsanam»', type: 'Частные', city: 'Ташкент', image: pics.glass, text: 'Тёплое остекление частного дома, витражи и роллетные системы.', systems: 'Aldoks Neo · Akfa' },
-];
-
 function Meta({ title, description }: { title: string; description: string }) {
   useEffect(() => {
     document.title = title;
@@ -1375,10 +1372,11 @@ const modalGlassOptions = [
   { label: 'Закаленное стекло (Tempered)', value: 'Закаленное стекло', desc: 'Для перегородок и витражей' },
 ];
 
-function EstimateModal({ open, onClose, initialProduct = '' }: { open: boolean; onClose: () => void; initialProduct?: string }) {
+function EstimateModal({ open, onClose, initialProduct = '', initialColor = '' }: { open: boolean; onClose: () => void; initialProduct?: string; initialColor?: string }) {
   const [status, setStatus] = useState<'form' | 'loading' | 'done'>('form');
   const [categorySlug, setCategorySlug] = useState<string>(categories[0]?.slug || 'aluminium');
   const [productSlug, setProductSlug] = useState<string>('');
+  const [color, setColor] = useState<string>(initialColor || windowColors[0].name);
   const [glass, setGlass] = useState('Двухкамерный энергосберегающий');
   const [width, setWidth] = useState('1800');
   const [height, setHeight] = useState('1400');
@@ -1389,6 +1387,9 @@ function EstimateModal({ open, onClose, initialProduct = '' }: { open: boolean; 
   useEffect(() => { 
     if (open) { 
       setStatus('form'); 
+      if (initialColor) {
+        setColor(initialColor);
+      }
       if (initialProduct) {
         const pMatch = products.find(
           p => p.title.toLowerCase() === initialProduct.toLowerCase() || 
@@ -1417,7 +1418,7 @@ function EstimateModal({ open, onClose, initialProduct = '' }: { open: boolean; 
         setProductSlug(firstInCat?.slug || '');
       }
     } 
-  }, [open, initialProduct]);
+  }, [open, initialProduct, initialColor]);
 
   const onCategoryChange = (newCatSlug: string) => {
     setCategorySlug(newCatSlug);
@@ -1485,10 +1486,12 @@ function EstimateModal({ open, onClose, initialProduct = '' }: { open: boolean; 
                 </div>
                 <h2 className="font-display text-2xl sm:text-3xl font-extrabold text-white">Заявка принята!</h2>
                 <p className="mt-2.5 text-xs sm:text-sm text-white/70 max-w-md mx-auto leading-relaxed">
-                  Спасибо, {name}. Заявка на расчёт системы «{selectedProductObj?.title || selectedCategoryObj?.title}» ({selectedCategoryObj?.title}) успешно получена. Специалист ALL WINDOWS свяжется с вами в течение рабочего дня.
+                  Спасибо, {name}. Заявка на расчёт системы «{selectedProductObj?.title || selectedCategoryObj?.title}» ({selectedCategoryObj?.title}) в цвете «{color}» успешно получена. Специалист ALL WINDOWS свяжется с вами в течение рабочего дня.
                 </p>
                 <div className="mt-4 flex flex-wrap justify-center gap-2 text-[11px] text-white/40">
                   <span>Размер: {width} × {height} мм</span>
+                  <span>•</span>
+                  <span>Цвет: {color}</span>
                   <span>•</span>
                   <span>Стекло: {glass}</span>
                 </div>
@@ -1524,6 +1527,15 @@ function EstimateModal({ open, onClose, initialProduct = '' }: { open: boolean; 
                         options={productOptions}
                         placeholder="Выберите систему..."
                         testId="select-estimate-product"
+                      />
+                    </div>
+
+                    <div className="sm:col-span-2 rounded-xl border border-white/10 bg-[#0e0e0e] p-3">
+                      <ColorPicker
+                        selectedColorId={windowColors.find(c => c.name === color || c.id === color)?.id || windowColors[0].id}
+                        onSelectColor={(c) => setColor(c.name)}
+                        maxVisible={7}
+                        variant="dark"
                       />
                     </div>
 
@@ -1822,12 +1834,18 @@ function SectionIntro({ eyebrow, title, text, light = false }: { eyebrow: string
 function Home({ onEstimate, lang }: { onEstimate: (p?: string) => void; lang: Lang }) {
   const t = copy(lang); 
   const [slide, setSlide] = useState(0);
+  const [homeProjectModal, setHomeProjectModal] = useState<Project | null>(null);
+  const [randomProjects, setRandomProjects] = useState<Project[]>(() => {
+    const pool = projects.filter(p => !p.isTextOnly && p.images && p.images.length > 0);
+    return [...pool].sort(() => Math.random() - 0.5).slice(0, 3);
+  });
 
   const [selectedCategorySlug, setSelectedCategorySlug] = useState<string>(categories[0]?.slug || 'windows-doors');
   const availableProducts = products.filter(p => p.categorySlug === selectedCategorySlug);
   const [selectedProductSlug, setSelectedProductSlug] = useState<string>(availableProducts[0]?.slug || '');
 
   const [formGlass, setFormGlass] = useState('Двухкамерный энергосберегающий');
+  const [formColor, setFormColor] = useState(windowColors[0].name);
   const [formWidth, setFormWidth] = useState('1800');
   const [formHeight, setFormHeight] = useState('1400');
   const [formName, setFormName] = useState('');
@@ -1971,11 +1989,11 @@ function Home({ onEstimate, lang }: { onEstimate: (p?: string) => void; lang: La
                 </div>
                 <h3 className="font-display text-2xl md:text-3xl font-bold">Заявка принята!</h3>
                 <p className="mt-3 text-xs sm:text-sm text-white/70 max-w-md leading-relaxed">
-                  Спасибо, {formName}. Заявка на систему «{selectedProductObj?.title}» ({selectedCategoryObj.title}) успешно получена. Специалист ALL WINDOWS свяжется с вами в течение рабочего дня.
+                  Спасибо, {formName}. Заявка на систему «{selectedProductObj?.title}» ({selectedCategoryObj.title}) в цвете «{formColor}» успешно получена. Специалист ALL WINDOWS свяжется с вами в течение рабочего дня.
                 </p>
                 <button
                   type="button"
-                  onClick={() => { setFormStatus('idle'); setFormName(''); setFormPhone(''); setFormComment(''); }}
+                  onClick={() => { setFormStatus('idle'); setFormName(''); setFormPhone(''); setFormComment(''); setFormColor(windowColors[0].name); }}
                   className="mt-6 rounded-full border border-white/20 bg-white/10 px-6 py-2.5 text-xs font-semibold text-white hover:bg-white/20 transition cursor-pointer"
                 >
                   Отправить другую заявку
@@ -2002,6 +2020,15 @@ function Home({ onEstimate, lang }: { onEstimate: (p?: string) => void; lang: La
                       options={productOptions}
                       placeholder="Выберите систему..."
                       testId="select-home-product"
+                    />
+                  </div>
+
+                  <div className="sm:col-span-2 border-b border-black/20 pb-3">
+                    <ColorPicker
+                      selectedColorId={windowColors.find(c => c.name === formColor || c.id === formColor)?.id || windowColors[0].id}
+                      onSelectColor={(c) => setFormColor(c.name)}
+                      maxVisible={8}
+                      variant="light"
                     />
                   </div>
 
@@ -2090,24 +2117,41 @@ function Home({ onEstimate, lang }: { onEstimate: (p?: string) => void; lang: La
           </div>
         </section>
 
-        <section className="mx-auto max-w-360 px-6 sm:px-8 py-24 lg:px-12 xl:px-14">
+        <section className="mx-auto max-w-360 px-6 sm:px-8 py-20 lg:px-12 xl:px-14">
           <SectionIntro eyebrow="03 / Наши объекты" title="Конструкции в реальной архитектуре" text="Не просто каталог решений — результат, который каждый день работает в городе." />
-          <div className="grid gap-3 md:grid-cols-2">
-            {projects.slice(0, 3).map((p, i) => (
-              <Link key={p.slug} href={`/projects/${p.slug}`} className={`group image-zoom relative overflow-hidden rounded-xl ${i === 0 ? 'md:row-span-2' : ''}`} data-testid={`card-home-project-${p.slug}`}>
-                <img src={p.image} alt={p.title} className={`size-full min-h-65 object-cover ${i === 0 ? 'md:min-h-135' : ''}`} />
-                <div className="absolute inset-0 bg-linear-to-t from-black/85 via-transparent to-transparent" />
-                <div className="absolute inset-x-0 bottom-0 p-6">
-                  <p className="text-[10px] uppercase tracking-[.2em] text-[#d4b16a]">{p.type}</p>
-                  <h3 className="mt-2 font-display text-2xl font-extrabold">{p.title}</h3>
-                  <p className="mt-2 text-xs text-white/60">{p.systems}</p>
+          <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
+            {randomProjects.map((p) => (
+              <div 
+                key={p.slug} 
+                onClick={() => setHomeProjectModal(p)} 
+                className="group image-zoom relative h-64 sm:h-72 overflow-hidden rounded-xl cursor-pointer border border-white/10 bg-[#141414] transition duration-300 hover:border-[#c6a15b]/60 hover:shadow-xl" 
+                data-testid={`card-home-project-${p.slug}`}
+              >
+                <img 
+                  src={p.image} 
+                  alt={p.title} 
+                  className="absolute inset-0 size-full object-cover transition-transform duration-500 group-hover:scale-105" 
+                />
+                <div className="absolute inset-0 bg-linear-to-t from-black/95 via-black/35 to-transparent" />
+                
+                <div className="absolute top-3 right-3 rounded-full bg-black/70 backdrop-blur-md px-2.5 py-1 text-[11px] text-white/90 border border-white/15 flex items-center gap-1.5 shadow-lg">
+                  <Images size={11} className="text-[#d4b16a]" /> {p.images.length} фото
                 </div>
-              </Link>
+                
+                <div className="relative flex h-full flex-col justify-end p-5">
+                  <p className="text-[9px] uppercase tracking-[.22em] text-[#d4b16a]">{p.type} · {p.city}</p>
+                  <h3 className="mt-1 font-display text-lg font-bold text-white group-hover:text-[#d4b16a] transition">{p.title}</h3>
+                  <span className="mt-2.5 inline-flex items-center gap-1.5 text-xs font-semibold text-[#d4b16a]">
+                    Смотреть фотографии <Maximize2 size={12} />
+                  </span>
+                </div>
+              </div>
             ))}
           </div>
           <Link href="/projects" className="mt-8 inline-flex items-center gap-3 border-b border-[#c6a15b] pb-2 text-sm text-[#d4b16a]" data-testid="link-home-projects">
             Смотреть все объекты <ArrowRight size={15} />
           </Link>
+          <ProjectGalleryModal project={homeProjectModal} onClose={() => setHomeProjectModal(null)} />
         </section>
 
         <section className="border-y border-white/10 bg-[#111]">
@@ -2355,11 +2399,12 @@ function CategoryProductsPage({ onEstimate }: { onEstimate: (p?: string) => void
 }
 
 // --- LEVEL 3: PRODUCT DETAIL PAGE ---
-function ProductDetail({ onEstimate }: { onEstimate: (p?: string) => void }) { 
+function ProductDetail({ onEstimate }: { onEstimate: (p?: string, c?: string) => void }) { 
   const { categorySlug, productSlug, id } = useParams<{ categorySlug?: string; productSlug?: string; id?: string }>(); 
   const slug = productSlug || id;
   const product = products.find(p => p.slug === slug) ?? products[0]; 
   const category = categories.find(c => c.slug === product.categorySlug) ?? categories[0];
+  const [selectedColor, setSelectedColor] = useState<WindowColor>(windowColors[0]);
 
   return (
     <PageFrame title={product.title} eyebrow={`Продукция / ${category.title} / ${product.title}`} intro={product.description}>
@@ -2374,34 +2419,51 @@ function ProductDetail({ onEstimate }: { onEstimate: (p?: string) => void }) {
         )}
       </div>
 
-      <div className="grid gap-10 lg:grid-cols-[1.2fr_.8fr]">
-        <div className="overflow-hidden rounded-xl">
-          <img src={product.image} alt={product.title} className="aspect-4/3 size-full object-cover" />
+      <div className="grid gap-8 lg:grid-cols-[0.85fr_1.15fr] items-start">
+        <div className="overflow-hidden rounded-2xl border border-white/10 bg-[#121212] p-2.5 sm:p-3 shadow-lg">
+          <img 
+            src={product.image} 
+            alt={product.title} 
+            className="w-full max-h-75 sm:max-h-85 md:max-h-95 rounded-xl object-cover" 
+          />
         </div>
-        <div className="rounded-xl border border-white/10 bg-[#151515] p-7">
-          <div className="flex items-center justify-between border-b border-white/10 pb-4">
-            <p className="text-[10px] uppercase tracking-[.25em] text-[#d4b16a]">Технические характеристики</p>
-            <span className="rounded bg-white/10 px-2.5 py-1 text-[10px] font-mono text-white/80">{product.brand}</span>
+        <div className="rounded-2xl border border-white/10 bg-[#151515] p-6 sm:p-7 flex flex-col justify-between shadow-xl">
+          <div>
+            <div className="flex items-center justify-between border-b border-white/10 pb-3.5">
+              <p className="text-[10px] uppercase tracking-[.25em] text-[#d4b16a]">Технические характеристики</p>
+              <span className="rounded bg-white/10 px-2.5 py-1 text-[10px] font-mono text-white/80">{product.brand}</span>
+            </div>
+            <div className="mt-3 divide-y divide-white/10">
+              {product.specs.map(s => (
+                <div key={s} className="flex items-start gap-2.5 py-2.5 text-xs sm:text-sm text-white/75">
+                  <Check size={14} className="text-[#c6a15b] shrink-0 mt-0.5" />
+                  <span>{s}</span>
+                </div>
+              ))}
+            </div>
+
+            {/* Colors in small circles with plus at the end to view all 16 */}
+            <div className="mt-5 border-t border-white/10 pt-4">
+              <ColorPicker
+                selectedColorId={selectedColor.id}
+                onSelectColor={setSelectedColor}
+                maxVisible={6}
+                variant="dark"
+              />
+            </div>
           </div>
-          <div className="mt-4 divide-y divide-white/10">
-            {product.specs.map(s => (
-              <div key={s} className="flex items-start gap-3 py-3 text-sm text-white/75">
-                <Check size={15} className="text-[#c6a15b] shrink-0 mt-1" />
-                <span>{s}</span>
-              </div>
-            ))}
-          </div>
-          <button onClick={() => onEstimate(product.title)} className="gold-gradient mt-7 flex w-full items-center justify-center gap-2 rounded-full px-5 py-3.5 text-sm font-bold text-black" data-testid="button-product-estimate">
-            Рассчитать проект <ArrowRight size={16} />
+
+          <button onClick={() => onEstimate(product.title, selectedColor.name)} className="gold-gradient mt-6 flex w-full items-center justify-center gap-2 rounded-full px-5 py-3 text-xs sm:text-sm font-bold text-black cursor-pointer hover:brightness-105 transition shadow-lg" data-testid="button-product-estimate">
+            Рассчитать проект <ArrowRight size={15} />
           </button>
         </div>
       </div>
-      <div className="mt-20">
-        <p className="mb-6 text-[10px] uppercase tracking-[.25em] text-[#d4b16a]">Детали и применение</p>
-        <div className="grid gap-3 md:grid-cols-3">
-          <img src={pics.detail} alt="Деталь оконной системы" className="h-60 w-full rounded-xl object-cover" />
-          <img src={pics.interior} alt="Интерьер с остеклением" className="h-60 w-full rounded-xl object-cover" />
-          <img src={pics.workshop} alt="Производство оконных систем" className="h-60 w-full rounded-xl object-cover" />
+      <div className="mt-14 sm:mt-16">
+        <p className="mb-4 text-[10px] uppercase tracking-[.25em] text-[#d4b16a]">Детали и применение</p>
+        <div className="grid gap-3 sm:grid-cols-3">
+          <img src={pics.detail} alt="Деталь оконной системы" className="h-36 sm:h-40 md:h-44 w-full rounded-xl object-cover border border-white/5" />
+          <img src={pics.interior} alt="Интерьер с остеклением" className="h-36 sm:h-40 md:h-44 w-full rounded-xl object-cover border border-white/5" />
+          <img src={pics.workshop} alt="Производство оконных систем" className="h-36 sm:h-40 md:h-44 w-full rounded-xl object-cover border border-white/5" />
         </div>
       </div>
       {product.related && product.related.length > 0 && (
@@ -2447,71 +2509,117 @@ function PageFrame({ eyebrow, title, intro, children }: { eyebrow: string; title
   ); 
 }
 
-function ProjectsPage() { 
+function ProjectsPage({ onEstimate }: { onEstimate?: (p?: string) => void }) { 
+  const params = useParams<{ slug?: string }>();
   const [filter, setFilter] = useState('Все'); 
-  const filters = ['Все', 'Жилые комплексы', 'Коммерческие', 'Частные']; 
+  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+
+  useEffect(() => {
+    if (params?.slug) {
+      const match = projects.find(p => p.slug === params.slug);
+      if (match && !match.isTextOnly && match.images.length > 0) {
+        setSelectedProject(match);
+      }
+    }
+  }, [params?.slug]);
+
+  const filters = ['Все', 'Жилые комплексы', 'Коммерческие', 'Социальные объекты', 'Частные объекты']; 
   const shown = filter === 'Все' ? projects : projects.filter(p => p.type === filter); 
 
   return (
-    <PageFrame eyebrow="Портфолио" title="Наши объекты" intro="Реальные фасады, окна и входные группы, выполненные командой ALL WINDOWS в Ташкенте.">
+    <PageFrame eyebrow="Портфолио" title="Наши объекты" intro="Реальные фасады, окна и входные группы, выполненные командой ALL WINDOWS в Ташкенте. Нажмите на любой объект, чтобы открыть фотогалерею.">
       <div className="mb-8 flex flex-wrap gap-2">
-        {filters.map(f => (
-          <button key={f} onClick={() => setFilter(f)} className={`rounded-full border px-4 py-2 text-xs transition ${filter === f ? 'border-[#c6a15b] bg-[#c6a15b] text-black' : 'border-white/15 text-white/55 hover:border-[#c6a15b]'}`} data-testid={`button-filter-${f}`}>
-            {f}
-          </button>
-        ))}
+        {filters.map(f => {
+          const count = f === 'Все' ? projects.length : projects.filter(p => p.type === f).length;
+          return (
+            <button 
+              key={f} 
+              onClick={() => setFilter(f)} 
+              className={`rounded-full border px-4 py-2 text-xs transition flex items-center gap-1.5 ${filter === f ? 'border-[#c6a15b] bg-[#c6a15b] text-black font-semibold' : 'border-white/15 text-white/55 hover:border-[#c6a15b]'}`} 
+              data-testid={`button-filter-${f}`}
+            >
+              <span>{f}</span>
+              <span className={`text-[10px] rounded-full px-1.5 py-0.5 ${filter === f ? 'bg-black/20 text-black font-bold' : 'bg-white/10 text-white/60'}`}>
+                {count}
+              </span>
+            </button>
+          );
+        })}
       </div>
-      <div className="grid gap-3 md:grid-cols-2">
-        {shown.map(p => (
-          <Link href={`/projects/${p.slug}`} key={p.slug} className="group image-zoom relative min-h-107.5 overflow-hidden rounded-xl" data-testid={`card-project-${p.slug}`}>
-            <img src={p.image} alt={p.title} className="absolute inset-0 size-full object-cover" />
-            <div className="absolute inset-0 bg-linear-to-t from-black/90 via-black/10 to-transparent" />
-            <div className="relative flex min-h-107.5 flex-col justify-end p-7">
-              <p className="text-[10px] uppercase tracking-[.25em] text-[#d4b16a]">{p.type} · {p.city}</p>
-              <h2 className="mt-2 font-display text-3xl font-extrabold">{p.title}</h2>
-              <p className="mt-2 max-w-sm text-sm text-white/60">{p.text}</p>
-              <span className="mt-6 flex items-center gap-2 text-xs text-[#d4b16a]">Открыть проект <ArrowUpRight size={14} /></span>
-            </div>
-          </Link>
-        ))}
-      </div>
-    </PageFrame>
-  ); 
-}
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {shown.map(p => {
+          if (p.isTextOnly || !p.images || p.images.length === 0) {
+            return (
+              <div
+                key={p.slug}
+                className="relative flex min-h-[370px] flex-col justify-between overflow-hidden rounded-xl border border-[#c6a15b]/35 bg-linear-to-br from-[#1c1914] via-[#141414] to-[#0e0e0e] p-7 shadow-xl"
+                data-testid={`card-project-${p.slug}`}
+              >
+                <div className="pointer-events-none absolute -right-3 -bottom-6 select-none font-display text-[120px] font-black text-[#c6a15b]/5 leading-none">
+                  350+
+                </div>
 
-function ProjectDetail() { 
-  const { slug } = useParams<{ slug: string }>(); 
-  const p = projects.find(x => x.slug === slug) ?? projects[0]; 
+                <div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-[10px] uppercase tracking-[.25em] text-[#d4b16a]">
+                      {p.type} · {p.city}
+                    </span>
+                    <span className="rounded-full border border-[#c6a15b]/40 bg-[#c6a15b]/15 px-2.5 py-0.5 text-[10px] font-semibold text-[#d4b16a]">
+                      350+ объектов
+                    </span>
+                  </div>
+                  <h2 className="mt-4 font-display text-2xl sm:text-3xl font-extrabold text-white">
+                    {p.title}
+                  </h2>
+                  <p className="mt-4 text-sm leading-relaxed text-white/70">
+                    Остекление частных резиденций, коттеджей и загородных домов в Ташкенте и Ташкентской области.
+                  </p>
+                </div>
 
-  return (
-    <PageFrame eyebrow={`Объекты / ${p.city}`} title={p.title} intro={p.text}>
-      <div className="grid gap-3 md:grid-cols-[1.4fr_.6fr]">
-        <img src={p.image} alt={p.title} className="h-107.5 w-full rounded-xl object-cover md:h-155" />
-        <div className="grid gap-3">
-          <img src={pics.detail} alt="Деталь системы на объекте" className="h-75 w-full rounded-xl object-cover" />
-          <div className="rounded-xl border border-[#c6a15b]/30 bg-[#151515] p-6">
-            <p className="text-[10px] uppercase tracking-[.22em] text-[#d4b16a]">Системы</p>
-            <p className="mt-4 font-display text-2xl font-bold">{p.systems}</p>
-            <div className="mt-8 flex items-center gap-3 text-xs text-white/45">
-              <Ruler size={16} className="text-[#c6a15b]" /> Проектирование и монтаж AW
+                <div className="mt-6 border-t border-white/10 pt-4">
+                  {onEstimate && (
+                    <button 
+                      onClick={() => onEstimate('Остекление частного дома')} 
+                      className="w-full flex items-center justify-center gap-2 rounded-lg bg-[#c6a15b]/15 hover:bg-[#c6a15b] hover:text-black py-3 text-xs font-bold text-[#d4b16a] border border-[#c6a15b]/40 transition"
+                    >
+                      Заказать расчёт для дома <ArrowRight size={14} />
+                    </button>
+                  )}
+                </div>
+              </div>
+            );
+          }
+
+          return (
+            <div 
+              key={p.slug} 
+              onClick={() => setSelectedProject(p)} 
+              className="group image-zoom relative min-h-[370px] overflow-hidden rounded-xl cursor-pointer border border-white/10 bg-[#141414] transition duration-300 hover:border-[#c6a15b]/60 hover:shadow-2xl hover:shadow-[#c6a15b]/10" 
+              data-testid={`card-project-${p.slug}`}
+            >
+              <img src={p.image} alt={p.title} className="absolute inset-0 size-full object-cover transition-transform duration-500 group-hover:scale-105" />
+              <div className="absolute inset-0 bg-linear-to-t from-black/95 via-black/45 to-black/20" />
+              
+              {/* Photo count badge */}
+              <div className="absolute top-3.5 right-3.5 rounded-full bg-black/70 backdrop-blur-md px-2.5 py-1 text-[11px] text-white/90 border border-white/15 flex items-center gap-1.5 shadow-lg">
+                <Images size={12} className="text-[#d4b16a]" />
+                <span>{p.images.length} фото</span>
+              </div>
+
+              <div className="relative flex min-h-[370px] flex-col justify-end p-6">
+                <p className="text-[10px] uppercase tracking-[.25em] text-[#d4b16a]">{p.type} · {p.city}</p>
+                <h2 className="mt-1 font-display text-2xl font-extrabold text-white group-hover:text-[#d4b16a] transition">{p.title}</h2>
+                <div className="mt-4 flex items-center gap-2 text-xs font-semibold text-[#d4b16a]">
+                  <span>Открыть галерею</span>
+                  <Maximize2 size={13} className="transition group-hover:translate-x-1" />
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
+          );
+        })}
       </div>
-      <div className="mt-16 grid gap-8 border-t border-white/10 pt-10 md:grid-cols-3">
-        <div>
-          <p className="text-[10px] uppercase tracking-[.2em] text-[#d4b16a]">Задача</p>
-          <p className="mt-3 text-sm leading-6 text-white/60">{p.text}</p>
-        </div>
-        <div>
-          <p className="text-[10px] uppercase tracking-[.2em] text-[#d4b16a]">Решение</p>
-          <p className="mt-3 text-sm leading-6 text-white/60">Подготовили узлы, согласовали образцы и выполнили монтаж поэтажно без остановки работ.</p>
-        </div>
-        <div>
-          <p className="text-[10px] uppercase tracking-[.2em] text-[#d4b16a]">География</p>
-          <p className="mt-3 text-sm leading-6 text-white/60">Ташкент, Узбекистан<br />Срок по проекту — поэтапно</p>
-        </div>
-      </div>
+
+      <ProjectGalleryModal project={selectedProject} onClose={() => setSelectedProject(null)} />
     </PageFrame>
   ); 
 }
@@ -2787,7 +2895,7 @@ function ContactsPage({ onEstimate }: { onEstimate: (p?: string) => void }) {
   ); 
 }
 
-function RouterView({ lang, onEstimate }: { lang: Lang; onEstimate: (p?: string) => void }) { 
+function RouterView({ lang, onEstimate }: { lang: Lang; onEstimate: (p?: string, c?: string) => void }) { 
   return (
     <Switch>
       <Route path="/" component={() => <Home lang={lang} onEstimate={onEstimate} />} />
@@ -2795,8 +2903,8 @@ function RouterView({ lang, onEstimate }: { lang: Lang; onEstimate: (p?: string)
       <Route path="/products" component={() => <ProductsPage onEstimate={onEstimate} />} />
       <Route path="/products/:categorySlug/:productSlug" component={() => <ProductDetail onEstimate={onEstimate} />} />
       <Route path="/products/:categorySlug" component={() => <CategoryProductsPage onEstimate={onEstimate} />} />
-      <Route path="/projects" component={ProjectsPage} />
-      <Route path="/projects/:slug" component={ProjectDetail} />
+      <Route path="/projects" component={() => <ProjectsPage onEstimate={onEstimate} />} />
+      <Route path="/projects/:slug" component={() => <ProjectsPage onEstimate={onEstimate} />} />
       <Route path="/services" component={ServicesPage} />
       <Route path="/contacts" component={() => <ContactsPage onEstimate={onEstimate} />} />
       <Route component={NotFound} />
@@ -2808,9 +2916,11 @@ function App() {
   const [lang, setLang] = useState<Lang>('ru'); 
   const [modal, setModal] = useState(false); 
   const [initialProduct, setInitialProduct] = useState(''); 
+  const [initialColor, setInitialColor] = useState(''); 
   
-  const openEstimate = (p = '') => { 
+  const openEstimate = (p = '', c = '') => { 
     setInitialProduct(p); 
+    setInitialColor(c); 
     setModal(true); 
   }; 
 
@@ -2824,7 +2934,7 @@ function App() {
         </ErrorBoundary>
         <Toaster />
       </TooltipProvider>
-      <EstimateModal open={modal} initialProduct={initialProduct} onClose={() => setModal(false)} />
+      <EstimateModal open={modal} initialProduct={initialProduct} initialColor={initialColor} onClose={() => setModal(false)} />
     </QueryClientProvider>
   ); 
 }

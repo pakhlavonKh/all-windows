@@ -1,31 +1,45 @@
-export interface ColorOption {
-  code: string;
-  nameRu: string;
+import alyuksAntrasit from '@/assets/imgs/colors/alyuks-antrasit.png';
+import dubMokko from '@/assets/imgs/colors/dub-mokko.png';
+import matteksAntrasit from '@/assets/imgs/colors/matteks-antrasit.png';
+import metbrashKvarz from '@/assets/imgs/colors/metbrash-kvarz.png';
+import metbrashPlatin from '@/assets/imgs/colors/metbrash-platin.png';
+import metbrashSeriy from '@/assets/imgs/colors/metbrash-seriy.png';
+import orex from '@/assets/imgs/colors/orex.png';
+import panitedCoalGrey from '@/assets/imgs/colors/panited-coal-grey.png';
+import sheffildskiyBetoniyDub from '@/assets/imgs/colors/sheffildskiy-betoniy-dub.png';
+import sheffildskiyVisokogorniyDub from '@/assets/imgs/colors/sheffildskiy-visokogorniy-dub.png';
+import shefildskiySeriyDub from '@/assets/imgs/colors/shefildskiy-seriy-dub.png';
+import solodoviyDub from '@/assets/imgs/colors/solodoviy-dub.png';
+import svetliyDub from '@/assets/imgs/colors/svetliy-dub.png';
+import ternoviyOrex from '@/assets/imgs/colors/ternoviy-orex.png';
+import vinchester from '@/assets/imgs/colors/vinchester.png';
+import zalDub from '@/assets/imgs/colors/zal-dub.png';
+
+export interface WindowColor {
+  id: string;
+  name: string;
   nameUz: string;
-  hex: string;
-  type: 'solid' | 'wood' | 'metallic';
-  textureUrl?: string;
-  popular?: boolean;
+  image: string;
+  type: 'matte' | 'metallic' | 'wood';
 }
 
-export const colorPalette: ColorOption[] = [
-  // Solid RAL Colors
-  { code: 'RAL 7016', nameRu: 'Антрацитово-серый (Anthracite Grey)', nameUz: 'Antrasit kulrang', hex: '#383e42', type: 'solid', popular: true },
-  { code: 'RAL 9005', nameRu: 'Глубокий чёрный (Jet Black)', nameUz: 'To‘liq qora', hex: '#111315', type: 'solid', popular: true },
-  { code: 'RAL 9016', nameRu: 'Ярко-белый (Traffic White)', nameUz: 'Yorqin oq', hex: '#f7f8f8', type: 'solid', popular: true },
-  { code: 'RAL 7024', nameRu: 'Графитово-серый (Graphite Grey)', nameUz: 'Grafit kulrang', hex: '#474a50', type: 'solid', popular: true },
-  { code: 'RAL 8017', nameRu: 'Шоколадно-коричневый (Chocolate Brown)', nameUz: 'Shokolad jigarrang', hex: '#442d25', type: 'solid', popular: true },
-  { code: 'RAL 7035', nameRu: 'Светло-серый (Light Grey)', nameUz: 'Och kulrang', hex: '#c5c7c4', type: 'solid' },
-  { code: 'RAL 9006', nameRu: 'Белый алюминий (White Aluminium)', nameUz: 'Oq alyuminiy metallik', hex: '#a5a8a6', type: 'metallic' },
-  { code: 'RAL 7021', nameRu: 'Черно-серый (Black Grey)', nameUz: 'Qora-kulrang', hex: '#2f3234', type: 'solid' },
-  { code: 'RAL 6005', nameRu: 'Зеленый мох (Moss Green)', nameUz: 'Yashil mox', hex: '#154332', type: 'solid' },
-  { code: 'RAL 1015', nameRu: 'Светлая слоновая кость (Light Ivory)', nameUz: 'Fil suyagi', hex: '#e6d2b5', type: 'solid' },
-
-  // Woodgrain & Texture Finishes
-  { code: 'GOLDEN OAK', nameRu: 'Золотой дуб (Golden Oak)', nameUz: 'Oltin eman', hex: '#945d31', type: 'wood', popular: true },
-  { code: 'DARK OAK', nameRu: 'Тёмный дуб (Dark Oak)', nameUz: 'To‘q eman', hex: '#4c2e1b', type: 'wood', popular: true },
-  { code: 'WALNUT', nameRu: 'Орех (Walnut)', nameUz: 'Yong‘oq', hex: '#5f3a22', type: 'wood', popular: true },
-  { code: 'MAHOGANY', nameRu: 'Махагон (Mahogany)', nameUz: 'Qizil yog‘och', hex: '#541f17', type: 'wood' },
-  { code: 'ANODIZED SILVER', nameRu: 'Анодированное серебро (E6/EV1)', nameUz: 'Anodlangan kumush', hex: '#b8bcc0', type: 'metallic' },
-  { code: 'CHAMPAGNE BRONZE', nameRu: 'Шампань Бронза (Anodized Bronze)', nameUz: 'Shampan bronza', hex: '#7c6853', type: 'metallic', popular: true }
+export const windowColors: WindowColor[] = [
+  { id: 'alyuks-antrasit', name: 'Алюкс антрацит', nameUz: 'Alux Antrasit', image: alyuksAntrasit, type: 'matte' },
+  { id: 'matteks-antrasit', name: 'Маттекс антрацит', nameUz: 'Mattex Antrasit', image: matteksAntrasit, type: 'matte' },
+  { id: 'panited-coal-grey', name: 'Painted Coal Grey', nameUz: 'Coal Grey', image: panitedCoalGrey, type: 'matte' },
+  { id: 'metbrash-kvarz', name: 'Метбраш кварц', nameUz: 'Metbrush Kvars', image: metbrashKvarz, type: 'metallic' },
+  { id: 'metbrash-platin', name: 'Метбраш платин', nameUz: 'Metbrush Platin', image: metbrashPlatin, type: 'metallic' },
+  { id: 'metbrash-seriy', name: 'Метбраш серый', nameUz: 'Metbrush Kulrang', image: metbrashSeriy, type: 'metallic' },
+  { id: 'dub-mokko', name: 'Дуб мокко', nameUz: 'Mokko eman', image: dubMokko, type: 'wood' },
+  { id: 'zal-dub', name: 'Золотой дуб', nameUz: 'Oltin eman', image: zalDub, type: 'wood' },
+  { id: 'svetliy-dub', name: 'Светлый дуб', nameUz: 'Och eman', image: svetliyDub, type: 'wood' },
+  { id: 'solodoviy-dub', name: 'Солодовый дуб', nameUz: 'Solod eman', image: solodoviyDub, type: 'wood' },
+  { id: 'shefildskiy-seriy-dub', name: 'Шеффилдский серый дуб', nameUz: 'Sheffild kulrang eman', image: shefildskiySeriyDub, type: 'wood' },
+  { id: 'sheffildskiy-betoniy-dub', name: 'Шеффилдский бетонный дуб', nameUz: 'Sheffild beton eman', image: sheffildskiyBetoniyDub, type: 'wood' },
+  { id: 'sheffildskiy-visokogorniy-dub', name: 'Шеффилдский высокогорный дуб', nameUz: 'Sheffild tog‘ emani', image: sheffildskiyVisokogorniyDub, type: 'wood' },
+  { id: 'vinchester', name: 'Винчестер', nameUz: 'Vinchester', image: vinchester, type: 'wood' },
+  { id: 'orex', name: 'Орех', nameUz: 'Yong‘oq', image: orex, type: 'wood' },
+  { id: 'ternoviy-orex', name: 'Терновый орех', nameUz: 'Tikanli yong‘oq', image: ternoviyOrex, type: 'wood' },
 ];
+
+export default windowColors;
