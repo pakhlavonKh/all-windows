@@ -18,19 +18,14 @@ import { projects, type Project } from '@/data/projects';
 import { ProjectGalleryModal } from '@/components/ProjectGalleryModal';
 import { windowColors, type WindowColor } from '@/data/colors';
 import { ColorPicker } from '@/components/ColorPicker';
+import { submitLead } from '@/services/leadService';
+import { translations, type Lang, type TranslationDictionary } from '@/data/translations';
+import { getTranslatedProduct } from '@/data/productTranslations';
+import { formatPhoneNumber, handlePhoneKeyDown } from '@/lib/utils';
 
-type Lang = 'ru' | 'uz';
 const queryClient = new QueryClient();
 
-const ru = {
-  nav: ['Продукция', 'Объекты', 'О компании', 'Услуги', 'Контакты'],
-  estimate: 'Заказать замер', call: 'Позвонить', details: 'Подробнее', all: 'Все проекты',
-};
-const uz = {
-  nav: ['Mahsulotlar', 'Obyektlar', 'Kompaniya haqida', 'Xizmatlar', 'Aloqa'],
-  estimate: 'O‘lchov buyurtma qilish', call: 'Qo‘ng‘iroq qilish', details: 'Batafsil', all: 'Barcha loyihalar',
-};
-const copy = (lang: Lang) => lang === 'ru' ? ru : uz;
+const copy = (lang: Lang): TranslationDictionary => translations[lang] || translations.ru;
 
 export type Category = {
   slug: string;
@@ -829,129 +824,176 @@ export const products: Product[] = [
   },
 
   // ==========================================
-  // --- 6. ВИТРАЖИ, РОЛЬСТАВНИ, ПЕРИЛА, СЕТКИ ---
+  // --- 6. ВИТРАЖИ И ПАНОРАМНОЕ ОСТЕКЛЕНИЕ (СПАЙДЕРНЫЕ СИСТЕМЫ) ---
   // ==========================================
   {
-    slug: 'panoramic-jumbo',
+    slug: 'spider-glazing',
     categorySlug: 'stained-glass',
-    title: 'Крупноформатные витражи Jumbo Glass',
+    subcategory: 'Спайдерные системы',
+    title: 'Спайдерная система остекления (Spider Glass)',
     brand: 'ALL WINDOWS',
     brandCountry: 'Узбекистан 🇺🇿',
-    subtitle: 'Джамбо-форматы до 6000 × 3210 мм',
-    image: pics.glass,
-    specs: ['Форматы по проекту', 'Закалённый триплекс', 'Мультифункциональные энергосберегающие стекла', 'Гарантия герметичности'],
-    description: 'Максимальный обзор и световой проем для премиальных резиденций, шоурумов и двухсветных гостиных.',
-    related: ['solar-control-glass', 'premium-bkh-65']
+    subtitle: 'Точечное крепление стекла кронштейнами из нержавеющей стали',
+    image: pics.spiderSystem,
+    specs: [
+      'Материал кронштейнов-спайдеров: высокопрочная нержавеющая сталь AISI 304 / 316',
+      'Конфигурация спайдеров: 1, 2, 3 и 4-лучевые кронштейны',
+      'Толщина стекла: закаленный триплекс от 12 мм до 24 мм',
+      'Шарнирные рутели: с тефлоновыми демпферами для компенсации ветровых и температурных нагрузок',
+      'Максимальная светопрозрачность: отсутствие массивных рамных переплетов',
+      'Применение: атриумы, автосалоны, входные группы, торговые и бизнес-центры'
+    ],
+    description: 'Инновационная технология безрамного спайдерного остекления. Стеклопакеты и закаленный триплекс фиксируются с помощью точечных шарнирных креплений (рутелей) и стальных кронштейнов (спайдеров). Обеспечивает максимальную прозрачность, легкость и современный архитектурный облик здания.',
+    related: ['railing-profile', 'guillotine-system']
   },
+
+  // ==========================================
+  // --- 7. РОЛЬСТАВНИ И РОЛЛЕТНЫЕ ВОРОТА ---
+  // ==========================================
   {
-    slug: 'solar-control-glass',
-    categorySlug: 'stained-glass',
-    title: 'Солнцезащитные витражи Solar Control',
-    brand: 'ALL WINDOWS',
-    brandCountry: 'Узбекистан 🇺🇿',
-    subtitle: 'Защита от перегрева летом и теплопотерь зимой',
-    image: pics.detail,
-    specs: ['Стекла AGC / Guardian', 'Отражение до 70% тепловой энергии солнца', 'Высокая светопрозрачность', 'Экономия на кондиционировании'],
-    description: 'Специальные стекла с напылением ионов серебра для жаркого климата Ташкента.',
-    related: ['panoramic-jumbo', 'premium-bkf-50']
-  },
-  {
-    slug: 'akfa-shutters-foam',
+    slug: 'roller-shutters',
     categorySlug: 'rolling-shutters',
-    title: 'Пенозаполненные рольставни Akfa',
+    subcategory: 'Рольставни',
+    title: 'Рольставни (алюминиевые и сэндвич)',
     brand: 'Akfa',
     brandCountry: 'Узбекистан 🇺🇿',
-    subtitle: 'Ламели 39 / 45 / 55 мм · Тепло- и шумозащита',
-    image: pics.tower,
-    specs: ['Алюминиевый профиль с пенополиуретаном', 'Ручное и автоматическое управление', 'Встроенный и накладной монтаж', 'Защита от солнца и шума'],
-    description: 'Современная защита оконных проемов от яркого солнца, пыли, уличного шума и теплопотерь.',
-    related: ['akfa-shutters-extruded', 'akfa-garage-doors']
+    subtitle: 'Алюминиевые цельнотянутые и сэндвич с пенонаполнителем 55/77 мм',
+    image: pics.rollerShutters,
+    specs: [
+      'Пенонаполнитель (сэндвич): ширина ламелей 55 мм и 77 мм, вес 0,17 / 0,35 кг/м, срок службы до 80 лет',
+      'Алюминиевый цельнотянутый: ширина ламелей 55 мм и 77 мм, вес 0,52 / 0,35 кг/м, срок службы до 80 лет',
+      'Пружинно-инерционный привод: грузоподъемность 60–100 кг',
+      'Электрический привод: грузоподъемность 15–330 кг с дистанционным управлением',
+      'Максимальная высота проема: до 5000 мм',
+      'Защита от солнца, шума, пыли и взлома'
+    ],
+    description: 'Надежные рольставни из алюминиевых профилей двух типов: теплоизолирующие сэндвич-ламели с пенонаполнителем и усиленные цельнотянутые экструдированные ламели для максимальной защиты.',
+    related: ['roller-gates', 'termo-70']
   },
   {
-    slug: 'akfa-shutters-extruded',
+    slug: 'roller-gates',
     categorySlug: 'rolling-shutters',
-    title: 'Антивандальные экструдированные роллеты Akfa',
+    subcategory: 'Роллетные ворота',
+    title: 'Роллетные ворота (алюминиевые и сэндвич)',
     brand: 'Akfa',
     brandCountry: 'Узбекистан 🇺🇿',
-    subtitle: 'Усиленная защита окон и витрин первых этажей',
-    image: pics.facade,
-    specs: ['Цельнотянутый усиленный алюминий', 'Высокий класс взломостойкости', 'Автоматика Somfy / Mosel', 'Окраска по каталогу RAL'],
-    description: 'Надежная защита для коммерческих помещений, банков, магазинов и частных домов.',
-    related: ['akfa-shutters-foam', 'akfa-garage-doors']
+    subtitle: 'Автоматические въездные и гаражные роллетные ворота 77 мм',
+    image: pics.rollerGates,
+    specs: [
+      'Пенонаполнитель (сэндвич): ширина ламели 77 мм, срок службы до 80 лет',
+      'Алюминиевый усиленный профиль: ширина ламели 77 мм, повышенная ветроустойчивость',
+      'Электрический привод с ДУ: грузоподъемность до 330 кг',
+      'Аварийная система ручного подъема при отключении электричества',
+      'Компактный защитный короб: экономит полезное пространство под потолком',
+      'Автоматическая блокировка и защита от препятствий'
+    ],
+    description: 'Современные рулонные роллетные ворота для гаражей, складов и въездных групп. Прочные 77 мм ламели сворачиваются в компактный короб, не занимая полезную площадь помещения.',
+    related: ['roller-shutters', 'railing-profile']
   },
-  {
-    slug: 'akfa-garage-doors',
-    categorySlug: 'rolling-shutters',
-    title: 'Роллетные ворота Akfa 77 мм',
-    brand: 'Akfa',
-    brandCountry: 'Узбекистан 🇺🇿',
-    subtitle: 'Для въездных групп и гаражей',
-    image: pics.workshop,
-    specs: ['Широкая ламель 77 мм', 'Электропривод с дистанционным пультом', 'Аварийное ручное открывание', 'Компактный короб'],
-    description: 'Удобное и компактное решение для перекрытия широких въездных проемов и гаражных боксов.',
-    related: ['akfa-shutters-extruded', 'akfa-shutters-foam']
-  },
+
+  // ==========================================
+  // --- 8. СТЕКЛЯННЫЕ ПЕРИЛА И ОГРАЖДЕНИЯ (BKGF 90) ---
+  // ==========================================
   {
     slug: 'railing-profile',
     categorySlug: 'glass-railings',
-    title: 'Ограждения на зажимном профиле',
+    subcategory: 'Стеклянные перила',
+    title: 'Стеклянные перила BKGF 90',
     brand: 'ALL WINDOWS',
     brandCountry: 'Узбекистан 🇺🇿',
-    subtitle: 'Нижний несущий алюминиевый профиль',
-    image: pics.detail,
-    specs: ['Закаленный триплекс 12–21.5 мм', 'Скрытый монтаж профиля в пол', 'Без вертикальных стоек', 'Нагрузка до 1.5 кН/м'],
-    description: 'Сплошное стекло от пола без стоек для балконов, террас, эксплуатируемых кровель и атриумов.',
-    related: ['railing-spiders', 'panoramic-jumbo']
+    subtitle: 'Glass railings BKGF 90 look very impressive and modern',
+    image: pics.railings,
+    specs: [
+      'Отличительная особенность: стеклянные ограждения BKGF 90 выглядят очень эффектно и современно',
+      'Несущий профиль: высокопрочный алюминиевый зажимной профиль BKGF 90',
+      'Заполнение: закаленный безопасный триплекс 12 мм, 16 мм или 20 мм',
+      'Способ монтажа: накладной в пол, скрытый в стяжку или боковой к торцу перекрытия',
+      'Без вертикальных стоек: сплошное чистое стекло без визуальных барьеров',
+      'Высота ограждения: до 1200 мм с расчетной нагрузкой до 1.5 кН/м'
+    ],
+    description: 'Distinctive feature: Glass railings BKGF 90 look very impressive and modern. Премиальные стеклянные перила и ограждения на базе усиленного алюминиевого профиля BKGF 90. Идеально подходят для лестниц, балконов, открытых террас, атриумов и галерей торговых и частных резиденций.',
+    related: ['spider-glazing', 'guillotine-system']
+  },
+
+  // ==========================================
+  // --- 9. МОСКИТНЫЕ СЕТКИ ---
+  // ==========================================
+  {
+    slug: 'mosquito-inside-frame',
+    categorySlug: 'mosquito-nets',
+    subcategory: 'Москитные сетки',
+    title: 'Сетка внутрирамная',
+    brand: 'ALL WINDOWS',
+    brandCountry: 'Узбекистан 🇺🇿',
+    subtitle: 'Легкая сетка, которую ставят внутрь рамы',
+    image: pics.insideFrameNet,
+    specs: [
+      'Установка: ставится внутрь рамы и прикрепляется специальными поворотными механизмами',
+      'Без сверления рамы: сохраняет целостность пластикового или алюминиевого профиля',
+      'Плотное прилегание к уплотнителю: исключает щели для проникновения насекомых и пыли',
+      'Полотно: сверхпрочное стекловолокно FiberGlass',
+      'Легкий уход: снимается за считанные секунды для промывки'
+    ],
+    description: 'Легкая сетка, которую ставят внутрь рамы и прикрепляют к уплотнителю специальными поворотными механизмами. Идеальное решение, не требующее сверления рамы снаружи.',
+    related: ['mosquito-hinged', 'mosquito-frame', 'mosquito-sliding']
   },
   {
-    slug: 'railing-spiders',
-    categorySlug: 'glass-railings',
-    title: 'Точечные ограждения на спайдерах',
+    slug: 'mosquito-hinged',
+    categorySlug: 'mosquito-nets',
+    subcategory: 'Москитные сетки',
+    title: 'Сетка на петлях',
     brand: 'ALL WINDOWS',
     brandCountry: 'Узбекистан 🇺🇿',
-    subtitle: 'Крепления из нержавеющей стали AISI 304/316',
-    image: pics.interior,
-    specs: ['Точечные коннекторы (боковое крепление)', 'Закаленный триплекс', 'Идеально для лестничных маршей', 'Эстетичный минимализм'],
-    description: 'Стеклянные панели монтируются в торец перекрытия или лестничного марша, сохраняя полезную ширину прохода.',
-    related: ['railing-profile']
+    subtitle: 'Сетчатая дверь, которая легко открывается и закрывается',
+    image: pics.hingedNet,
+    specs: [
+      'Назначение: сетчатая дверь, которая легко открывается и закрывается',
+      'Быстрый съем: при необходимости ее можно снять за несколько минут',
+      'Усиленный профиль: мощная алюминиевая рамка с поперечным ребром жесткости',
+      'Фурнитура: надежные петли с пружинным самозакрыванием и магнитные защелки',
+      'Применение: балконные блоки, террасы, входные двери'
+    ],
+    description: 'Сетчатая дверь, которая легко открывается и закрывается. При необходимости ее можно снять за несколько минут. Отличный выбор для балконных и террасных дверей.',
+    related: ['mosquito-inside-frame', 'mosquito-frame', 'mosquito-sliding']
   },
   {
     slug: 'mosquito-frame',
     categorySlug: 'mosquito-nets',
-    title: 'Рамочные москитные сетки',
+    subcategory: 'Москитные сетки',
+    title: 'Рамочная сетка',
     brand: 'ALL WINDOWS',
     brandCountry: 'Узбекистан 🇺🇿',
-    subtitle: 'Классические съемные сетки на z-креплениях',
-    image: pics.residence,
-    specs: ['Алюминиевый профиль рамки', 'Полотно FiberGlass', 'Устойчивость к ультрафиолету', 'Быстрый съем для мытья'],
-    description: 'Надежное и простое решение для любых оконных проемов с легким монтажом и надежной фиксацией.',
-    related: ['mosquito-plisse', 'mosquito-door']
+    subtitle: 'Популярная конструкция, которая крепится снаружи рам',
+    image: pics.frameNet,
+    specs: [
+      'Популярная конструкция: крепится снаружи рам на надежные Z-образные крепления',
+      'Легкость обслуживания: очень легко снять и установить обратно без посторонней помощи',
+      'Материал рамки: экструдированный алюминиевый профиль с порошковой покраской',
+      'Стойкость к ультрафиолету и перепадам температур',
+      'Подходит для всех типов пластиковых и алюминиевых окон'
+    ],
+    description: 'Популярная конструкция, которая крепится снаружи рам. Очень легко снять и установить обратно без посторонней помощи. Практичный и надежный вариант для любых окон.',
+    related: ['mosquito-inside-frame', 'mosquito-hinged', 'mosquito-sliding']
   },
   {
-    slug: 'mosquito-plisse',
+    slug: 'mosquito-sliding',
     categorySlug: 'mosquito-nets',
-    title: 'Раздвижные москитные сетки плиссе',
+    subcategory: 'Москитные сетки',
+    title: 'Раздвижная москитная сетка',
     brand: 'ALL WINDOWS',
     brandCountry: 'Узбекистан 🇺🇿',
-    subtitle: 'Складывающееся гармошкой полотно для порталов',
-    image: pics.workshop,
-    specs: ['Ширина перекрытия до 4 м', 'Складывание в компактную кассету', 'Низкий порог (3 мм)', 'Прочное полотно плиссе'],
-    description: 'Идеальный выбор для панорамных раздвижных дверей, выходов на террасу и балконных блоков.',
-    related: ['mosquito-frame', 'mosquito-door']
-  },
-  {
-    slug: 'mosquito-door',
-    categorySlug: 'mosquito-nets',
-    title: 'Дверные москитные сетки на петлях',
-    brand: 'ALL WINDOWS',
-    brandCountry: 'Узбекистан 🇺🇿',
-    subtitle: 'Распашные сетки с доводчиком и магнитной защелкой',
-    image: pics.detail,
-    specs: ['Усиленный дверной алюминиевый профиль', 'Петли с самозакрыванием', 'Магнитный замок по всей высоте', 'Поперечный импост жесткости'],
-    description: 'Полноценная распашная створка для балконных и входных дверей с автоматическим закрыванием.',
-    related: ['mosquito-plisse', 'mosquito-frame']
-  }
-];
+    subtitle: 'Современное и удобное решение для защиты окон от насекомых',
+    image: pics.slidingNet,
+    specs: [
+      'Современное и удобное решение для защиты окон и дверей от насекомых',
+      'Складная конструкция: благодаря складной конструкции легко раздвигается и складывается',
+      'Экономия места: не требует пространства для распахивания',
+      'Плиссированное полотно: повышенная прочность и устойчивость к порывам ветра',
+      'Идеально для широких раздвижных систем, порталов и террасных выходов'
+    ],
+    description: 'Раздвижные москитные сетки – это современное и удобное решение для защиты окон от насекомых. Благодаря складной конструкции они легко раздвигаются и аккуратно собираются гармошкой, экономя пространство.',
+    related: ['mosquito-inside-frame', 'mosquito-hinged', 'mosquito-frame']
+  }];
 
 function Meta({ title, description }: { title: string; description: string }) {
   useEffect(() => {
@@ -1364,15 +1406,30 @@ function ModalNumberInput({
   );
 }
 
-const modalGlassOptions = [
-  { label: 'Двухкамерный энергосберегающий Low-E', value: 'Двухкамерный энергосберегающий', desc: 'Максимальная теплоизоляция для жилья' },
-  { label: 'Двухкамерный мультифункциональный', value: 'Двухкамерный мультифункциональный', desc: 'Защита от солнца летом и тепла зимой' },
-  { label: 'Однокамерный стандартный', value: 'Однокамерный стандартный', desc: 'Для веранд, тамбуров и террас' },
-  { label: 'Триплекс безопасный (ламинированный)', value: 'Триплекс безопасный (ламинированный)', desc: 'Повышенная безопасность и защита' },
-  { label: 'Закаленное стекло (Tempered)', value: 'Закаленное стекло', desc: 'Для перегородок и витражей' },
+const getModalGlassOptions = (lang: Lang) => [
+  { label: lang === 'uz' ? 'Ikki kamerali energiya tejovchi Low-E' : 'Двухкамерный энергосберегающий Low-E', value: 'Двухкамерный энергосберегающий', desc: lang === 'uz' ? 'Turar-joylar uchun maksimal issiqlik izolyatsiyasi' : 'Максимальная теплоизоляция для жилья' },
+  { label: lang === 'uz' ? 'Ikki kamerali ko‘p funksiyali' : 'Двухкамерный мультифункциональный', value: 'Двухкамерный мультифункциональный', desc: lang === 'uz' ? 'Yozda quyoshdan himoya va qishda issiqlikni saqlash' : 'Защита от солнца летом и тепла зимой' },
+  { label: lang === 'uz' ? 'Bir kamerali standart' : 'Однокамерный стандартный', value: 'Однокамерный стандартный', desc: lang === 'uz' ? 'Verandalar, tamburlar va terassalar uchun' : 'Для веранд, тамбуров и террас' },
+  { label: lang === 'uz' ? 'Xavfsiz tripleks (laminatsiyalangan)' : 'Триплекс безопасный (ламинированный)', value: 'Триплекс безопасный (ламинированный)', desc: lang === 'uz' ? 'Yuqori darajadagi xavfsizlik va himoya' : 'Повышенная безопасность и защита' },
+  { label: lang === 'uz' ? 'Toblangan shisha (Tempered)' : 'Закаленное стекло (Tempered)', value: 'Закаленное стекло', desc: lang === 'uz' ? 'To‘siqlar va vitrajlar uchun' : 'Для перегородок и витражей' },
 ];
 
-function EstimateModal({ open, onClose, initialProduct = '', initialColor = '' }: { open: boolean; onClose: () => void; initialProduct?: string; initialColor?: string }) {
+function EstimateModal({
+  open,
+  onClose,
+  lang = 'ru',
+  initialProduct = '',
+  initialColor = '',
+}: {
+  open: boolean;
+  onClose: () => void;
+  lang?: Lang;
+  initialProduct?: string;
+  initialColor?: string;
+}) {
+  const t = copy(lang);
+  const modalGlassOptions = getModalGlassOptions(lang);
+
   const [status, setStatus] = useState<'form' | 'loading' | 'done'>('form');
   const [categorySlug, setCategorySlug] = useState<string>(categories[0]?.slug || 'aluminium');
   const [productSlug, setProductSlug] = useState<string>('');
@@ -1381,12 +1438,13 @@ function EstimateModal({ open, onClose, initialProduct = '', initialColor = '' }
   const [width, setWidth] = useState('1800');
   const [height, setHeight] = useState('1400');
   const [name, setName] = useState(''); 
-  const [phone, setPhone] = useState(''); 
+  const [phone, setPhone] = useState('+998 '); 
   const [comment, setComment] = useState('');
 
   useEffect(() => { 
     if (open) { 
       setStatus('form'); 
+      setPhone('+998 '); 
       if (initialColor) {
         setColor(initialColor);
       }
@@ -1430,17 +1488,22 @@ function EstimateModal({ open, onClose, initialProduct = '', initialColor = '' }
     }
   };
 
-  const availableProducts = products.filter(p => p.categorySlug === categorySlug);
-  const selectedProductObj = products.find(p => p.slug === productSlug) || availableProducts[0];
+  const availableProducts = products
+    .filter(p => p.categorySlug === categorySlug)
+    .map(p => getTranslatedProduct(p, lang));
+  const rawProductObj = products.find(p => p.slug === productSlug) || availableProducts[0];
+  const selectedProductObj = rawProductObj ? getTranslatedProduct(rawProductObj, lang) : undefined;
   const selectedCategoryObj = categories.find(c => c.slug === categorySlug) || categories[0];
 
   const categoryOptions = categories.map(c => {
     const count = products.filter(p => p.categorySlug === c.slug).length;
+    const catTitle = t.categories[c.slug]?.title || c.title;
+    const catSubtitle = t.categories[c.slug]?.subtitle || c.subtitle;
     return {
-      label: c.title,
+      label: catTitle,
       value: c.slug,
-      desc: c.subtitle,
-      badge: `${count}`,
+      desc: catSubtitle,
+      badge: String(count),
     };
   });
 
@@ -1451,12 +1514,31 @@ function EstimateModal({ open, onClose, initialProduct = '', initialColor = '' }
     desc: p.subtitle,
   }));
 
-  const submit = (e: FormEvent) => { 
+  const submit = async (e: FormEvent) => { 
     e.preventDefault(); 
-    if (!name.trim() || phone.replace(/\D/g, '').length < 9) return; 
+    if (!name.trim() || phone.replace(/\D/g, '').length < 12) return; 
     setStatus('loading'); 
-    window.setTimeout(() => setStatus('done'), 800); 
+    try {
+      await submitLead({
+        name: name.trim(),
+        phone: phone.trim(),
+        categoryTitle: t.categories[selectedCategoryObj?.slug]?.title || selectedCategoryObj?.title,
+        productTitle: selectedProductObj?.title,
+        color,
+        glass,
+        width,
+        height,
+        comment: comment.trim(),
+        source: 'Модальное окно расчёта (Сайт)'
+      });
+    } catch (err) {
+      console.error('Ошибка отправки заявки:', err);
+    } finally {
+      setStatus('done');
+    }
   };
+
+  const categoryDisplayName = t.categories[selectedCategoryObj?.slug]?.title || selectedCategoryObj?.title;
 
   return (
     <AnimatePresence>
@@ -1472,11 +1554,11 @@ function EstimateModal({ open, onClose, initialProduct = '', initialColor = '' }
             className="relative my-auto w-full max-w-xl rounded-2xl border border-[#c6a15b]/35 bg-[#151515] p-5 sm:p-6.5 shadow-2xl max-h-[92svh] overflow-y-auto custom-scrollbar" 
             initial={{ opacity: 0, y: 18, scale: 0.98 }} 
             animate={{ opacity: 1, y: 0, scale: 1 }} 
-            exit={{ opacity: 0, y: 14, scale: 0.98 }}
+            exit={{ opacity: 0, y: 14, scale: 0.98 }} 
             transition={{ duration: 0.2 }}
             onClick={e => e.stopPropagation()}
           >
-            <button onClick={onClose} className="absolute right-4 top-4 text-white/50 hover:text-[#d4b16a] transition cursor-pointer p-1 rounded-lg hover:bg-white/5" aria-label="Закрыть" data-testid="button-close-modal">
+            <button onClick={onClose} className="absolute right-4 top-4 text-white/50 hover:text-[#d4b16a] transition cursor-pointer p-1 rounded-lg hover:bg-white/5" aria-label={lang === 'uz' ? 'Yopish' : 'Закрыть'} data-testid="button-close-modal">
               <X size={18} />
             </button>
             {status === 'done' ? (
@@ -1484,48 +1566,56 @@ function EstimateModal({ open, onClose, initialProduct = '', initialColor = '' }
                 <div className="mx-auto mb-4 grid size-14 place-items-center rounded-full bg-[#c6a15b] text-[#101010] shadow-lg">
                   <Check size={26} />
                 </div>
-                <h2 className="font-display text-2xl sm:text-3xl font-extrabold text-white">Заявка принята!</h2>
+                <h2 className="font-display text-2xl sm:text-3xl font-extrabold text-white">
+                  {t.calculator.successTitle}
+                </h2>
                 <p className="mt-2.5 text-xs sm:text-sm text-white/70 max-w-md mx-auto leading-relaxed">
-                  Спасибо, {name}. Заявка на расчёт системы «{selectedProductObj?.title || selectedCategoryObj?.title}» ({selectedCategoryObj?.title}) в цвете «{color}» успешно получена. Специалист ALL WINDOWS свяжется с вами в течение рабочего дня.
+                  {t.calculator.successText(name, selectedProductObj?.title || categoryDisplayName, categoryDisplayName, color)}
                 </p>
                 <div className="mt-4 flex flex-wrap justify-center gap-2 text-[11px] text-white/40">
-                  <span>Размер: {width} × {height} мм</span>
+                  <span>{lang === 'uz' ? 'O‘lchami:' : 'Размер:'} {width} × {height} мм</span>
                   <span>•</span>
-                  <span>Цвет: {color}</span>
+                  <span>{lang === 'uz' ? 'Rangi:' : 'Цвет:'} {color}</span>
                   <span>•</span>
-                  <span>Стекло: {glass}</span>
+                  <span>{lang === 'uz' ? 'Shisha:' : 'Стекло:'} {glass}</span>
                 </div>
                 <button onClick={onClose} className="mt-6 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-6 py-2.5 text-xs sm:text-sm font-semibold text-white hover:bg-white/20 transition cursor-pointer" data-testid="button-modal-done">
-                  Вернуться на сайт
+                  {t.actions.backToHome}
                 </button>
               </div>
             ) : (
               <>
                 <p className="mb-1 text-[9px] uppercase tracking-[.25em] text-[#d4b16a]">ALL WINDOWS / 01</p>
-                <h2 className="font-display text-2xl sm:text-3xl font-extrabold leading-tight text-white">Рассчитать проект</h2>
+                <h2 className="font-display text-2xl sm:text-3xl font-extrabold leading-tight text-white">
+                  {t.calculator.title}
+                </h2>
                 <p className="mt-1 text-xs leading-relaxed text-white/55">
-                  Укажите параметры конструкции и контакты — подготовим предварительную смету и согласуем время замера.
+                  {t.calculator.subtitle}
                 </p>
                 <form onSubmit={submit} className="mt-4 space-y-3">
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3">
                     <div>
-                      <span className="block text-[11px] font-medium text-white/60 mb-1">1. Категория продукции</span>
+                      <span className="block text-[11px] font-medium text-white/60 mb-1">
+                        {t.calculator.stepCategory}
+                      </span>
                       <ModalDarkSelect
                         value={categorySlug}
                         onChange={onCategoryChange}
                         options={categoryOptions}
-                        placeholder="Выберите категорию"
+                        placeholder={lang === 'uz' ? 'Toifani tanlang' : 'Выберите категорию'}
                         testId="select-estimate-category"
                       />
                     </div>
 
                     <div>
-                      <span className="block text-[11px] font-medium text-white/60 mb-1">2. Система / Продукт</span>
+                      <span className="block text-[11px] font-medium text-white/60 mb-1">
+                        {t.calculator.stepProduct}
+                      </span>
                       <ModalDarkSelect
                         value={productSlug}
                         onChange={setProductSlug}
                         options={productOptions}
-                        placeholder="Выберите систему..."
+                        placeholder={lang === 'uz' ? 'Tizimni tanlang...' : 'Выберите систему...'}
                         testId="select-estimate-product"
                       />
                     </div>
@@ -1536,23 +1626,26 @@ function EstimateModal({ open, onClose, initialProduct = '', initialColor = '' }
                         onSelectColor={(c) => setColor(c.name)}
                         maxVisible={7}
                         variant="dark"
+                        lang={lang}
                       />
                     </div>
 
                     <div>
-                      <span className="block text-[11px] font-medium text-white/60 mb-1">3. Стеклопакет / Заполнение</span>
+                      <span className="block text-[11px] font-medium text-white/60 mb-1">
+                        {t.calculator.stepGlass}
+                      </span>
                       <ModalDarkSelect
                         value={glass}
                         onChange={setGlass}
                         options={modalGlassOptions}
-                        placeholder="Тип стеклопакета"
+                        placeholder={lang === 'uz' ? 'Shisha paketi turi' : 'Тип стеклопакета'}
                         testId="select-estimate-glass"
                       />
                     </div>
 
                     <div className="grid grid-cols-2 gap-2">
                       <ModalNumberInput
-                        label="Ширина, мм"
+                        label={t.calculator.width}
                         value={width}
                         onChange={setWidth}
                         placeholder="1800"
@@ -1560,7 +1653,7 @@ function EstimateModal({ open, onClose, initialProduct = '', initialColor = '' }
                         testId="input-estimate-width"
                       />
                       <ModalNumberInput
-                        label="Высота, мм"
+                        label={t.calculator.height}
                         value={height}
                         onChange={setHeight}
                         placeholder="1400"
@@ -1571,12 +1664,12 @@ function EstimateModal({ open, onClose, initialProduct = '', initialColor = '' }
 
                     <div>
                       <label className="block text-[11px] font-medium text-white/60">
-                        Ваше имя *
+                        {t.calculator.nameLabel}
                         <input 
                           required 
                           value={name} 
                           onChange={e => setName(e.target.value)} 
-                          placeholder="Имя" 
+                          placeholder={t.calculator.namePlaceholder} 
                           className="mt-1 w-full rounded-lg border border-white/10 bg-[#0e0e0e] px-3 py-2 text-xs sm:text-sm text-white outline-none transition focus:border-[#c6a15b] placeholder:text-white/30" 
                           data-testid="input-estimate-name" 
                         />
@@ -1585,12 +1678,13 @@ function EstimateModal({ open, onClose, initialProduct = '', initialColor = '' }
 
                     <div>
                       <label className="block text-[11px] font-medium text-white/60">
-                        Телефон *
+                        {t.calculator.phoneLabel}
                         <input 
                           required 
                           type="tel"
                           value={phone} 
-                          onChange={e => setPhone(e.target.value)} 
+                          onChange={e => setPhone(formatPhoneNumber(e.target.value))} 
+                          onKeyDown={handlePhoneKeyDown}
                           placeholder="+998 (__) ___-__-__" 
                           className="mt-1 w-full rounded-lg border border-white/10 bg-[#0e0e0e] px-3 py-2 text-xs sm:text-sm text-white outline-none transition focus:border-[#c6a15b] placeholder:text-white/30" 
                           data-testid="input-estimate-phone" 
@@ -1601,11 +1695,11 @@ function EstimateModal({ open, onClose, initialProduct = '', initialColor = '' }
 
                   <div>
                     <label className="block text-[11px] font-medium text-white/60">
-                      Комментарий или адрес объекта
+                      {t.calculator.commentLabel}
                       <textarea 
                         value={comment} 
                         onChange={e => setComment(e.target.value)} 
-                        placeholder="Количество проёмов, этаж, адрес замера или пожелания" 
+                        placeholder={t.calculator.commentPlaceholder} 
                         rows={2} 
                         className="mt-1 w-full resize-none rounded-lg border border-white/10 bg-[#0e0e0e] px-3 py-2 text-xs sm:text-sm text-white outline-none transition focus:border-[#c6a15b] placeholder:text-white/30" 
                         data-testid="textarea-estimate-comment" 
@@ -1620,9 +1714,11 @@ function EstimateModal({ open, onClose, initialProduct = '', initialColor = '' }
                       className="gold-gradient flex w-full items-center justify-center gap-2 rounded-full py-2.5 sm:py-3 text-xs sm:text-sm font-bold text-[#121212] transition hover:brightness-105 cursor-pointer disabled:opacity-60 shadow-lg" 
                       data-testid="button-submit-estimate"
                     >
-                      {status === 'loading' ? 'Отправляем…' : <>Отправить заявку на расчёт <ArrowRight size={15} /></>}
+                      {status === 'loading' ? t.actions.submitting : <>{t.actions.submitEstimate} <ArrowRight size={15} /></>}
                     </button>
-                    <p className="mt-2 text-center text-[10.5px] text-white/40">Бесплатный расчет сметы и выезд замерщика в Ташкенте</p>
+                    <p className="mt-2 text-center text-[10.5px] text-white/40">
+                      {t.actions.freeEstimateNotice}
+                    </p>
                   </div>
                 </form>
               </>
@@ -1646,17 +1742,24 @@ function Header({ lang, setLang, onEstimate }: { lang: Lang; setLang: (l: Lang) 
     return () => window.removeEventListener('scroll', f); 
   }, []);
 
+  const navItems = [
+    { href: '/products', label: t.nav.products },
+    { href: '/projects', label: t.nav.projects },
+    { href: '/about', label: t.nav.about },
+    { href: '/services', label: t.nav.services },
+    { href: '/contacts', label: t.nav.contacts },
+  ];
+
   return (
     <header className={`fixed inset-x-0 top-0 z-40 transition-all ${scrolled ? 'border-b border-white/10 bg-[#0d0d0d]/90 backdrop-blur-xl' : 'bg-linear-to-b from-black/60 to-transparent'}`}>
       <div className="mx-auto flex max-w-360 items-center justify-between px-6 sm:px-8 py-5 lg:px-12 xl:px-14">
         <Logo />
         <nav className="hidden items-center gap-7 xl:flex">
-          {t.nav.map((n, i) => { 
-            const href = ['/products', '/projects', '/about', '/services', '/contacts'][i]; 
-            const isActive = location === href || (href === '/products' && location.startsWith('/products'));
+          {navItems.map((item) => { 
+            const isActive = location === item.href || (item.href === '/products' && location.startsWith('/products'));
             return (
-              <Link key={href} href={href} className={`text-[11px] uppercase tracking-widest transition hover:text-[#d4b16a] ${isActive ? 'text-[#d4b16a]' : 'text-white/65'}`} data-testid={`link-nav-${href.slice(1)}`}>
-                {n}
+              <Link key={item.href} href={item.href} className={`text-[11px] uppercase tracking-widest transition hover:text-[#d4b16a] ${isActive ? 'text-[#d4b16a]' : 'text-white/65'}`} data-testid={`link-nav-${item.href.slice(1)}`}>
+                {item.label}
               </Link>
             ); 
           })}
@@ -1666,7 +1769,7 @@ function Header({ lang, setLang, onEstimate }: { lang: Lang; setLang: (l: Lang) 
             <Phone size={14} className="text-[#d4b16a]" /> +998 88 800 18 00
           </a>
           <button onClick={onEstimate} className="hidden h-8 items-center justify-center rounded-full bg-[#c6a15b] px-3.5 text-[9.5px] font-bold uppercase tracking-wider text-[#111] transition hover:bg-[#e0c083] cursor-pointer lg:inline-flex" data-testid="button-header-estimate">
-            {t.estimate}
+            {t.actions.estimate}
           </button>
           <div className="relative flex h-8 items-center rounded-full border border-white/15 bg-black/40 p-0.5 text-[10px] font-bold tracking-wider backdrop-blur-sm">
             {(['ru', 'uz'] as const).map((l) => (
@@ -1693,7 +1796,7 @@ function Header({ lang, setLang, onEstimate }: { lang: Lang; setLang: (l: Lang) 
               </button>
             ))}
           </div>
-          <button onClick={() => setOpen(!open)} className="grid size-10 place-items-center rounded-full border border-white/15 xl:hidden" aria-label="Меню" data-testid="button-mobile-menu">
+          <button onClick={() => setOpen(!open)} className="grid size-10 place-items-center rounded-full border border-white/15 xl:hidden" aria-label={lang === 'uz' ? 'Menyu' : 'Меню'} data-testid="button-mobile-menu">
             {open ? <X size={19} /> : <Menu size={19} />}
           </button>
         </div>
@@ -1702,7 +1805,7 @@ function Header({ lang, setLang, onEstimate }: { lang: Lang; setLang: (l: Lang) 
         {open && (
           <motion.nav initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }} className="border-t border-white/10 bg-[#111]/95 px-5 pb-6 pt-3 xl:hidden">
             <div className="mb-2 flex items-center justify-between border-b border-white/10 pb-3 pt-1">
-              <span className="text-xs text-white/50 font-medium">Язык сайта / Til</span>
+              <span className="text-xs text-white/50 font-medium">Язык сайта / Sayt tili</span>
               <div className="relative flex items-center rounded-full border border-white/15 bg-black/50 p-0.5 text-[10px] font-bold tracking-widest">
                 {(['ru', 'uz'] as const).map((l) => (
                   <button
@@ -1729,20 +1832,17 @@ function Header({ lang, setLang, onEstimate }: { lang: Lang; setLang: (l: Lang) 
                 ))}
               </div>
             </div>
-            {t.nav.map((n, i) => { 
-              const href = ['/products', '/projects', '/about', '/services', '/contacts'][i]; 
-              return (
-                <Link onClick={() => setOpen(false)} key={href} href={href} className="block border-b border-white/10 py-3.5 text-sm text-white/80" data-testid={`link-mobile-nav-${href.slice(1)}`}>
-                  {n}<ArrowUpRight className="float-right text-[#c6a15b]" size={16} />
-                </Link>
-              ); 
-            })}
+            {navItems.map((item) => (
+              <Link onClick={() => setOpen(false)} key={item.href} href={item.href} className="block border-b border-white/10 py-3.5 text-sm text-white/80" data-testid={`link-mobile-nav-${item.href.slice(1)}`}>
+                {item.label}<ArrowUpRight className="float-right text-[#c6a15b]" size={16} />
+              </Link>
+            ))}
             <a href="tel:+998888001800" onClick={() => setOpen(false)} className="flex items-center justify-between border-b border-white/10 py-3.5 text-sm font-semibold text-[#d4b16a]" data-testid="link-mobile-phone">
               <span className="flex items-center gap-2.5"><Phone size={15} /> +998 88 800 18 00</span>
-              <span className="text-[10px] uppercase tracking-wider text-white/50">{t.call}</span>
+              <span className="text-[10px] uppercase tracking-wider text-white/50">{t.actions.call}</span>
             </a>
             <button onClick={() => { setOpen(false); onEstimate(); }} className="mt-5 w-full rounded-full bg-[#c6a15b] py-3 text-sm font-bold text-black" data-testid="button-mobile-estimate">
-              {t.estimate}
+              {t.actions.estimate}
             </button>
           </motion.nav>
         )}
@@ -1751,39 +1851,44 @@ function Header({ lang, setLang, onEstimate }: { lang: Lang; setLang: (l: Lang) 
   );
 }
 
-function Footer({ onEstimate }: { onEstimate: () => void }) {
+function Footer({ lang, onEstimate }: { lang: Lang; onEstimate: () => void }) {
+  const t = copy(lang);
   return (
     <footer className="border-t border-white/10 bg-[#0a0a0a]">
       <div className="mx-auto grid max-w-360 gap-12 px-6 sm:px-8 py-16 md:grid-cols-4 lg:px-12 xl:px-14">
         <div className="md:col-span-1">
           <Logo />
           <p className="mt-6 max-w-52.5 text-sm leading-6 text-white/45">
-            Оконные, дверные и фасадные системы для современной архитектуры Ташкента.
+            {lang === 'uz' 
+              ? 'Toshkentning zamonaviy arxitekturasi uchun deraza, eshik va fasad tizimlari.'
+              : 'Оконные, дверные и фасадные системы для современной архитектуры Ташкента.'}
           </p>
-          <p className="mt-9 text-[10px] uppercase tracking-[.2em] text-[#c6a15b]">Bizning yo'nalish</p>
+          <p className="mt-9 text-[10px] uppercase tracking-[.2em] text-[#c6a15b]">
+            {lang === 'uz' ? 'Bizning yo‘nalish' : 'Направление'}
+          </p>
         </div>
         <div>
-          <p className="mb-5 text-[10px] uppercase tracking-[.2em] text-[#c6a15b]">Навигация</p>
+          <p className="mb-5 text-[10px] uppercase tracking-[.2em] text-[#c6a15b]">{t.footer.navTitle}</p>
           <div className="space-y-3 text-sm text-white/55">
-            <Link href="/products" className="block hover:text-white" data-testid="link-footer-products">Продукция</Link>
-            <Link href="/projects" className="block hover:text-white" data-testid="link-footer-projects">Наши объекты</Link>
-            <Link href="/about" className="block hover:text-white" data-testid="link-footer-about">О компании</Link>
-            <Link href="/services" className="block hover:text-white" data-testid="link-footer-services">Услуги</Link>
+            <Link href="/products" className="block hover:text-white" data-testid="link-footer-products">{t.nav.products}</Link>
+            <Link href="/projects" className="block hover:text-white" data-testid="link-footer-projects">{t.nav.projects}</Link>
+            <Link href="/about" className="block hover:text-white" data-testid="link-footer-about">{t.nav.about}</Link>
+            <Link href="/services" className="block hover:text-white" data-testid="link-footer-services">{t.nav.services}</Link>
           </div>
         </div>
         <div>
-          <p className="mb-5 text-[10px] uppercase tracking-[.2em] text-[#c6a15b]">Контакты</p>
+          <p className="mb-5 text-[10px] uppercase tracking-[.2em] text-[#c6a15b]">{t.footer.contactsTitle}</p>
           <div className="space-y-3 text-sm text-white/55">
             <a href="tel:+998888001800" className="block hover:text-white" data-testid="link-footer-phone">+998 88 800 18 00</a>
-            <p>Ташкент, улица Багрикенг</p>
-            <p>Пн–Сб · 09:00–18:00</p>
+            <p className="whitespace-pre-line">{t.footer.address}</p>
+            <p className="whitespace-pre-line">{t.footer.hours}</p>
           </div>
         </div>
         <div>
-          <p className="mb-5 text-[10px] uppercase tracking-[.2em] text-[#c6a15b]">Связаться</p>
-          <p className="mb-5 text-sm leading-6 text-white/55">Расскажите о задаче — ответим с расчётом и сроками.</p>
-          <button onClick={onEstimate} className="flex items-center gap-2 text-sm text-[#d4b16a]" data-testid="button-footer-estimate">
-            Оставить заявку <ArrowRight size={15} />
+          <p className="mb-5 text-[10px] uppercase tracking-[.2em] text-[#c6a15b]">{t.footer.touchTitle}</p>
+          <p className="mb-5 text-sm leading-6 text-white/55">{t.footer.touchDesc}</p>
+          <button onClick={onEstimate} className="flex items-center gap-2 text-sm text-[#d4b16a] cursor-pointer" data-testid="button-footer-estimate">
+            {t.footer.leaveRequest} <ArrowRight size={15} />
           </button>
           <div className="mt-7 flex gap-4 text-white/45">
             <a href="https://instagram.com/all_windows" aria-label="Instagram" data-testid="link-footer-instagram"><Instagram size={18} /></a>
@@ -1792,8 +1897,8 @@ function Footer({ onEstimate }: { onEstimate: () => void }) {
         </div>
       </div>
       <div className="mx-auto flex max-w-360 justify-between border-t border-white/10 px-6 sm:px-8 py-5 text-[10px] text-white/30 lg:px-12 xl:px-14">
-        <span>© 2019–2026 ALL WINDOWS (ООО «VINNIAN GROUP»)</span>
-        <span>Проектирование · Производство · Монтаж</span>
+        <span>{t.footer.copyright}</span>
+        <span>{t.footer.tagline}</span>
       </div>
     </footer>
   );
@@ -1809,9 +1914,9 @@ function Shell({ children, lang, setLang, onEstimate }: { children: ReactNode; l
     <div className="site-noise min-h-dvh bg-[#0d0d0d]">
       <Header lang={lang} setLang={setLang} onEstimate={() => onEstimate()} />
       {children}
-      <Footer onEstimate={() => onEstimate()} />
+      <Footer lang={lang} onEstimate={() => onEstimate()} />
       <div className="fixed bottom-4 right-4 z-30 flex flex-col gap-2 md:hidden">
-        <a href="tel:+998888001800" className="grid size-12 place-items-center rounded-full bg-[#c6a15b] text-[#111] shadow-xl" aria-label="Позвонить" data-testid="button-floating-call"><Phone size={18} /></a>
+        <a href="tel:+998888001800" className="grid size-12 place-items-center rounded-full bg-[#c6a15b] text-[#111] shadow-xl" aria-label={lang === 'uz' ? 'Qo‘ng‘iroq qilish' : 'Позвонить'} data-testid="button-floating-call"><Phone size={18} /></a>
         <a href="https://t.me/all_windows" className="grid size-12 place-items-center rounded-full border border-[#c6a15b] bg-[#141414] text-[#d4b16a]" aria-label="Telegram" data-testid="button-floating-telegram"><Send size={18} /></a>
       </div>
     </div>
@@ -1840,8 +1945,10 @@ function Home({ onEstimate, lang }: { onEstimate: (p?: string) => void; lang: La
     return [...pool].sort(() => Math.random() - 0.5).slice(0, 3);
   });
 
-  const [selectedCategorySlug, setSelectedCategorySlug] = useState<string>(categories[0]?.slug || 'windows-doors');
-  const availableProducts = products.filter(p => p.categorySlug === selectedCategorySlug);
+  const [selectedCategorySlug, setSelectedCategorySlug] = useState<string>(categories[0]?.slug || 'aluminium');
+  const availableProducts = products
+    .filter(p => p.categorySlug === selectedCategorySlug)
+    .map(p => getTranslatedProduct(p, lang));
   const [selectedProductSlug, setSelectedProductSlug] = useState<string>(availableProducts[0]?.slug || '');
 
   const [formGlass, setFormGlass] = useState('Двухкамерный энергосберегающий');
@@ -1849,7 +1956,7 @@ function Home({ onEstimate, lang }: { onEstimate: (p?: string) => void; lang: La
   const [formWidth, setFormWidth] = useState('1800');
   const [formHeight, setFormHeight] = useState('1400');
   const [formName, setFormName] = useState('');
-  const [formPhone, setFormPhone] = useState('');
+  const [formPhone, setFormPhone] = useState('+998 ');
   const [formComment, setFormComment] = useState('');
   const [formStatus, setFormStatus] = useState<'idle' | 'loading' | 'done'>('idle');
 
@@ -1862,24 +1969,42 @@ function Home({ onEstimate, lang }: { onEstimate: (p?: string) => void; lang: La
   };
 
   const selectedCategoryObj = categories.find(c => c.slug === selectedCategorySlug) || categories[0];
-  const selectedProductObj = products.find(p => p.slug === selectedProductSlug) || availableProducts[0] || products[0];
+  const rawSelectedProductObj = products.find(p => p.slug === selectedProductSlug) || availableProducts[0] || products[0];
+  const selectedProductObj = rawSelectedProductObj ? getTranslatedProduct(rawSelectedProductObj, lang) : undefined;
 
-  const handleHomeSubmit = (e: FormEvent) => {
+  const handleHomeSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    if (!formName.trim() || formPhone.replace(/\D/g, '').length < 9) return;
+    if (!formName.trim() || formPhone.replace(/\D/g, '').length < 12) return;
     setFormStatus('loading');
-    window.setTimeout(() => {
+    try {
+      await submitLead({
+        name: formName.trim(),
+        phone: formPhone.trim(),
+        categoryTitle: t.categories[selectedCategoryObj.slug]?.title || selectedCategoryObj.title,
+        productTitle: selectedProductObj?.title,
+        color: formColor,
+        glass: formGlass,
+        width: formWidth,
+        height: formHeight,
+        comment: formComment.trim(),
+        source: 'Главная страница (Калькулятор сметы)'
+      });
+    } catch (err) {
+      console.error('Ошибка отправки заявки:', err);
+    } finally {
       setFormStatus('done');
-    }, 800);
+    }
   };
 
   const categoryOptions = categories.map(c => {
     const count = products.filter(p => p.categorySlug === c.slug).length;
+    const catTitle = t.categories[c.slug]?.title || c.title;
+    const catSubtitle = t.categories[c.slug]?.subtitle || c.subtitle;
     return {
-      label: c.title,
+      label: catTitle,
       value: c.slug,
-      desc: c.subtitle,
-      badge: `${count} ${count === 1 ? 'система' : count < 5 ? 'системы' : 'систем'}`,
+      desc: catSubtitle,
+      badge: `${count} ${lang === 'uz' ? 'ta tizim' : count === 1 ? 'система' : count < 5 ? 'системы' : 'систем'}`,
     };
   });
 
@@ -1890,50 +2015,54 @@ function Home({ onEstimate, lang }: { onEstimate: (p?: string) => void; lang: La
     desc: p.subtitle,
   }));
 
-  const glassOptions = [
-    { label: 'Двухкамерный энергосберегающий Low-E', value: 'Двухкамерный энергосберегающий', desc: 'Максимальная теплоизоляция для жилых помещений' },
-    { label: 'Двухкамерный мультифункциональный', value: 'Двухкамерный мультифункциональный', desc: 'Защита от солнца летом и сохранение тепла зимой' },
-    { label: 'Однокамерный стандартный', value: 'Однокамерный стандартный', desc: 'Для веранд, неотапливаемых террас и внутренних дверей' },
-    { label: 'Триплекс безопасный (ламинированный)', value: 'Триплекс безопасный (ламинированный)', desc: 'Повышенная безопасность и защита от взлома' },
-    { label: 'Закаленное стекло (Tempered)', value: 'Закаленное стекло', desc: 'Для стеклянных перегородок, ограждений и витражей' },
-  ];
+  const glassOptions = getModalGlassOptions(lang);
 
-  const testimonials = [
+  const testimonials = lang === 'uz' ? [
+    { n: 'Aleksey S.', o: 'Aminar House', q: 'Jamoa fasad ishlari jadvaliga to‘liq rioya qildi va barcha tutashish nuqtalarini sifatli bajardi.' }, 
+    { n: 'Malika R.', o: 'Xususiy uy, Toshkent', q: 'Panoramali derazalar aynan loyihadagidek chiqdi. O‘lchovchi mutaxassisning ishini alohida ta’kidlayman.' }, 
+    { n: 'Ilya K.', o: 'Fazo Residence', q: 'Shaffof hisob-kitob, xususiy ishlab chiqarish va obyektda kechikishlarsiz montaj.' }
+  ] : [
     { n: 'Алексей С.', o: 'Aminar House', q: 'Команда выдержала график фасадных работ и аккуратно прошла все узлы примыкания.' }, 
     { n: 'Малика Р.', o: 'Частный дом, Ташкент', q: 'Панорамные окна получились именно такими, как в проекте. Отдельно отмечу работу замерщика.' }, 
     { n: 'Илья К.', o: 'Fazo Residence', q: 'Понятный расчёт, собственное производство и монтаж без простоев на объекте.' }
   ];
 
+  const categoryDisplayName = t.categories[selectedCategoryObj.slug]?.title || selectedCategoryObj.title;
+
   return (
     <>
-      <Meta title="ALL WINDOWS — окна, двери и фасады в Ташкенте" description="Производство алюминиевых и ПВХ окон, дверей, фасадных и раздвижных систем в Ташкенте." />
+      <Meta 
+        title={lang === 'uz' ? 'ALL WINDOWS — Toshkentda deraza, eshik va fasadlar' : 'ALL WINDOWS — окна, двери и фасады в Ташкенте'} 
+        description={lang === 'uz' ? 'Toshkentda alyuminiy va PVX deraza, eshik, fasad va surma tizimlarini ishlab chiqarish.' : 'Производство алюминиевых и ПВХ окон, дверей, фасадных и раздвижных систем в Ташкенте.'} 
+      />
       <main>
         <section className="relative flex h-svh max-h-svh min-h-135 flex-col justify-end overflow-hidden border-b border-white/10 pb-6 sm:pb-10 md:pb-14 pt-20 sm:pt-24 md:pt-28">
           <img src={pics.hero} alt="Панорамное остекление современного дома" className="absolute inset-0 size-full object-cover object-center opacity-65" />
           <div className="absolute inset-0 bg-linear-to-t from-[#0d0d0d] via-[#0d0d0d]/40 to-black/20" />
           <div className="relative mx-auto w-full max-w-360 px-6 sm:px-8 lg:px-12 xl:px-14">
             <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .7 }} className="max-w-4xl">
-              <p className="mb-3 sm:mb-5 text-[10px] uppercase tracking-[.3em] text-[#e0c083]">Производство в Ташкенте · с 2019 года</p>
+              <p className="mb-3 sm:mb-5 text-[10px] uppercase tracking-[.3em] text-[#e0c083]">
+                {lang === 'uz' ? 'Toshkentda ishlab chiqarish · 2019 yildan buyon' : 'Производство в Ташкенте · с 2019 года'}
+              </p>
               <h1 className="font-display text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-extrabold leading-[.95] tracking-[-.06em] text-white">
-                Свет.<br />
-                <span className="text-[#d4b16a]">Точная форма.</span>
+                {lang === 'uz' ? <>Yorug‘lik.<br /><span className="text-[#d4b16a]">Aniq shakl.</span></> : <>Свет.<br /><span className="text-[#d4b16a]">Точная форма.</span></>}
               </h1>
               <p className="mt-4 sm:mt-6 max-w-xl text-xs sm:text-base md:text-lg leading-relaxed text-white/65">
-                Производство окон, дверей и фасадных систем для частных и коммерческих объектов. Алюминий, ПВХ, витражи, раздвижные решения.
+                {t.hero.subtitle}
               </p>
               <div className="mt-5 sm:mt-8 flex flex-wrap gap-3">
-                <button onClick={() => onEstimate()} className="gold-gradient flex items-center gap-3 rounded-full px-6 py-3.5 text-sm font-bold text-[#111]" data-testid="button-hero-estimate">
-                  {t.estimate} <ArrowRight size={17} />
+                <button onClick={() => onEstimate()} className="gold-gradient flex items-center gap-3 rounded-full px-6 py-3.5 text-sm font-bold text-[#111] cursor-pointer" data-testid="button-hero-estimate">
+                  {t.actions.estimate} <ArrowRight size={17} />
                 </button>
                 <a href="tel:+998888001800" className="flex items-center gap-3 rounded-full border border-white/20 px-6 py-3.5 text-sm font-semibold text-white transition hover:border-[#c6a15b] hover:text-[#d4b16a]" data-testid="link-hero-phone">
-                  <Phone size={16} /> {t.call}
+                  <Phone size={16} /> {t.actions.call}
                 </a>
               </div>
             </motion.div>
             <div className="mt-6 sm:mt-10 flex items-center gap-3 text-[10px] uppercase tracking-[.18em] text-white/40">
               <span>01</span>
               <span className="h-px w-24 bg-white/25" />
-              <span>Архитектура, которая работает</span>
+              <span>{t.hero.bottomTag}</span>
             </div>
           </div>
         </section>
@@ -1941,16 +2070,16 @@ function Home({ onEstimate, lang }: { onEstimate: (p?: string) => void; lang: La
         <section className="border-b border-white/10 bg-[#111]">
           <div className="mx-auto max-w-360 px-6 sm:px-8 lg:px-12 xl:px-14">
             <div className="grid grid-cols-2 divide-x divide-y divide-white/10 md:grid-cols-4 md:divide-y-0">
-              <Benefit icon={<Factory />} title="Своё производство" text="Цех в Ташкенте, контроль каждого заказа" />
-              <Benefit icon={<FileCheck2 />} title="Профили и фурнитура" text="Aldoks, Engelberg, Akfa, Roto, Master" />
-              <Benefit icon={<Wrench />} title="Монтаж под ключ" text="От замера до регулировки на объекте" />
-              <Benefit icon={<ShieldCheck />} title="Гарантия" text="Фиксируем обязательства в договоре" />
+              <Benefit icon={<Factory />} title={t.benefits.production.title} text={t.benefits.production.text} />
+              <Benefit icon={<FileCheck2 />} title={t.benefits.profiles.title} text={t.benefits.profiles.text} />
+              <Benefit icon={<Wrench />} title={t.benefits.installation.title} text={t.benefits.installation.text} />
+              <Benefit icon={<ShieldCheck />} title={t.benefits.warranty.title} text={t.benefits.warranty.text} />
             </div>
           </div>
         </section>
 
         <section className="mx-auto max-w-360 px-6 sm:px-8 py-24 lg:px-12 xl:px-14">
-          <SectionIntro eyebrow="01 / Продукция" title="Системы для света и воздуха" text="Подбираем конфигурацию по архитектуре, нагрузке и сценарию использования — не по шаблону." />
+          <SectionIntro eyebrow={t.homeProducts.eyebrow} title={t.homeProducts.title} text={t.homeProducts.text} />
           <div className="grid gap-3 md:grid-cols-12">
             {categories.slice(0, 6).map((p, i) => (
               <Link key={p.slug} href={`/products/${p.slug}`} className={`group image-zoom relative min-h-67.5 overflow-hidden rounded-xl border border-white/10 ${i === 0 || i === 3 || i === 4 ? 'md:col-span-7' : 'md:col-span-5'}`} data-testid={`card-home-product-${p.slug}`}>
@@ -1958,16 +2087,16 @@ function Home({ onEstimate, lang }: { onEstimate: (p?: string) => void; lang: La
                 <div className="absolute inset-0 bg-linear-to-t from-black via-black/15 to-transparent" />
                 <div className="relative flex h-full min-h-67.5 flex-col justify-end p-6">
                   <span className="mb-2 text-[10px] uppercase tracking-[.2em] text-[#d4b16a]">0{i + 1} / AW system</span>
-                  <h3 className="font-display text-2xl font-extrabold">{p.title}</h3>
+                  <h3 className="font-display text-2xl font-extrabold">{t.categories[p.slug]?.title || p.title}</h3>
                   <span className="mt-4 flex items-center gap-2 text-xs text-white/55 transition group-hover:text-[#d4b16a]">
-                    {t.details} <ArrowUpRight size={14} />
+                    {t.actions.details} <ArrowUpRight size={14} />
                   </span>
                 </div>
               </Link>
             ))}
           </div>
           <Link href="/products" className="mt-8 inline-flex items-center gap-3 border-b border-[#c6a15b] pb-2 text-sm text-[#d4b16a]" data-testid="link-all-products">
-            Весь каталог <ArrowRight size={15} />
+            {t.actions.allProducts} <ArrowRight size={15} />
           </Link>
         </section>
 
@@ -1975,11 +2104,15 @@ function Home({ onEstimate, lang }: { onEstimate: (p?: string) => void; lang: La
           <div className="mx-auto w-full max-w-360">
             <div className="mb-6 md:mb-8 max-w-3xl">
               <div className="mb-2 flex items-center gap-4">
-                <span className="text-[10px] uppercase tracking-[.28em] text-[#816a3f]">02 / Заявка на расчёт</span>
+                <span className="text-[10px] uppercase tracking-[.28em] text-[#816a3f]">{t.calculator.eyebrow}</span>
                 <span className="h-px w-16 bg-[#816a3f]" />
               </div>
-              <h2 className="font-display text-3xl sm:text-4xl md:text-5xl font-extrabold leading-[1.08] tracking-[-.04em] text-[#151515]">Заявка на индивидуальный расчёт</h2>
-              <p className="mt-2.5 max-w-xl text-xs sm:text-sm leading-6 text-black/60">Выберите категорию и систему из нашего каталога — специалист свяжется с вами с готовой сметой.</p>
+              <h2 className="font-display text-3xl sm:text-4xl md:text-5xl font-extrabold leading-[1.08] tracking-[-.04em] text-[#151515]">
+                {t.calculator.title}
+              </h2>
+              <p className="mt-2.5 max-w-xl text-xs sm:text-sm leading-6 text-black/60">
+                {t.calculator.subtitle}
+              </p>
             </div>
 
             {formStatus === 'done' ? (
@@ -1987,16 +2120,18 @@ function Home({ onEstimate, lang }: { onEstimate: (p?: string) => void; lang: La
                 <div className="mb-4 grid size-14 place-items-center rounded-full bg-[#c6a15b] text-black">
                   <Check size={28} />
                 </div>
-                <h3 className="font-display text-2xl md:text-3xl font-bold">Заявка принята!</h3>
+                <h3 className="font-display text-2xl md:text-3xl font-bold">
+                  {t.calculator.successTitle}
+                </h3>
                 <p className="mt-3 text-xs sm:text-sm text-white/70 max-w-md leading-relaxed">
-                  Спасибо, {formName}. Заявка на систему «{selectedProductObj?.title}» ({selectedCategoryObj.title}) в цвете «{formColor}» успешно получена. Специалист ALL WINDOWS свяжется с вами в течение рабочего дня.
+                  {t.calculator.successText(formName, selectedProductObj?.title || categoryDisplayName, categoryDisplayName, formColor)}
                 </p>
                 <button
                   type="button"
-                  onClick={() => { setFormStatus('idle'); setFormName(''); setFormPhone(''); setFormComment(''); setFormColor(windowColors[0].name); }}
+                  onClick={() => { setFormStatus('idle'); setFormName(''); setFormPhone('+998 '); setFormComment(''); setFormColor(windowColors[0].name); }}
                   className="mt-6 rounded-full border border-white/20 bg-white/10 px-6 py-2.5 text-xs font-semibold text-white hover:bg-white/20 transition cursor-pointer"
                 >
-                  Отправить другую заявку
+                  {t.calculator.newRequestBtn}
                 </button>
               </motion.div>
             ) : (
@@ -2004,21 +2139,22 @@ function Home({ onEstimate, lang }: { onEstimate: (p?: string) => void; lang: La
                 <div className="grid gap-x-8 gap-y-3.5 sm:grid-cols-2">
                   <div>
                     <UniqueSelect
-                      label="1. Категория продукции"
+                      label={t.calculator.stepCategory}
                       value={selectedCategorySlug}
                       onChange={onCategoryChange}
                       options={categoryOptions}
+                      placeholder={lang === 'uz' ? 'Toifani tanlang' : 'Выберите категорию'}
                       testId="select-home-category"
                     />
                   </div>
 
                   <div>
                     <UniqueSelect
-                      label={`2. Система / Продукт (${selectedCategoryObj.title})`}
+                      label={`${t.calculator.stepProduct} (${categoryDisplayName})`}
                       value={selectedProductSlug}
                       onChange={setSelectedProductSlug}
                       options={productOptions}
-                      placeholder="Выберите систему..."
+                      placeholder={lang === 'uz' ? 'Tizimni tanlang...' : 'Выберите систему...'}
                       testId="select-home-product"
                     />
                   </div>
@@ -2029,22 +2165,24 @@ function Home({ onEstimate, lang }: { onEstimate: (p?: string) => void; lang: La
                       onSelectColor={(c) => setFormColor(c.name)}
                       maxVisible={8}
                       variant="light"
+                      lang={lang}
                     />
                   </div>
 
                   <div>
                     <UniqueSelect
-                      label="3. Тип стеклопакета / заполнения"
+                      label={t.calculator.stepGlass}
                       value={formGlass}
                       onChange={setFormGlass}
                       options={glassOptions}
+                      placeholder={lang === 'uz' ? 'Shisha paketi turi' : 'Тип стеклопакета'}
                       testId="select-home-glass"
                     />
                   </div>
 
                   <div className="grid grid-cols-2 gap-4">
                     <NumberStepperInput
-                      label="Ширина, мм"
+                      label={t.calculator.width}
                       value={formWidth}
                       onChange={setFormWidth}
                       placeholder="1800"
@@ -2053,7 +2191,7 @@ function Home({ onEstimate, lang }: { onEstimate: (p?: string) => void; lang: La
                     />
 
                     <NumberStepperInput
-                      label="Высота, мм"
+                      label={t.calculator.height}
                       value={formHeight}
                       onChange={setFormHeight}
                       placeholder="1400"
@@ -2063,24 +2201,25 @@ function Home({ onEstimate, lang }: { onEstimate: (p?: string) => void; lang: La
                   </div>
 
                   <label className="border-b border-black/20 pb-2 text-xs font-semibold">
-                    Ваше имя *
+                    {t.calculator.nameLabel}
                     <input 
                       required 
                       value={formName} 
                       onChange={e => setFormName(e.target.value)} 
-                      placeholder="Имя"
+                      placeholder={t.calculator.namePlaceholder}
                       className="mt-1 block w-full bg-transparent py-1 text-base font-bold outline-none placeholder:text-black/40" 
                       data-testid="input-home-name" 
                     />
                   </label>
 
                   <label className="border-b border-black/20 pb-2 text-xs font-semibold">
-                    Номер телефона *
+                    {t.calculator.phoneLabel}
                     <input 
                       required 
                       type="tel"
                       value={formPhone} 
-                      onChange={e => setFormPhone(e.target.value)} 
+                      onChange={e => setFormPhone(formatPhoneNumber(e.target.value))} 
+                      onKeyDown={handlePhoneKeyDown}
                       placeholder="+998 (__) ___-__-__"
                       className="mt-1 block w-full bg-transparent py-1 text-base font-bold outline-none placeholder:text-black/40" 
                       data-testid="input-home-phone" 
@@ -2088,11 +2227,11 @@ function Home({ onEstimate, lang }: { onEstimate: (p?: string) => void; lang: La
                   </label>
 
                   <label className="border-b border-black/20 pb-2 text-xs font-semibold sm:col-span-2">
-                    Комментарий или адрес объекта
+                    {t.calculator.commentLabel}
                     <input 
                       value={formComment} 
                       onChange={e => setFormComment(e.target.value)} 
-                      placeholder="Количество проёмов, адрес замера или пожелания"
+                      placeholder={t.calculator.commentPlaceholder}
                       className="mt-1 block w-full bg-transparent py-1 text-sm font-medium outline-none placeholder:text-black/40" 
                       data-testid="input-home-comment" 
                     />
@@ -2106,10 +2245,10 @@ function Home({ onEstimate, lang }: { onEstimate: (p?: string) => void; lang: La
                     className="gold-gradient flex items-center justify-center gap-3 rounded-full px-8 py-3.5 text-sm font-bold text-black shadow-lg hover:shadow-xl transition cursor-pointer disabled:opacity-60" 
                     data-testid="button-home-submit"
                   >
-                    {formStatus === 'loading' ? 'Отправка…' : <>Отправить заявку <ArrowRight size={17} /></>}
+                    {formStatus === 'loading' ? t.actions.submitting : <>{t.calculator.submitBtn} <ArrowRight size={17} /></>}
                   </button>
                   <span className="text-xs text-black/55 font-medium">
-                    Ответим и рассчитаем в течение 24 часов
+                    {lang === 'uz' ? '24 soat ichida javob beramiz va smeta hisoblaymiz' : 'Ответим и рассчитаем в течение 24 часов'}
                   </span>
                 </div>
               </form>
@@ -2118,7 +2257,7 @@ function Home({ onEstimate, lang }: { onEstimate: (p?: string) => void; lang: La
         </section>
 
         <section className="mx-auto max-w-360 px-6 sm:px-8 py-20 lg:px-12 xl:px-14">
-          <SectionIntro eyebrow="03 / Наши объекты" title="Конструкции в реальной архитектуре" text="Не просто каталог решений — результат, который каждый день работает в городе." />
+          <SectionIntro eyebrow={t.projectsSection.eyebrow} title={t.projectsSection.title} text={t.projectsSection.subtitle} />
           <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
             {randomProjects.map((p) => (
               <div 
@@ -2135,21 +2274,21 @@ function Home({ onEstimate, lang }: { onEstimate: (p?: string) => void; lang: La
                 <div className="absolute inset-0 bg-linear-to-t from-black/95 via-black/35 to-transparent" />
                 
                 <div className="absolute top-3 right-3 rounded-full bg-black/70 backdrop-blur-md px-2.5 py-1 text-[11px] text-white/90 border border-white/15 flex items-center gap-1.5 shadow-lg">
-                  <Images size={11} className="text-[#d4b16a]" /> {p.images.length} фото
+                  <Images size={11} className="text-[#d4b16a]" /> {t.projectsSection.photosCount(p.images.length)}
                 </div>
                 
                 <div className="relative flex h-full flex-col justify-end p-5">
                   <p className="text-[9px] uppercase tracking-[.22em] text-[#d4b16a]">{p.type} · {p.city}</p>
                   <h3 className="mt-1 font-display text-lg font-bold text-white group-hover:text-[#d4b16a] transition">{p.title}</h3>
                   <span className="mt-2.5 inline-flex items-center gap-1.5 text-xs font-semibold text-[#d4b16a]">
-                    Смотреть фотографии <Maximize2 size={12} />
+                    {t.actions.openGallery} <Maximize2 size={12} />
                   </span>
                 </div>
               </div>
             ))}
           </div>
           <Link href="/projects" className="mt-8 inline-flex items-center gap-3 border-b border-[#c6a15b] pb-2 text-sm text-[#d4b16a]" data-testid="link-home-projects">
-            Смотреть все объекты <ArrowRight size={15} />
+            {t.actions.allProjects} <ArrowRight size={15} />
           </Link>
           <ProjectGalleryModal project={homeProjectModal} onClose={() => setHomeProjectModal(null)} />
         </section>
@@ -2157,18 +2296,25 @@ function Home({ onEstimate, lang }: { onEstimate: (p?: string) => void; lang: La
         <section className="border-y border-white/10 bg-[#111]">
           <div className="mx-auto max-w-360 px-6 sm:px-8 lg:px-12 xl:px-14">
             <div className="grid grid-cols-2 divide-x divide-white/10 md:grid-cols-4">
-              <Stat value="98+" label="реализованных проектов" />
-              <Stat value="2 400+" label="клиентов доверили нам окна" />
-              <Stat value="7" label="лет в производстве (с 2019 года)" />
-              <Stat value="24 ч" label="средний ответ по заявке" />
+              <Stat value="98+" label={lang === 'uz' ? 'amalga oshirilgan loyihalar' : 'реализованных проектов'} />
+              <Stat value="2 400+" label={lang === 'uz' ? 'bizga ishongan mijozlar' : 'клиентов доверили нам окна'} />
+              <Stat value="7" label={lang === 'uz' ? 'yil ishlab chiqarishda (2019 yildan)' : 'лет в производстве (с 2019 года)'} />
+              <Stat value="24 ч" label={lang === 'uz' ? 'o‘rtacha ariza javobi' : 'средний ответ по заявке'} />
             </div>
           </div>
         </section>
 
         <section className="mx-auto grid max-w-360 gap-12 px-6 sm:px-8 py-24 lg:grid-cols-[.8fr_1.2fr] lg:px-12 xl:px-14">
-          <SectionIntro eyebrow="04 / Процесс" title="От идеи до точного проёма" text="Один ответственный подрядчик на всех этапах — от инженерного решения до последней регулировки." />
+          <SectionIntro 
+            eyebrow={lang === 'uz' ? '04 / Jarayon' : '04 / Процесс'} 
+            title={lang === 'uz' ? 'G‘oyadan to aniq o‘lchamgacha' : 'От идеи до точного проёма'} 
+            text={lang === 'uz' ? 'Barcha bosqichlarda yagona mas’ul pudratchi — muhandislik yechimidan to so‘nggi sozlashgacha.' : 'Один ответственный подрядчик на всех этапах — от инженерного решения до последней регулировки.'} 
+          />
           <div className="divide-y divide-white/10">
-            {['Заявка и консультация', 'Бесплатный замер', 'Расчёт и договор', 'Производство в Ташкенте', 'Монтаж и гарантия'].map((s, i) => (
+            {(lang === 'uz' 
+              ? ['Ariza va konsultatsiya', 'Bepul o‘lchov', 'Hisoblash va shartnoma', 'Toshkentda ishlab chiqarish', 'Montaj va kafolat']
+              : ['Заявка и консультация', 'Бесплатный замер', 'Расчёт и договор', 'Производство в Ташкенте', 'Монтаж и гарантия']
+            ).map((s, i) => (
               <div key={s} className="flex items-center justify-between py-5">
                 <div className="flex items-center gap-5">
                   <span className="font-mono text-xs text-[#c6a15b]">0{i + 1}</span>
@@ -2182,7 +2328,10 @@ function Home({ onEstimate, lang }: { onEstimate: (p?: string) => void; lang: La
 
         <section className="bg-[#151515] px-6 sm:px-8 py-24 lg:px-12 xl:px-14">
           <div className="mx-auto max-w-225">
-            <SectionIntro eyebrow="05 / Отзывы" title="Говорят люди, которые живут и работают в этих пространствах" />
+            <SectionIntro 
+              eyebrow={lang === 'uz' ? '05 / Sharhlar' : '05 / Отзывы'} 
+              title={lang === 'uz' ? 'Ushbu makonlarda yashayotgan va ishlayotgan insonlar fikri' : 'Говорят люди, которые живут и работают в этих пространствах'} 
+            />
             <div className="relative min-h-45">
               <AnimatePresence mode="wait">
                 <motion.div key={slide} initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
@@ -2195,10 +2344,10 @@ function Home({ onEstimate, lang }: { onEstimate: (p?: string) => void; lang: La
                 </motion.div>
               </AnimatePresence>
               <div className="absolute bottom-0 right-0 flex gap-2">
-                <button onClick={() => setSlide((slide + testimonials.length - 1) % testimonials.length)} className="grid size-10 place-items-center rounded-full border border-white/15" aria-label="Предыдущий отзыв" data-testid="button-testimonial-prev">
+                <button onClick={() => setSlide((slide + testimonials.length - 1) % testimonials.length)} className="grid size-10 place-items-center rounded-full border border-white/15 cursor-pointer" aria-label={lang === 'uz' ? 'Oldingi sharh' : 'Предыдущий отзыв'} data-testid="button-testimonial-prev">
                   <ChevronLeft size={16} />
                 </button>
-                <button onClick={() => setSlide((slide + 1) % testimonials.length)} className="grid size-10 place-items-center rounded-full border border-white/15" aria-label="Следующий отзыв" data-testid="button-testimonial-next">
+                <button onClick={() => setSlide((slide + 1) % testimonials.length)} className="grid size-10 place-items-center rounded-full border border-white/15 cursor-pointer" aria-label={lang === 'uz' ? 'Keyingi sharh' : 'Следующий отзыв'} data-testid="button-testimonial-next">
                   <ChevronRight size={16} />
                 </button>
               </div>
@@ -2206,7 +2355,7 @@ function Home({ onEstimate, lang }: { onEstimate: (p?: string) => void; lang: La
           </div>
         </section>
 
-        <Cta onEstimate={onEstimate} />
+        <Cta onEstimate={onEstimate} lang={lang} />
       </main>
     </>
   );
@@ -2233,18 +2382,22 @@ function Stat({ value, label }: { value: string; label: string }) {
   ); 
 }
 
-function Cta({ onEstimate }: { onEstimate: (p?: string) => void }) { 
+function Cta({ onEstimate, lang }: { onEstimate: (p?: string) => void; lang: Lang }) { 
   return (
     <section className="relative overflow-hidden px-6 sm:px-8 py-24 lg:px-12 xl:px-14">
       <div className="absolute inset-0 opacity-20" style={{ backgroundImage: `url(${pics.workshop})`, backgroundPosition: 'center', backgroundSize: 'cover' }} />
       <div className="absolute inset-0 bg-[#0d0d0d]/85" />
       <div className="relative mx-auto flex max-w-360 flex-col items-start justify-between gap-10 md:flex-row md:items-end">
         <div>
-          <p className="mb-5 text-[10px] uppercase tracking-[.25em] text-[#d4b16a]">06 / Начать проект</p>
-          <h2 className="max-w-2xl font-display text-4xl font-extrabold leading-tight md:text-6xl">Ваш проём —<br />наша точная работа.</h2>
+          <p className="mb-5 text-[10px] uppercase tracking-[.25em] text-[#d4b16a]">
+            {lang === 'uz' ? '06 / Loyihani boshlash' : '06 / Начать проект'}
+          </p>
+          <h2 className="max-w-2xl font-display text-4xl font-extrabold leading-tight md:text-6xl">
+            {lang === 'uz' ? <>Sizning o‘lchamingiz —<br />bizning aniq ishimiz.</> : <>Ваш проём —<br />наша точная работа.</>}
+          </h2>
         </div>
-        <button onClick={() => onEstimate()} className="gold-gradient flex shrink-0 items-center gap-3 rounded-full px-7 py-4 text-sm font-bold text-black" data-testid="button-cta-estimate">
-          Обсудить проект <ArrowUpRight size={17} />
+        <button onClick={() => onEstimate()} className="gold-gradient flex shrink-0 items-center gap-3 rounded-full px-7 py-4 text-sm font-bold text-black cursor-pointer" data-testid="button-cta-estimate">
+          {lang === 'uz' ? 'Loyihani muhokama qilish' : 'Обсудить проект'} <ArrowUpRight size={17} />
         </button>
       </div>
     </section>
@@ -2252,24 +2405,37 @@ function Cta({ onEstimate }: { onEstimate: (p?: string) => void }) {
 }
 
 // --- LEVEL 1: MAIN CATEGORIES PAGE ---
-function ProductsPage({ onEstimate }: { onEstimate: (p?: string) => void }) { 
+function ProductsPage({ onEstimate, lang }: { onEstimate: (p?: string) => void; lang: Lang }) { 
+  const t = copy(lang);
   return (
-    <PageFrame title="Продукция" eyebrow="Каталог систем" intro="Оконные, дверные, фасадные, раздвижные и интерьерные решения — спроектированы для климата, архитектуры и надежной эксплуатации в Узбекистане.">
+    <PageFrame 
+      title={t.nav.products} 
+      eyebrow={lang === 'uz' ? 'Tizimlar katalogi' : 'Каталог систем'} 
+      intro={lang === 'uz' 
+        ? 'Deraza, eshik, fasad, surma va interyer yechimlari — O‘zbekiston iqlimi, arxitekturasi va ishonchli foydalanish uchun loyihalangan.' 
+        : 'Оконные, дверные, фасадные, раздвижные и интерьерные решения — спроектированы для климата, архитектуры и надежной эксплуатации в Узбекистане.'}
+    >
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {categories.map((c, i) => {
           const count = products.filter(p => p.categorySlug === c.slug).length;
+          const catTitle = t.categories[c.slug]?.title || c.title;
+          const catSubtitle = t.categories[c.slug]?.subtitle || c.subtitle;
           return (
             <Link key={c.slug} href={`/products/${c.slug}`} className="group image-zoom relative min-h-85 overflow-hidden rounded-xl border border-white/10" data-testid={`card-category-${c.slug}`}>
-              <img src={c.image} alt={c.title} className="absolute inset-0 size-full object-cover opacity-60 transition duration-700 group-hover:scale-105" />
+              <img src={c.image} alt={catTitle} className="absolute inset-0 size-full object-cover opacity-60 transition duration-700 group-hover:scale-105" />
               <div className="absolute inset-0 bg-linear-to-t from-black via-black/30 to-transparent" />
               <div className="relative flex min-h-85 flex-col justify-end p-7">
                 <div className="flex items-center justify-between">
                   <p className="text-[10px] uppercase tracking-[.25em] text-[#d4b16a]">0{i + 1} / system</p>
-                  <span className="rounded-full bg-white/10 px-2.5 py-0.5 text-[10px] font-mono text-white/80"><CountUp value={count} duration={0.8} /> {count === 1 ? 'система' : count < 5 ? 'системы' : 'систем'}</span>
+                  <span className="rounded-full bg-white/10 px-2.5 py-0.5 text-[10px] font-mono text-white/80">
+                    <CountUp value={count} duration={0.8} /> {lang === 'uz' ? 'ta tizim' : count === 1 ? 'система' : count < 5 ? 'системы' : 'систем'}
+                  </span>
                 </div>
-                <h2 className="mt-2 font-display text-2xl font-extrabold">{c.title}</h2>
-                <p className="mt-1.5 text-xs text-white/60 line-clamp-2">{c.subtitle}</p>
-                <span className="mt-5 flex items-center gap-2 text-xs text-[#d4b16a] font-semibold">{copy('ru').details} <ArrowRight size={14} /></span>
+                <h2 className="mt-2 font-display text-2xl font-extrabold">{catTitle}</h2>
+                <p className="mt-1.5 text-xs text-white/60 line-clamp-2">{catSubtitle}</p>
+                <span className="mt-5 flex items-center gap-2 text-xs text-[#d4b16a] font-semibold">
+                  {t.actions.details} <ArrowRight size={14} />
+                </span>
               </div>
             </Link>
           );
@@ -2280,10 +2446,13 @@ function ProductsPage({ onEstimate }: { onEstimate: (p?: string) => void }) {
 }
 
 // --- LEVEL 2: CATEGORY PAGE WITH SUBCATEGORY FILTER & PRODUCT CARDS GRID ---
-function CategoryProductsPage({ onEstimate }: { onEstimate: (p?: string) => void }) {
+function CategoryProductsPage({ onEstimate, lang }: { onEstimate: (p?: string) => void; lang: Lang }) {
   const { categorySlug } = useParams<{ categorySlug: string }>();
   const category = categories.find(c => c.slug === categorySlug) ?? categories[0];
-  const allItems = products.filter(p => p.categorySlug === category.slug);
+  const allItems = products
+    .filter(p => p.categorySlug === category.slug)
+    .map(p => getTranslatedProduct(p, lang));
+  const t = copy(lang);
 
   const subcategories = Array.from(
     new Set(allItems.map(p => p.subcategory).filter(Boolean))
@@ -2299,17 +2468,22 @@ function CategoryProductsPage({ onEstimate }: { onEstimate: (p?: string) => void
     ? allItems 
     : allItems.filter(p => p.subcategory === selectedSub);
 
+  const catTitle = t.categories[category.slug]?.title || category.title;
+  const catDesc = t.categories[category.slug]?.description || category.description;
+
   return (
     <PageFrame 
-      eyebrow={`Продукция / ${category.title}`} 
-      title={category.title} 
-      intro={category.description}
+      eyebrow={`${t.nav.products} / ${catTitle}`} 
+      title={catTitle} 
+      intro={catDesc}
     >
       <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
         <Link href="/products" className="inline-flex items-center gap-2 text-xs font-semibold text-[#d4b16a] hover:underline">
-          <ChevronLeft size={16} /> Вернуться ко всем категориям
+          <ChevronLeft size={16} /> {lang === 'uz' ? 'Barcha toifalarga qaytish' : 'Вернуться ко всем категориям'}
         </Link>
-        <span className="text-xs text-white/40"><CountUp value={items.length} duration={0.6} /> {items.length === 1 ? 'система' : items.length < 5 ? 'системы' : 'систем'}</span>
+        <span className="text-xs text-white/40">
+          <CountUp value={items.length} duration={0.6} /> {lang === 'uz' ? 'ta tizim' : items.length === 1 ? 'система' : items.length < 5 ? 'системы' : 'систем'}
+        </span>
       </div>
 
       {subcategories.length > 1 && (
@@ -2323,7 +2497,7 @@ function CategoryProductsPage({ onEstimate }: { onEstimate: (p?: string) => void
             }`}
             data-testid="filter-sub-all"
           >
-            Все (<CountUp value={allItems.length} duration={0.6} />)
+            {lang === 'uz' ? 'Barchasi' : 'Все'} (<CountUp value={allItems.length} duration={0.6} />)
           </button>
           {subcategories.map(sub => {
             const subCount = allItems.filter(p => p.subcategory === sub).length;
@@ -2387,7 +2561,7 @@ function CategoryProductsPage({ onEstimate }: { onEstimate: (p?: string) => void
               </div>
 
               <div className="mt-6 flex items-center justify-between border-t border-white/10 pt-3">
-                <span className="text-xs text-[#d4b16a] font-semibold">{copy('ru').details}</span>
+                <span className="text-xs text-[#d4b16a] font-semibold">{t.actions.details}</span>
                 <ArrowRight size={14} className="text-[#d4b16a] transition group-hover:translate-x-1" />
               </div>
             </div>
@@ -2399,18 +2573,22 @@ function CategoryProductsPage({ onEstimate }: { onEstimate: (p?: string) => void
 }
 
 // --- LEVEL 3: PRODUCT DETAIL PAGE ---
-function ProductDetail({ onEstimate }: { onEstimate: (p?: string, c?: string) => void }) { 
+function ProductDetail({ onEstimate, lang }: { onEstimate: (p?: string, c?: string) => void; lang: Lang }) { 
   const { categorySlug, productSlug, id } = useParams<{ categorySlug?: string; productSlug?: string; id?: string }>(); 
   const slug = productSlug || id;
-  const product = products.find(p => p.slug === slug) ?? products[0]; 
+  const rawProduct = products.find(p => p.slug === slug) ?? products[0]; 
+  const product = getTranslatedProduct(rawProduct, lang);
   const category = categories.find(c => c.slug === product.categorySlug) ?? categories[0];
   const [selectedColor, setSelectedColor] = useState<WindowColor>(windowColors[0]);
+  const t = copy(lang);
+
+  const catTitle = t.categories[category.slug]?.title || category.title;
 
   return (
-    <PageFrame title={product.title} eyebrow={`Продукция / ${category.title} / ${product.title}`} intro={product.description}>
+    <PageFrame title={product.title} eyebrow={`${t.nav.products} / ${catTitle} / ${product.title}`} intro={product.description}>
       <div className="mb-6 flex flex-wrap items-center gap-3">
         <Link href={`/products/${category.slug}`} className="inline-flex items-center gap-2 text-xs font-semibold text-[#d4b16a] hover:underline">
-          <ChevronLeft size={16} /> Назад к системам «{category.title}»
+          <ChevronLeft size={16} /> {lang === 'uz' ? `«${catTitle}» tizimlariga qaytish` : `Назад к системам «${category.title}»`}
         </Link>
         {product.subcategory && (
           <span className="rounded-full bg-white/10 px-3 py-1 text-[10px] font-mono text-white/70">
@@ -2430,7 +2608,9 @@ function ProductDetail({ onEstimate }: { onEstimate: (p?: string, c?: string) =>
         <div className="rounded-2xl border border-white/10 bg-[#151515] p-6 sm:p-7 flex flex-col justify-between shadow-xl">
           <div>
             <div className="flex items-center justify-between border-b border-white/10 pb-3.5">
-              <p className="text-[10px] uppercase tracking-[.25em] text-[#d4b16a]">Технические характеристики</p>
+              <p className="text-[10px] uppercase tracking-[.25em] text-[#d4b16a]">
+                {lang === 'uz' ? 'Texnik xususiyatlar' : 'Технические характеристики'}
+              </p>
               <span className="rounded bg-white/10 px-2.5 py-1 text-[10px] font-mono text-white/80">{product.brand}</span>
             </div>
             <div className="mt-3 divide-y divide-white/10">
@@ -2442,24 +2622,26 @@ function ProductDetail({ onEstimate }: { onEstimate: (p?: string, c?: string) =>
               ))}
             </div>
 
-            {/* Colors in small circles with plus at the end to view all 16 */}
             <div className="mt-5 border-t border-white/10 pt-4">
               <ColorPicker
                 selectedColorId={selectedColor.id}
                 onSelectColor={setSelectedColor}
                 maxVisible={6}
                 variant="dark"
+                lang={lang}
               />
             </div>
           </div>
 
           <button onClick={() => onEstimate(product.title, selectedColor.name)} className="gold-gradient mt-6 flex w-full items-center justify-center gap-2 rounded-full px-5 py-3 text-xs sm:text-sm font-bold text-black cursor-pointer hover:brightness-105 transition shadow-lg" data-testid="button-product-estimate">
-            Рассчитать проект <ArrowRight size={15} />
+            {lang === 'uz' ? 'Loyihani hisoblash' : 'Рассчитать проект'} <ArrowRight size={15} />
           </button>
         </div>
       </div>
       <div className="mt-14 sm:mt-16">
-        <p className="mb-4 text-[10px] uppercase tracking-[.25em] text-[#d4b16a]">Детали и применение</p>
+        <p className="mb-4 text-[10px] uppercase tracking-[.25em] text-[#d4b16a]">
+          {lang === 'uz' ? 'Detallar va qo‘llanilishi' : 'Детали и применение'}
+        </p>
         <div className="grid gap-3 sm:grid-cols-3">
           <img src={pics.detail} alt="Деталь оконной системы" className="h-36 sm:h-40 md:h-44 w-full rounded-xl object-cover border border-white/5" />
           <img src={pics.interior} alt="Интерьер с остеклением" className="h-36 sm:h-40 md:h-44 w-full rounded-xl object-cover border border-white/5" />
@@ -2468,11 +2650,15 @@ function ProductDetail({ onEstimate }: { onEstimate: (p?: string, c?: string) =>
       </div>
       {product.related && product.related.length > 0 && (
         <div className="mt-20">
-          <SectionIntro eyebrow="Выбирают вместе" title="Соберите полный комплект" />
+          <SectionIntro 
+            eyebrow={lang === 'uz' ? 'Birga tanlashadi' : 'Выбирают вместе'} 
+            title={lang === 'uz' ? 'To‘liq to‘plamni yig‘ing' : 'Соберите полный комплект'} 
+          />
           <div className="grid gap-3 sm:grid-cols-2">
             {product.related.map(relSlug => { 
-              const r = products.find(p => p.slug === relSlug);
-              if (!r) return null;
+              const rawR = products.find(p => p.slug === relSlug);
+              if (!rawR) return null;
+              const r = getTranslatedProduct(rawR, lang);
               return (
                 <Link key={r.slug} href={`/products/${r.categorySlug}/${r.slug}`} className="flex items-center gap-4 rounded-xl border border-white/10 bg-[#151515] p-4 transition hover:border-[#c6a15b]" data-testid={`link-related-${r.slug}`}>
                   <img src={r.image} alt={r.title} className="size-20 rounded-lg object-cover shrink-0" />
@@ -2509,10 +2695,16 @@ function PageFrame({ eyebrow, title, intro, children }: { eyebrow: string; title
   ); 
 }
 
-function ProjectsPage({ onEstimate }: { onEstimate?: (p?: string) => void }) { 
+function ProjectsPage({ onEstimate, lang }: { onEstimate?: (p?: string) => void; lang: Lang }) { 
   const params = useParams<{ slug?: string }>();
-  const [filter, setFilter] = useState('Все'); 
+  const t = copy(lang);
+  const defaultFilter = lang === 'uz' ? 'Barchasi' : 'Все';
+  const [filter, setFilter] = useState(defaultFilter); 
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+
+  useEffect(() => {
+    setFilter(lang === 'uz' ? 'Barchasi' : 'Все');
+  }, [lang]);
 
   useEffect(() => {
     if (params?.slug) {
@@ -2523,19 +2715,42 @@ function ProjectsPage({ onEstimate }: { onEstimate?: (p?: string) => void }) {
     }
   }, [params?.slug]);
 
-  const filters = ['Все', 'Жилые комплексы', 'Коммерческие', 'Социальные объекты', 'Частные объекты']; 
-  const shown = filter === 'Все' ? projects : projects.filter(p => p.type === filter); 
+  const filters = lang === 'uz' 
+    ? ['Barchasi', 'Turar-joy majmualari', 'Tijorat obyektlari', 'Ijtimoiy obyektlar', 'Xususiy obyektlar']
+    : ['Все', 'Жилые комплексы', 'Коммерческие', 'Социальные объекты', 'Частные объекты'];
+
+  const typeMap: Record<string, string> = {
+    'Жилые комплексы': 'Turar-joy majmualari',
+    'Коммерческие': 'Tijorat obyektlari',
+    'Социальные объекты': 'Ijtimoiy obyektlar',
+    'Частные объекты': 'Xususiy obyektlar',
+  };
+
+  const isMatch = (pType: string, f: string) => {
+    if (f === 'Все' || f === 'Barchasi') return true;
+    if (f === pType) return true;
+    if (lang === 'uz' && typeMap[pType] === f) return true;
+    return false;
+  };
+
+  const shown = projects.filter(p => isMatch(p.type, filter)); 
 
   return (
-    <PageFrame eyebrow="Портфолио" title="Наши объекты" intro="Реальные фасады, окна и входные группы, выполненные командой ALL WINDOWS в Ташкенте. Нажмите на любой объект, чтобы открыть фотогалерею.">
+    <PageFrame 
+      eyebrow={lang === 'uz' ? 'Portfel' : 'Портфолио'} 
+      title={t.nav.projects} 
+      intro={lang === 'uz'
+        ? 'ALL WINDOWS jamoasi tomonidan Toshkentda amalga oshirilgan real fasadlar, derazalar va kirish guruhlari. Fotogalereyani ochish uchun istalgan obyekt ustiga bosing.'
+        : 'Реальные фасады, окна и входные группы, выполненные командой ALL WINDOWS в Ташкенте. Нажмите на любой объект, чтобы открыть фотогалерею.'}
+    >
       <div className="mb-8 flex flex-wrap gap-2">
         {filters.map(f => {
-          const count = f === 'Все' ? projects.length : projects.filter(p => p.type === f).length;
+          const count = projects.filter(p => isMatch(p.type, f)).length;
           return (
             <button 
               key={f} 
               onClick={() => setFilter(f)} 
-              className={`rounded-full border px-4 py-2 text-xs transition flex items-center gap-1.5 ${filter === f ? 'border-[#c6a15b] bg-[#c6a15b] text-black font-semibold' : 'border-white/15 text-white/55 hover:border-[#c6a15b]'}`} 
+              className={`rounded-full border px-4 py-2 text-xs transition flex items-center gap-1.5 cursor-pointer ${filter === f ? 'border-[#c6a15b] bg-[#c6a15b] text-black font-semibold' : 'border-white/15 text-white/55 hover:border-[#c6a15b]'}`} 
               data-testid={`button-filter-${f}`}
             >
               <span>{f}</span>
@@ -2548,6 +2763,7 @@ function ProjectsPage({ onEstimate }: { onEstimate?: (p?: string) => void }) {
       </div>
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {shown.map(p => {
+          const projectTypeLabel = lang === 'uz' ? (typeMap[p.type] || p.type) : p.type;
           if (p.isTextOnly || !p.images || p.images.length === 0) {
             return (
               <div
@@ -2562,17 +2778,19 @@ function ProjectsPage({ onEstimate }: { onEstimate?: (p?: string) => void }) {
                 <div>
                   <div className="flex items-center justify-between">
                     <span className="text-[10px] uppercase tracking-[.25em] text-[#d4b16a]">
-                      {p.type} · {p.city}
+                      {projectTypeLabel} · {p.city}
                     </span>
                     <span className="rounded-full border border-[#c6a15b]/40 bg-[#c6a15b]/15 px-2.5 py-0.5 text-[10px] font-semibold text-[#d4b16a]">
-                      350+ объектов
+                      {lang === 'uz' ? '350+ obyekt' : '350+ объектов'}
                     </span>
                   </div>
                   <h2 className="mt-4 font-display text-2xl sm:text-3xl font-extrabold text-white">
                     {p.title}
                   </h2>
                   <p className="mt-4 text-sm leading-relaxed text-white/70">
-                    Остекление частных резиденций, коттеджей и загородных домов в Ташкенте и Ташкентской области.
+                    {lang === 'uz' 
+                      ? 'Toshkent shahri va Toshkent viloyatida xususiy qarorgohlar, kottejlar va dala hovlilarni oynalash.'
+                      : 'Остекление частных резиденций, коттеджей и загородных домов в Ташкенте и Ташкентской области.'}
                   </p>
                 </div>
 
@@ -2580,9 +2798,9 @@ function ProjectsPage({ onEstimate }: { onEstimate?: (p?: string) => void }) {
                   {onEstimate && (
                     <button 
                       onClick={() => onEstimate('Остекление частного дома')} 
-                      className="w-full flex items-center justify-center gap-2 rounded-lg bg-[#c6a15b]/15 hover:bg-[#c6a15b] hover:text-black py-3 text-xs font-bold text-[#d4b16a] border border-[#c6a15b]/40 transition"
+                      className="w-full flex items-center justify-center gap-2 rounded-lg bg-[#c6a15b]/15 hover:bg-[#c6a15b] hover:text-black py-3 text-xs font-bold text-[#d4b16a] border border-[#c6a15b]/40 transition cursor-pointer"
                     >
-                      Заказать расчёт для дома <ArrowRight size={14} />
+                      {lang === 'uz' ? 'Uy uchun hisob-kitob buyurtma qilish' : 'Заказать расчёт для дома'} <ArrowRight size={14} />
                     </button>
                   )}
                 </div>
@@ -2600,17 +2818,16 @@ function ProjectsPage({ onEstimate }: { onEstimate?: (p?: string) => void }) {
               <img src={p.image} alt={p.title} className="absolute inset-0 size-full object-cover transition-transform duration-500 group-hover:scale-105" />
               <div className="absolute inset-0 bg-linear-to-t from-black/95 via-black/45 to-black/20" />
               
-              {/* Photo count badge */}
               <div className="absolute top-3.5 right-3.5 rounded-full bg-black/70 backdrop-blur-md px-2.5 py-1 text-[11px] text-white/90 border border-white/15 flex items-center gap-1.5 shadow-lg">
                 <Images size={12} className="text-[#d4b16a]" />
-                <span>{p.images.length} фото</span>
+                <span>{t.projectsSection.photosCount(p.images.length)}</span>
               </div>
 
               <div className="relative flex min-h-[370px] flex-col justify-end p-6">
-                <p className="text-[10px] uppercase tracking-[.25em] text-[#d4b16a]">{p.type} · {p.city}</p>
+                <p className="text-[10px] uppercase tracking-[.25em] text-[#d4b16a]">{projectTypeLabel} · {p.city}</p>
                 <h2 className="mt-1 font-display text-2xl font-extrabold text-white group-hover:text-[#d4b16a] transition">{p.title}</h2>
                 <div className="mt-4 flex items-center gap-2 text-xs font-semibold text-[#d4b16a]">
-                  <span>Открыть галерею</span>
+                  <span>{t.actions.openGallery}</span>
                   <Maximize2 size={13} className="transition group-hover:translate-x-1" />
                 </div>
               </div>
@@ -2624,18 +2841,19 @@ function ProjectsPage({ onEstimate }: { onEstimate?: (p?: string) => void }) {
   ); 
 }
 
-function AboutPage() { 
+function AboutPage({ lang }: { lang: Lang }) { 
   const [certModal, setCertModal] = useState(false);
+  const t = copy(lang);
 
   return (
-    <PageFrame eyebrow="Компания / 2019—2026" title="Производим то, что проектируют архитекторы" intro="ALL WINDOWS — производитель окон, дверей и фасадных систем в Ташкенте с 2019 года. Мы соединяем инженерную точность цеха с вниманием к тому, как человек будет жить в пространстве.">
+    <PageFrame eyebrow={t.about.eyebrow} title={t.about.title} intro={t.about.intro}>
       <div className="grid gap-3 md:grid-cols-2">
         <img src={pics.workshop} alt="Производственный цех ALL WINDOWS" className="h-112.5 w-full rounded-xl object-cover" />
         <div className="rounded-xl bg-[#d9c8a3] p-8 text-[#151515] md:p-12">
-          <p className="text-[10px] uppercase tracking-[.25em] text-[#816a3f]">Наш подход</p>
-          <p className="mt-8 font-display text-3xl font-extrabold leading-tight">Каждый миллиметр имеет значение.</p>
+          <p className="text-[10px] uppercase tracking-[.25em] text-[#816a3f]">{t.about.approachTitle}</p>
+          <p className="mt-8 font-display text-3xl font-extrabold leading-tight">{t.about.approachHeading}</p>
           <p className="mt-7 text-sm leading-7 text-black/60">
-            Работаем с частными заказчиками, дизайнерами, застройщиками и генеральными подрядчиками. Являемся официальным партнером и переработчиком систем Sistem Aluminium (Турция: 65, 75, 85 серии), ASAŞ (Турция: 64, 75 серии), Deceuninck (ПВХ: 6000, 7000, 8000 серии) и Akfa.
+            {t.about.approachText}
           </p>
         </div>
       </div>
@@ -2643,27 +2861,25 @@ function AboutPage() {
       <div className="my-24 grid gap-10 md:grid-cols-3">
         <div>
           <Factory className="text-[#c6a15b]" />
-          <h2 className="mt-5 font-display text-xl font-bold">Производство в Ташкенте</h2>
-          <p className="mt-3 text-sm leading-6 text-white/50">Собственный цех с 2019 года, оборудование для точного раскроя и сборки. Контролируем заказ на каждом этапе.</p>
+          <h2 className="mt-5 font-display text-xl font-bold">{t.about.feat1Title}</h2>
+          <p className="mt-3 text-sm leading-6 text-white/50">{t.about.feat1Text}</p>
         </div>
         <div>
           <Zap className="text-[#c6a15b]" />
-          <h2 className="mt-5 font-display text-xl font-bold">Профильная экспертиза</h2>
-          <p className="mt-3 text-sm leading-6 text-white/50">Sistem Aluminium, ASAŞ, Deceuninck, Aldoks Neo, Engelberg, JP — подбираем систему под нагрузку и архитектуру.</p>
+          <h2 className="mt-5 font-display text-xl font-bold">{t.about.feat2Title}</h2>
+          <p className="mt-3 text-sm leading-6 text-white/50">{t.about.feat2Text}</p>
         </div>
         <div>
           <GlassWater className="text-[#c6a15b]" />
-          <h2 className="mt-5 font-display text-xl font-bold">Собранная команда</h2>
-          <p className="mt-3 text-sm leading-6 text-white/50">Замерщики, конструкторы и монтажники говорят на одном техническом языке.</p>
+          <h2 className="mt-5 font-display text-xl font-bold">{t.about.feat3Title}</h2>
+          <p className="mt-3 text-sm leading-6 text-white/50">{t.about.feat3Text}</p>
         </div>
       </div>
 
-      {/* Certifications & Quality Section */}
       <div className="mt-16 border-t border-white/10 pt-16">
-        <SectionIntro eyebrow="Сертификаты и стандарты качества" title="Официальная сертификация и гарантия надежности" />
+        <SectionIntro eyebrow={t.about.certEyebrow} title={t.about.certTitle} />
         
         <div className="mt-10 grid gap-6 lg:grid-cols-[380px_1fr] lg:items-stretch xl:grid-cols-[400px_1fr]">
-          {/* Certificate Showcase Card */}
           <div 
             onClick={() => setCertModal(true)}
             className="group relative flex flex-col justify-between cursor-pointer overflow-hidden rounded-2xl border border-[#c6a15b]/30 bg-linear-to-b from-[#1c1c1c] to-[#121212] p-4 sm:p-5 shadow-2xl transition duration-500 hover:border-[#c6a15b] hover:shadow-[0_0_35px_rgba(198,161,91,0.2)] h-full w-full max-w-105 mx-auto lg:max-w-none"
@@ -2683,7 +2899,7 @@ function AboutPage() {
               />
               <div className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 backdrop-blur-[2px] transition duration-300 group-hover:opacity-100">
                 <span className="flex items-center gap-2 rounded-full border border-[#c6a15b]/50 bg-black/80 px-4 py-2 text-xs font-semibold text-[#d4b16a] shadow-lg">
-                  <Maximize2 size={15} /> Нажмите для увеличения
+                  <Maximize2 size={15} /> {t.actions.enlarge}
                 </span>
               </div>
             </div>
@@ -2692,17 +2908,16 @@ function AboutPage() {
               <div className="flex items-center gap-2.5">
                 <Award className="text-[#c6a15b]" size={18} />
                 <div>
-                  <p className="text-xs font-bold text-white">Сертификат соответствия</p>
-                  <p className="text-[11px] text-white/45">Официальный документ подтверждения качества</p>
+                  <p className="text-xs font-bold text-white">{t.about.certCardTitle}</p>
+                  <p className="text-[11px] text-white/45">{t.about.certCardDesc}</p>
                 </div>
               </div>
               <span className="rounded-full bg-[#c6a15b]/15 px-3 py-1 text-[10px] font-semibold uppercase tracking-wider text-[#d4b16a] border border-[#c6a15b]/30">
-                Проверено
+                {t.actions.verified}
               </span>
             </div>
           </div>
 
-          {/* Key Certification Points */}
           <div className="flex flex-col justify-between gap-4 h-full">
             <div className="flex-1 flex flex-col justify-center rounded-xl border border-white/10 bg-[#151515] p-6 transition duration-300 hover:border-[#c6a15b]/40">
               <div className="flex items-start gap-4">
@@ -2710,9 +2925,9 @@ function AboutPage() {
                   <FileCheck2 size={20} />
                 </div>
                 <div>
-                  <h3 className="text-base font-bold text-white">Оригинальные сертифицированные профили</h3>
+                  <h3 className="text-base font-bold text-white">{t.about.certPoint1Title}</h3>
                   <p className="mt-2 text-xs leading-relaxed text-white/55">
-                    Вся продукция изготавливается из сертифицированных профильных систем и комплектующих. Полное соответствие государственным стандартам и СНиП.
+                    {t.about.certPoint1Text}
                   </p>
                 </div>
               </div>
@@ -2724,9 +2939,9 @@ function AboutPage() {
                   <ShieldCheck size={20} />
                 </div>
                 <div>
-                  <h3 className="text-base font-bold text-white">Многоступенчатый контроль ОТК</h3>
+                  <h3 className="text-base font-bold text-white">{t.about.certPoint2Title}</h3>
                   <p className="mt-2 text-xs leading-relaxed text-white/55">
-                    Контролируем геометрию, терморазрывы, герметичность уплотнителей и точность фурнитурных пазов на каждом этапе сборки до отправки на объект.
+                    {t.about.certPoint2Text}
                   </p>
                 </div>
               </div>
@@ -2738,9 +2953,9 @@ function AboutPage() {
                   <CheckCircle2 size={20} />
                 </div>
                 <div>
-                  <h3 className="text-base font-bold text-white">Официальная гарантия по договору</h3>
+                  <h3 className="text-base font-bold text-white">{t.about.certPoint3Title}</h3>
                   <p className="mt-2 text-xs leading-relaxed text-white/55">
-                    Фиксируем технические требования, сроки и гарантийные обязательства на профили, стеклопакеты и монтажные узлы в официальном договоре.
+                    {t.about.certPoint3Text}
                   </p>
                 </div>
               </div>
@@ -2749,7 +2964,6 @@ function AboutPage() {
         </div>
       </div>
 
-      {/* Lightbox Modal */}
       <AnimatePresence>
         {certModal && (
           <motion.div
@@ -2769,7 +2983,7 @@ function AboutPage() {
               <button
                 onClick={() => setCertModal(false)}
                 className="absolute right-5 top-5 z-10 flex size-9 items-center justify-center rounded-full bg-black/70 text-white/80 transition hover:bg-black hover:text-white"
-                aria-label="Закрыть"
+                aria-label={lang === 'uz' ? 'Yopish' : 'Закрыть'}
               >
                 <X size={20} />
               </button>
@@ -2792,49 +3006,51 @@ function AboutPage() {
   ); 
 }
 
-function ServicesPage() { 
-  const services = [
-    { icon: Ruler, title: 'Бесплатный замер', text: 'Специалист выезжает на объект, проверяет геометрию проёма и фиксирует условия монтажа.' }, 
-    { icon: FileCheck2, title: 'Проектирование и расчёт', text: 'Подбираем профиль, стеклопакет, фурнитуру и формируем прозрачную спецификацию.' }, 
-    { icon: Factory, title: 'Производство', text: 'Изготавливаем конструкции в собственном цехе с контролем размеров и комплектации.' }, 
-    { icon: Send, title: 'Доставка', text: 'Согласуем логистику и бережно доставляем конструкции на объект в Ташкенте.' }, 
-    { icon: Wrench, title: 'Монтаж', text: 'Устанавливаем, герметизируем, регулируем и сдаём объект по акту.' }, 
-    { icon: ShieldCheck, title: 'Гарантийное обслуживание', text: 'Остаёмся на связи после сдачи: регулировка и постгарантийное обслуживание.' }
-  ]; 
+function ServicesPage({ lang }: { lang: Lang }) { 
+  const t = copy(lang);
+  const icons = [Ruler, FileCheck2, Factory, Send, Wrench, ShieldCheck];
+  const services = t.services.items.map((item, i) => ({
+    icon: icons[i] || Wrench,
+    title: item.title,
+    text: item.text,
+  }));
 
   return (
-    <PageFrame eyebrow="Сервис / полный цикл" title="Один подрядчик. Весь путь проекта." intro="Убираем разрывы между проектированием, производством и монтажом. Вы получаете понятный процесс и один контакт на всех этапах.">
-      <div className="grid gap-px overflow-hidden rounded-xl border border-white/10 bg-white/10 sm:grid-cols-2 lg:grid-cols-3">{services.map((s, i) => (
-        <div key={s.title} className="bg-[#151515] p-7 md:p-9">
-          <s.icon className="text-[#c6a15b]" size={22} />
-          <p className="mt-12 text-[10px] text-[#c6a15b]">0{i + 1}</p>
-          <h2 className="mt-3 font-display text-xl font-bold">{s.title}</h2>
-          <p className="mt-3 text-sm leading-6 text-white/50">{s.text}</p>
-        </div>
-      ))}</div>
+    <PageFrame eyebrow={t.services.eyebrow} title={t.services.title} intro={t.services.intro}>
+      <div className="grid gap-px overflow-hidden rounded-xl border border-white/10 bg-white/10 sm:grid-cols-2 lg:grid-cols-3">
+        {services.map((s, i) => (
+          <div key={s.title} className="bg-[#151515] p-7 md:p-9">
+            <s.icon className="text-[#c6a15b]" size={22} />
+            <p className="mt-12 text-[10px] text-[#c6a15b]">0{i + 1}</p>
+            <h2 className="mt-3 font-display text-xl font-bold">{s.title}</h2>
+            <p className="mt-3 text-sm leading-6 text-white/50">{s.text}</p>
+          </div>
+        ))}
+      </div>
       <div className="mt-16 flex flex-col justify-between gap-8 rounded-xl bg-[#d9c8a3] p-8 text-[#151515] md:flex-row md:items-end md:p-12">
         <div>
-          <p className="text-[10px] uppercase tracking-[.25em] text-[#816a3f]">Сервис на объекте</p>
-          <h2 className="mt-5 max-w-xl font-display text-3xl font-extrabold">Начните с бесплатного замера</h2>
+          <p className="text-[10px] uppercase tracking-[.25em] text-[#816a3f]">{t.services.bannerEyebrow}</p>
+          <h2 className="mt-5 max-w-xl font-display text-3xl font-extrabold">{t.services.bannerTitle}</h2>
         </div>
         <Link href="/contacts" className="flex items-center gap-2 text-sm font-bold" data-testid="link-services-contacts">
-          Связаться с нами <ArrowRight size={16} />
+          {t.services.bannerBtn} <ArrowRight size={16} />
         </Link>
       </div>
     </PageFrame>
   ); 
 }
 
-function ContactsPage({ onEstimate }: { onEstimate: (p?: string) => void }) { 
+function ContactsPage({ onEstimate, lang }: { onEstimate: (p?: string) => void; lang: Lang }) { 
+  const t = copy(lang);
   return (
-    <PageFrame eyebrow="Контакты / Ташкент" title="Обсудим ваш объект" intro="Позвоните, напишите в Telegram или оставьте заявку — ответим по рабочим дням в течение 24 часов.">
-      {/* Top Grid: Info + Map */}
+    <PageFrame eyebrow={t.contacts.eyebrow} title={t.contacts.title} intro={t.contacts.intro}>
       <div className="grid gap-3 lg:grid-cols-[.8fr_1.2fr]">
-        {/* Info Card */}
         <div className="flex flex-col justify-between rounded-xl bg-[#d9c8a3] p-8 text-[#151515] md:p-10 shadow-sm">
           <div>
-            <p className="text-[10px] uppercase tracking-[.25em] text-[#816a3f]">Шоурум и производство</p>
-            <p className="mt-7 font-display text-2xl md:text-3xl font-extrabold leading-tight">Ташкент,<br />улица Багрикенг</p>
+            <p className="text-[10px] uppercase tracking-[.25em] text-[#816a3f]">{t.contacts.showroomTitle}</p>
+            <p className="mt-7 font-display text-2xl md:text-3xl font-extrabold leading-tight whitespace-pre-line">
+              {t.contacts.address}
+            </p>
             
             <div className="mt-8 space-y-4 border-t border-black/20 pt-6 text-sm">
               <a href="tel:+998888001800" className="flex items-center gap-3 font-bold transition hover:opacity-80" data-testid="link-contact-phone">
@@ -2855,18 +3071,17 @@ function ContactsPage({ onEstimate }: { onEstimate: (p?: string) => void }) {
                 className="flex w-full items-center justify-center rounded-full bg-[#151515] px-6 py-3.5 text-xs sm:text-sm font-bold text-white transition hover:bg-black active:scale-[0.99] cursor-pointer shadow-md"
                 data-testid="button-open-contact-modal"
               >
-                Оставить заявку
+                {t.contacts.btn}
               </button>
             </div>
           </div>
 
           <div className="mt-8 border-t border-black/15 pt-4 text-xs text-black/60">
-            <p className="font-semibold text-black/80">Режим работы:</p>
-            <p className="mt-1">Пн–Сб · 09:00–18:00<br />Вс — выходной</p>
+            <p className="font-semibold text-black/80">{t.contacts.scheduleTitle}</p>
+            <p className="mt-1 whitespace-pre-line">{t.contacts.scheduleText}</p>
           </div>
         </div>
 
-        {/* Map Container */}
         <div className="relative min-h-95 md:min-h-110 overflow-hidden rounded-xl border border-white/10 bg-[#171717]">
           <iframe
             title="ALL WINDOWS Локация на карте"
@@ -2877,7 +3092,9 @@ function ContactsPage({ onEstimate }: { onEstimate: (p?: string) => void }) {
           />
           <div className="absolute left-4 top-4 z-10 flex items-center gap-2 rounded-xl border border-[#c6a15b]/40 bg-[#121212]/90 px-3.5 py-2 backdrop-blur-md shadow-lg pointer-events-auto">
             <MapPin size={16} className="text-[#c6a15b]" />
-            <span className="text-xs font-semibold text-white">Ташкент, улица Багрикенг</span>
+            <span className="text-xs font-semibold text-white">
+              {lang === 'uz' ? 'Toshkent shahri, Bag‘rikeng ko‘chasi' : 'Ташкент, улица Багрикенг'}
+            </span>
           </div>
           <div className="absolute right-4 top-4 z-10">
             <a
@@ -2886,7 +3103,7 @@ function ContactsPage({ onEstimate }: { onEstimate: (p?: string) => void }) {
               rel="noopener noreferrer"
               className="flex items-center gap-1.5 rounded-xl border border-white/15 bg-black/80 px-3 py-2 text-xs font-medium text-white/80 backdrop-blur-md transition hover:border-[#c6a15b] hover:text-white shadow-lg"
             >
-              <ExternalLink size={13} /> Открыть карту
+              <ExternalLink size={13} /> {t.actions.openMap}
             </a>
           </div>
         </div>
@@ -2899,14 +3116,14 @@ function RouterView({ lang, onEstimate }: { lang: Lang; onEstimate: (p?: string,
   return (
     <Switch>
       <Route path="/" component={() => <Home lang={lang} onEstimate={onEstimate} />} />
-      <Route path="/about" component={AboutPage} />
-      <Route path="/products" component={() => <ProductsPage onEstimate={onEstimate} />} />
-      <Route path="/products/:categorySlug/:productSlug" component={() => <ProductDetail onEstimate={onEstimate} />} />
-      <Route path="/products/:categorySlug" component={() => <CategoryProductsPage onEstimate={onEstimate} />} />
-      <Route path="/projects" component={() => <ProjectsPage onEstimate={onEstimate} />} />
-      <Route path="/projects/:slug" component={() => <ProjectsPage onEstimate={onEstimate} />} />
-      <Route path="/services" component={ServicesPage} />
-      <Route path="/contacts" component={() => <ContactsPage onEstimate={onEstimate} />} />
+      <Route path="/about" component={() => <AboutPage lang={lang} />} />
+      <Route path="/products" component={() => <ProductsPage lang={lang} onEstimate={onEstimate} />} />
+      <Route path="/products/:categorySlug/:productSlug" component={() => <ProductDetail lang={lang} onEstimate={onEstimate} />} />
+      <Route path="/products/:categorySlug" component={() => <CategoryProductsPage lang={lang} onEstimate={onEstimate} />} />
+      <Route path="/projects" component={() => <ProjectsPage lang={lang} onEstimate={onEstimate} />} />
+      <Route path="/projects/:slug" component={() => <ProjectsPage lang={lang} onEstimate={onEstimate} />} />
+      <Route path="/services" component={() => <ServicesPage lang={lang} />} />
+      <Route path="/contacts" component={() => <ContactsPage lang={lang} onEstimate={onEstimate} />} />
       <Route component={NotFound} />
     </Switch>
   ); 
@@ -2934,7 +3151,7 @@ function App() {
         </ErrorBoundary>
         <Toaster />
       </TooltipProvider>
-      <EstimateModal open={modal} initialProduct={initialProduct} initialColor={initialColor} onClose={() => setModal(false)} />
+      <EstimateModal open={modal} lang={lang} initialProduct={initialProduct} initialColor={initialColor} onClose={() => setModal(false)} />
     </QueryClientProvider>
   ); 
 }

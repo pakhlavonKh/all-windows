@@ -50,6 +50,18 @@ import imgDeceuninck6000 from './Deceuninck6000.png';
 import imgDeceuninck7000 from './Deceuninck7000.png';
 import imgDeceuninck8000 from './Deceuninck8000.png';
 
+import imgInsideFrameNet from './внутрирамная.jpeg';
+import imgHingedNet from './наПетлях.jpeg';
+import imgSlidingNet from './раздвижная.jpeg';
+import imgFrameNet from './рамочная.jpeg';
+
+import imgRollerGates from './роллетныеВорота.jpeg';
+import imgRollerShutters from './ролльставни.jpeg';
+
+import imgSpider from './spider.jpg';
+import imgSpiderSystem from './spiderSystem.jpg';
+import imgRailings from './перила.jpg';
+
 export const localImages = {
   hero: imgHero,
   tower: imgTower,
@@ -102,6 +114,21 @@ export const localImages = {
   deceuninck6000: imgDeceuninck6000,
   deceuninck7000: imgDeceuninck7000,
   deceuninck8000: imgDeceuninck8000,
+
+  // Москитные сетки
+  insideFrameNet: imgInsideFrameNet,
+  hingedNet: imgHingedNet,
+  slidingNet: imgSlidingNet,
+  frameNet: imgFrameNet,
+
+  // Роллеты и рольставни
+  rollerGates: imgRollerGates,
+  rollerShutters: imgRollerShutters,
+
+  // Спайдерные системы и витражи
+  spider: imgSpider,
+  spiderSystem: imgSpiderSystem,
+  railings: imgRailings,
 };
 
 export default localImages;

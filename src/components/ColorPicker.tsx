@@ -9,6 +9,7 @@ interface ColorPickerProps {
   maxVisible?: number;
   showTitle?: boolean;
   variant?: 'dark' | 'light';
+  lang?: 'ru' | 'uz';
 }
 
 export function ColorPicker({
@@ -17,6 +18,7 @@ export function ColorPicker({
   maxVisible = 6,
   showTitle = true,
   variant = 'dark',
+  lang = 'ru',
 }: ColorPickerProps) {
   const [modalOpen, setModalOpen] = useState(false);
 
@@ -25,6 +27,7 @@ export function ColorPicker({
   const remainingCount = windowColors.length - maxVisible;
 
   const isLight = variant === 'light';
+  const isUz = lang === 'uz';
 
   return (
     <div className="space-y-2.5">
@@ -33,10 +36,10 @@ export function ColorPicker({
           <div className="flex items-center gap-2">
             <Palette size={14} className={isLight ? 'text-[#816a3f]' : 'text-[#d4b16a]'} />
             <span className={`text-xs font-semibold ${isLight ? 'text-black/70' : 'text-white/80'}`}>
-              Цвет профиля:
+              {isUz ? 'Profil rangi:' : 'Цвет профиля:'}
             </span>
             <span className={`text-xs font-bold ${isLight ? 'text-[#151515]' : 'text-[#d4b16a]'}`}>
-              {selected.name}
+              {isUz ? selected.nameUz : selected.name}
             </span>
           </div>
           <button
@@ -46,7 +49,7 @@ export function ColorPicker({
               isLight ? 'text-black/60 hover:text-black font-medium' : 'text-white/50 hover:text-[#d4b16a]'
             }`}
           >
-            Все 16 цветов
+            {isUz ? `Barcha ${windowColors.length} ta rang` : `Все ${windowColors.length} цветов`}
           </button>
         </div>
       )}
@@ -122,15 +125,18 @@ export function ColorPicker({
               {/* Header */}
               <div className="flex items-center justify-between border-b border-white/10 pb-4">
                 <div>
-                  <p className="text-[10px] uppercase tracking-[.22em] text-[#d4b16a]">Палитра ламинации и покраски</p>
+                  <p className="text-[10px] uppercase tracking-[.22em] text-[#d4b16a]">
+                    {isUz ? 'Laminatsiya va bo‘yash palitrasi' : 'Палитра ламинации и покраски'}
+                  </p>
                   <h3 className="mt-1 font-display text-xl font-bold text-white">
-                    Цветовые решения (16 вариантов)
+                    {isUz ? `Rang yechimlari (${windowColors.length} xil variant)` : `Цветовые решения (${windowColors.length} вариантов)`}
                   </h3>
                 </div>
                 <button
                   type="button"
                   onClick={() => setModalOpen(false)}
                   className="flex size-9 items-center justify-center rounded-full border border-white/10 bg-white/5 text-white/70 hover:bg-white/10 hover:text-white transition"
+                  aria-label={isUz ? 'Yopish' : 'Закрыть'}
                 >
                   <X size={18} />
                 </button>
@@ -157,7 +163,7 @@ export function ColorPicker({
                       <div className="relative size-14 sm:size-16 rounded-full overflow-hidden ring-2 ring-white/10 group-hover:ring-[#c6a15b] transition shadow-md">
                         <img
                           src={color.image}
-                          alt={color.name}
+                          alt={isUz ? color.nameUz : color.name}
                           className="size-full object-cover transition-transform duration-300 group-hover:scale-110"
                         />
                         {isSelected && (
@@ -168,10 +174,10 @@ export function ColorPicker({
                       </div>
 
                       <span className="mt-2.5 text-xs font-medium text-white/90 group-hover:text-white line-clamp-2">
-                        {color.name}
+                        {isUz ? color.nameUz : color.name}
                       </span>
                       <span className="mt-0.5 text-[10px] text-white/40">
-                        {color.nameUz}
+                        {isUz ? color.name : color.nameUz}
                       </span>
                     </button>
                   );
@@ -183,9 +189,9 @@ export function ColorPicker({
                 <button
                   type="button"
                   onClick={() => setModalOpen(false)}
-                  className="rounded-full bg-[#c6a15b] px-6 py-2 text-xs font-bold text-black hover:bg-[#d4b16a] transition"
+                  className="rounded-full bg-[#c6a15b] px-6 py-2 text-xs font-bold text-black hover:bg-[#d4b16a] transition cursor-pointer"
                 >
-                  Готово
+                  {isUz ? 'Tayyor' : 'Готово'}
                 </button>
               </div>
             </motion.div>
