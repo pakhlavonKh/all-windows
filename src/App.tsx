@@ -89,28 +89,28 @@ export const categories: Category[] = [
     slug: 'stained-glass', 
     title: 'Витражи и панорамное остекление', 
     subtitle: 'Свет как часть архитектуры', 
-    image: pics.glass, 
+    image: pics.spiderSystem, 
     description: 'Панорамные решения с большим световым проёмом. Подбираем формулу стекла по инсоляции, нагрузке и сценарию использования пространства.' 
   },
   { 
     slug: 'rolling-shutters', 
     title: 'Рольставни и роллетные ворота', 
     subtitle: 'Akfa · защита и контроль света', 
-    image: pics.tower, 
+    image: pics.rollerShutters, 
     description: 'Современная замена решёткам и жалюзи. Роллетные системы защищают проёмы, регулируют свет и аккуратно интегрируются в фасад здания.' 
   },
   { 
     slug: 'glass-railings', 
     title: 'Стеклянные перила и ограждения', 
     subtitle: 'Безопасность без визуальных границ', 
-    image: pics.detail, 
+    image: pics.railings, 
     description: 'Лаконичные ограждения для лестниц, балконов и террас из закаленного триплекса. Рассчитываем крепления и выполняем аккуратный монтаж.' 
   },
   { 
     slug: 'mosquito-nets', 
     title: 'Москитные сетки', 
     subtitle: 'Рамочные решения для всех типов окон', 
-    image: pics.residence, 
+    image: pics.frameNet, 
     description: 'Практичная защита от насекомых и пыли с точной посадкой в проём. Рамочные, дверные и раздвижные плиссе-системы.' 
   },
 ];
@@ -1440,11 +1440,13 @@ function EstimateModal({
   const [name, setName] = useState(''); 
   const [phone, setPhone] = useState('+998 '); 
   const [comment, setComment] = useState('');
+  const [modalError, setModalError] = useState<string | null>(null);
 
   useEffect(() => { 
     if (open) { 
       setStatus('form'); 
       setPhone('+998 '); 
+      setModalError(null);
       if (initialColor) {
         setColor(initialColor);
       }
@@ -1516,7 +1518,18 @@ function EstimateModal({
 
   const submit = async (e: FormEvent) => { 
     e.preventDefault(); 
-    if (!name.trim() || phone.replace(/\D/g, '').length < 12) return; 
+    setModalError(null);
+
+    if (!name.trim()) {
+      setModalError(lang === 'uz' ? 'Iltimos, ismingizni kiriting' : 'Пожалуйста, укажите ваше имя');
+      return;
+    }
+    const purePhone = phone.replace(/\D/g, '');
+    if (purePhone.length < 9) {
+      setModalError(lang === 'uz' ? "Iltimos, to'liq telefon raqamingizni kiriting (+998 ...)" : 'Пожалуйста, введите полный номер телефона (+998...)');
+      return;
+    }
+
     setStatus('loading'); 
     try {
       await submitLead({
@@ -1531,10 +1544,9 @@ function EstimateModal({
         comment: comment.trim(),
         source: 'Модальное окно расчёта (Сайт)'
       });
-    } catch (err) {
-      console.error('Ошибка отправки заявки:', err);
-    } finally {
-      setStatus('done');
+    } catch {
+      setModalError(lang === 'uz' ? 'Yuborishda xatolik yuz berdi. Iltimos, qayta urinib ko‘ring.' : 'Ошибка отправки. Пожалуйста, попробуйте еще раз.');
+      setStatus('form');
     }
   };
 
@@ -1706,6 +1718,12 @@ function EstimateModal({
                       />
                     </label>
                   </div>
+
+                  {modalError && (
+                    <div className="rounded-lg bg-red-500/10 border border-red-500/30 px-3 py-2 text-xs text-red-400 font-medium">
+                      {modalError}
+                    </div>
+                  )}
 
                   <div className="pt-1">
                     <button 
@@ -1959,6 +1977,7 @@ function Home({ onEstimate, lang }: { onEstimate: (p?: string) => void; lang: La
   const [formPhone, setFormPhone] = useState('+998 ');
   const [formComment, setFormComment] = useState('');
   const [formStatus, setFormStatus] = useState<'idle' | 'loading' | 'done'>('idle');
+  const [homeFormError, setHomeFormError] = useState<string | null>(null);
 
   const onCategoryChange = (newCatSlug: string) => {
     setSelectedCategorySlug(newCatSlug);
@@ -1974,7 +1993,18 @@ function Home({ onEstimate, lang }: { onEstimate: (p?: string) => void; lang: La
 
   const handleHomeSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    if (!formName.trim() || formPhone.replace(/\D/g, '').length < 12) return;
+    setHomeFormError(null);
+
+    if (!formName.trim()) {
+      setHomeFormError(lang === 'uz' ? 'Iltimos, ismingizni kiriting' : 'Пожалуйста, укажите ваше имя');
+      return;
+    }
+    const purePhone = formPhone.replace(/\D/g, '');
+    if (purePhone.length < 9) {
+      setHomeFormError(lang === 'uz' ? "Iltimos, to'liq telefon raqamingizni kiriting (+998 ...)" : 'Пожалуйста, введите полный номер телефона (+998...)');
+      return;
+    }
+
     setFormStatus('loading');
     try {
       await submitLead({
@@ -1989,10 +2019,9 @@ function Home({ onEstimate, lang }: { onEstimate: (p?: string) => void; lang: La
         comment: formComment.trim(),
         source: 'Главная страница (Калькулятор сметы)'
       });
-    } catch (err) {
-      console.error('Ошибка отправки заявки:', err);
-    } finally {
-      setFormStatus('done');
+    } catch {
+      setHomeFormError(lang === 'uz' ? 'Yuborishda xatolik yuz berdi. Iltimos, qayta urinib ko‘ring.' : 'Ошибка отправки. Пожалуйста, попробуйте еще раз.');
+      setFormStatus('idle');
     }
   };
 
@@ -2237,6 +2266,12 @@ function Home({ onEstimate, lang }: { onEstimate: (p?: string) => void; lang: La
                     />
                   </label>
                 </div>
+
+                {homeFormError && (
+                  <div className="mt-4 rounded-xl bg-red-500/10 border border-red-500/30 px-4 py-2.5 text-xs font-semibold text-red-600">
+                    {homeFormError}
+                  </div>
+                )}
 
                 <div className="mt-6 flex flex-wrap items-center gap-4">
                   <button 

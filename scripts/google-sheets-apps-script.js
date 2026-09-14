@@ -3,16 +3,17 @@
  * ALL WINDOWS — Интеграция формы с Google Таблицей и Telegram-ботом
  * ============================================================================
  * 
- * Инструкция по настройке:
- * 1. Откройте Google Таблицу: Расширения (Extensions) -> Apps Script
- * 2. Вставьте весь этот код в редактор Code.gs
- * 3. Укажите ваши TELEGRAM_BOT_TOKEN и TELEGRAM_CHAT_ID в блоке CONFIG ниже
- * 4. Нажмите "Развернуть" (Deploy) -> "Управление развертываниями" (Manage deployments)
- *    -> Редактировать (карандаш) -> Версия: "Новая версия" -> Развернуть.
- *    (Если делаете в первый раз: "Новое развертывание" -> Веб-приложение ->
- *     Выполнять от имени: "Я", Доступ: "Все" (Anyone))
- * 5. Скопируйте URL веб-приложения и укажите его в файле .env:
- *    VITE_GOOGLE_SCRIPT_URL=https://script.google.com/macros/s/.../exec
+ * ⚠️ ВАЖНО ДЛЯ ОБНОВЛЕНИЯ КОДА В APPS SCRIPT:
+ * Простого сохранения (Ctrl+S / Save) в редакторе Code.gs НЕДОСТАТОЧНО, 
+ * чтобы обновить работающую ссылку веб-приложения (/exec)!
+ * 
+ * Каждый раз после изменения кода выполните 4 шага:
+ * 1. Нажмите синюю кнопку «Развернуть» (Deploy) в правом верхнем углу
+ * 2. Выберите «Управление развертываниями» (Manage deployments)
+ * 3. Нажмите иконку КАРАНДАША (Редактировать) рядом с активным веб-приложением
+ * 4. В выпадающем списке «Версия» (Version) выберите «Новая версия» (New version)
+ * 5. Нажмите «Развернуть» (Deploy).
+ * ============================================================================
  */
 
 // ==================== НАСТРОЙКИ (КОНФИГУРАЦИЯ) ====================
@@ -118,7 +119,13 @@ function saveLeadToSheet(data) {
 
   var timestamp = Utilities.formatDate(new Date(), CONFIG.TIMEZONE, 'dd.MM.yyyy HH:mm:ss');
   var name = data.name || data.formName || 'Не указано';
-  var phone = data.phone || data.formPhone || 'Не указано';
+  
+  // В Google Таблицах строки, начинающиеся с '+', воспринимаются как математические формулы,
+  // что вызывает ошибку #ERROR! (Formula parse error). 
+  // Одиночный апостроф "'" принудительно сохраняет номер как чистый текст (в ячейке сам апостроф скрыт).
+  var rawPhone = (data.phone || data.formPhone || '').toString().trim();
+  var phone = rawPhone ? ("'" + rawPhone) : 'Не указано';
+
   var category = data.categoryTitle || data.category || 'Не выбрано';
   var product = data.productTitle || data.product || 'Не выбрано';
   var color = data.color || data.formColor || 'Стандарт';
@@ -148,6 +155,8 @@ function saveLeadToSheet(data) {
   var range = sheet.getRange(lastRow, 1, 1, row.length);
   range.setVerticalAlignment('middle');
   range.setFontSize(10);
+  // Принудительно задаем текстовый формат ячейке с телефоном (Колонка C)
+  sheet.getRange(lastRow, 3).setNumberFormat('@');
 
   return lastRow;
 }
@@ -180,6 +189,8 @@ function setupSheetHeaders(sheet) {
   headerRange.setVerticalAlignment('middle');
   sheet.setRowHeight(1, 36);
   sheet.setFrozenRows(1);
+  // Настраиваем колонку телефона как простой текст
+  sheet.getRange('C:C').setNumberFormat('@');
 
   for (var i = 1; i <= headers.length; i++) {
     sheet.autoResizeColumn(i);
@@ -212,7 +223,7 @@ function sendTelegramNotification(data) {
 
   var text = '✨ <b>НОВАЯ ЗАЯВКА НА РАСЧЁТ | ALL WINDOWS</b>\n\n' +
     '👤 <b>Клиент:</b> ' + name + '\n' +
-    '📞 <b>Телефон:</b> <a href="tel:' + cleanPhone + '">' + displayPhone + '</a> (<code>' + displayPhone + '</code>)\n' +
+    '📞 <b>Телефон:</b> <a href="tel:' + cleanPhone + '">' + displayPhone + '</a> (<code>' + cleanPhone + '</code>)\n' +
     '🏢 <b>Категория:</b> ' + category + '\n' +
     '🪟 <b>Система:</b> ' + product + '\n' +
     '🎨 <b>Цвет:</b> ' + color + '\n' +
@@ -223,12 +234,18 @@ function sendTelegramNotification(data) {
     '⏱ <b>Время:</b> ' + timeStr;
 
   var keyboard = [];
+  
+  // Кнопки для быстрой связи с клиентом (Telegram и WhatsApp)
   if (cleanPhone) {
-    var tgPhone = cleanPhone.replace('+', '');
-    if (tgPhone.length >= 9) {
+    var pureDigits = cleanPhone.replace(/\D/g, '');
+    if (pureDigits.length >= 9) {
       keyboard.push([{
-        text: '💬 Написать клиенту в Telegram',
-        url: 'https://t.me/+' + tgPhone
+        text: '✈️ Написать клиенту в Telegram',
+        url: 'https://t.me/+' + pureDigits
+      }]);
+      keyboard.push([{
+        text: '💬 Написать клиенту в WhatsApp',
+        url: 'https://wa.me/' + pureDigits
       }]);
     }
   }
@@ -256,6 +273,18 @@ function sendTelegramNotification(data) {
   var response = UrlFetchApp.fetch(url, options);
   var resCode = response.getResponseCode();
   var resText = response.getContentText();
+
+  // ⚠️ ЖЕЛЕЗНЫЙ FALLBACK:
+  // Если Telegram вернул ошибку (например, блокировка или ошибка в reply_markup),
+  // пробуем немедленно отправить сообщение без кнопок, чтобы заявка гарантированно дошла!
+  if (resCode !== 200 && payload.reply_markup) {
+    Logger.log('Предупреждение: ошибка Telegram API при отправке с кнопками (' + resCode + '): ' + resText + '. Повторная отправка без кнопок...');
+    delete payload.reply_markup;
+    options.payload = JSON.stringify(payload);
+    response = UrlFetchApp.fetch(url, options);
+    resCode = response.getResponseCode();
+    resText = response.getContentText();
+  }
 
   if (resCode !== 200) {
     Logger.log('Telegram API Error (' + resCode + '): ' + resText);

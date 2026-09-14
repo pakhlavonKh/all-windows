@@ -17,8 +17,8 @@ export interface SubmitLeadResponse {
   simulated?: boolean;
 }
 
-// Hardcoded Google Apps Script Web App URL
-const HARDCODED_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbznHWCmBh8g-ZaGUo-tnHm5KcYeXnqWqHiiRO60--ys3zvw7iP_jCB9Mak4fr05IIj5MA/exec';
+// Hardcoded Google Apps Script Web App URL (no .env dependency)
+const HARDCODED_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzE2yL06GjU346Bny7kebZypsbVh5kn-N3ZWb8xvs3LiGf6ffcV9DK9olwS350_UVojEg/exec';
 
 /**
  * Отправка данных заявки в Google Apps Script Web App
@@ -26,13 +26,7 @@ const HARDCODED_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbznHWCmBh8
  * и отправляет форматированное уведомление в Telegram бот.
  */
 export async function submitLead(data: LeadData): Promise<SubmitLeadResponse> {
-  const envUrl = import.meta.env.VITE_GOOGLE_SCRIPT_URL?.trim();
-  const scriptUrl = (envUrl && envUrl !== '' && !envUrl.includes('YOUR_DEPLOYMENT_ID')) 
-    ? envUrl 
-    : HARDCODED_SCRIPT_URL;
-
-  console.log('🚀 [leadService] Отправка заявки на Apps Script URL:', scriptUrl);
-  console.log('📦 [leadService] Данные заявки:', data);
+  const scriptUrl = HARDCODED_SCRIPT_URL;
 
   try {
     // Используем mode: 'no-cors' с text/plain.
@@ -47,14 +41,28 @@ export async function submitLead(data: LeadData): Promise<SubmitLeadResponse> {
       body: JSON.stringify(data),
     });
 
-    console.log('✅ [leadService] Запрос успешно отправлен в Google Apps Script!');
     return {
       success: true,
       message: 'Заявка успешно отправлена',
       simulated: false,
     };
   } catch (err: any) {
-    console.error('❌ [leadService] Ошибка при отправке заявки:', err);
+    try {
+      if (typeof navigator !== 'undefined' && navigator.sendBeacon) {
+        const blob = new Blob([JSON.stringify(data)], { type: 'text/plain;charset=utf-8' });
+        const beaconSent = navigator.sendBeacon(scriptUrl, blob);
+        if (beaconSent) {
+          return {
+            success: true,
+            message: 'Заявка успешно отправлена',
+            simulated: false,
+          };
+        }
+      }
+    } catch {
+      // Игнорируем ошибку beacon fallback
+    }
+
     throw new Error(err?.message || 'Не удалось отправить заявку. Попробуйте еще раз.');
   }
 }
