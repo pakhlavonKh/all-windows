@@ -1,13 +1,14 @@
 /**
  * ============================================================================
  * ALL WINDOWS — Интеграция формы с Google Таблицей и Telegram-ботом
+ * (Поддержка отправки в несколько Telegram-чатов одновременно)
  * ============================================================================
  * 
  * ⚠️ ВАЖНО ДЛЯ ОБНОВЛЕНИЯ КОДА В APPS SCRIPT:
  * Простого сохранения (Ctrl+S / Save) в редакторе Code.gs НЕДОСТАТОЧНО, 
  * чтобы обновить работающую ссылку веб-приложения (/exec)!
  * 
- * Каждый раз после изменения кода выполните 4 шага:
+ * Каждый раз после изменения кода выполните 5 шагов:
  * 1. Нажмите синюю кнопку «Развернуть» (Deploy) в правом верхнем углу
  * 2. Выберите «Управление развертываниями» (Manage deployments)
  * 3. Нажмите иконку КАРАНДАША (Редактировать) рядом с активным веб-приложением
@@ -21,10 +22,19 @@ var CONFIG = {
   // Токен вашего бота от @BotFather (например: '7829182741:AAHq_...')
   TELEGRAM_BOT_TOKEN: 'YOUR_BOT_TOKEN_HERE',
 
-  // ID чата, группы или канала, куда отправлять уведомления:
-  // - Для личного чата: ваш ID от @userinfobot (например: 987654321)
-  //   ВАЖНО: обязательно напишите боту /start в Telegram, иначе бот не сможет писать вам!
-  // - Для группы: добавьте бота в группу и укажите ID группы (например: -1001234567890)
+  // 👥 СПИСОК ID ЧАТОВ, ГРУПП ИЛИ КАНАЛОВ ДЛЯ УВЕДОМЛЕНИЙ:
+  // Вы можете указать несколько получателей в массиве через запятую:
+  //   - Для личного чата: ID от @userinfobot (например: '987654321')
+  //     ВАЖНО: каждый получатель должен предварительно написать боту /start!
+  //   - Для группы: добавьте бота в группу/канал и укажите ID со знаком минус (например: '-1001234567890')
+  //     ВАЖНО: боту необходимо предоставить права на отправку сообщений в группе/канале!
+  TELEGRAM_CHAT_IDS: [
+    'YOUR_CHAT_ID_1_HERE',
+    // 'YOUR_CHAT_ID_2_HERE',
+    // '-1001234567890'
+  ],
+
+  // Одиночный Chat ID (сохранен для обратной совместимости):
   TELEGRAM_CHAT_ID: 'YOUR_CHAT_ID_HERE',
 
   // Название листа в Google Таблице
@@ -33,6 +43,46 @@ var CONFIG = {
   // Часовой пояс (Ташкент: GMT+5)
   TIMEZONE: 'GMT+5'
 };
+
+/**
+ * Вспомогательная функция: получает список уникальных настроенных Chat ID из CONFIG
+ */
+function getTelegramChatIds() {
+  var chatIds = [];
+
+  // 1. Проверяем массив или строку TELEGRAM_CHAT_IDS
+  if (CONFIG.TELEGRAM_CHAT_IDS) {
+    if (Array.isArray(CONFIG.TELEGRAM_CHAT_IDS)) {
+      chatIds = chatIds.concat(CONFIG.TELEGRAM_CHAT_IDS);
+    } else if (typeof CONFIG.TELEGRAM_CHAT_IDS === 'string') {
+      chatIds = chatIds.concat(CONFIG.TELEGRAM_CHAT_IDS.split(','));
+    }
+  }
+
+  // 2. Проверяем одиночный TELEGRAM_CHAT_ID (для обратной совместимости)
+  if (CONFIG.TELEGRAM_CHAT_ID) {
+    chatIds.push(CONFIG.TELEGRAM_CHAT_ID);
+  }
+
+  // 3. Плейсхолдеры по умолчанию, которые нужно игнорировать
+  var placeholders = [
+    'YOUR_CHAT_ID_HERE',
+    'YOUR_CHAT_ID_1_HERE',
+    'YOUR_CHAT_ID_2_HERE',
+    'YOUR_CHAT_ID_3_HERE'
+  ];
+
+  // 4. Очищаем, отфильтровываем заглушки и удаляем дубликаты
+  var uniqueIds = [];
+  for (var i = 0; i < chatIds.length; i++) {
+    var rawId = (chatIds[i] || '').toString().trim();
+    if (rawId && placeholders.indexOf(rawId) === -1 && uniqueIds.indexOf(rawId) === -1) {
+      uniqueIds.push(rawId);
+    }
+  }
+
+  return uniqueIds;
+}
 
 /**
  * Обработка входящих POST-запросов от формы сайта
@@ -59,13 +109,16 @@ function doPost(e) {
     // 1. Записываем заявку в Google Таблицу
     var savedRow = saveLeadToSheet(data);
 
-    // 2. Отправляем уведомление в Telegram
+    // 2. Отправляем уведомление в настроенные Telegram-чаты
     var telegramSent = false;
     var telegramError = null;
+    var telegramDetails = null;
+
     if (CONFIG.TELEGRAM_BOT_TOKEN && CONFIG.TELEGRAM_BOT_TOKEN !== 'YOUR_BOT_TOKEN_HERE') {
       try {
         var tgResult = sendTelegramNotification(data);
         telegramSent = tgResult.success;
+        telegramDetails = tgResult;
         if (!telegramSent) telegramError = tgResult.error;
       } catch (tgErr) {
         telegramError = tgErr.toString();
@@ -79,7 +132,8 @@ function doPost(e) {
       message: 'Заявка успешно принята',
       sheetRow: savedRow,
       telegramSent: telegramSent,
-      telegramError: telegramError
+      telegramError: telegramError,
+      telegramDetails: telegramDetails
     })).setMimeType(ContentService.MimeType.JSON);
 
   } catch (error) {
@@ -95,12 +149,34 @@ function doPost(e) {
  * Обработка GET-запроса (проверка состояния сервиса)
  */
 function doGet(e) {
+  var configuredChatIds = getTelegramChatIds();
   return ContentService.createTextOutput(JSON.stringify({
     status: 'online',
-    service: 'ALL WINDOWS Lead Collector & Telegram Bot',
-    telegramConfigured: (CONFIG.TELEGRAM_BOT_TOKEN !== 'YOUR_BOT_TOKEN_HERE' && CONFIG.TELEGRAM_CHAT_ID !== 'YOUR_CHAT_ID_HERE'),
+    service: 'ALL WINDOWS Lead Collector & Multi-Chat Telegram Bot',
+    telegramConfigured: (CONFIG.TELEGRAM_BOT_TOKEN !== 'YOUR_BOT_TOKEN_HERE' && configuredChatIds.length > 0),
+    configuredChatsCount: configuredChatIds.length,
+    configuredChatIds: configuredChatIds,
     time: Utilities.formatDate(new Date(), CONFIG.TIMEZONE, 'yyyy-MM-dd HH:mm:ss')
   })).setMimeType(ContentService.MimeType.JSON);
+}
+
+/**
+ * Обработка входящих сообщений от Telegram (вебхук), для простого определения Chat ID
+ */
+function handleTelegramWebhook(data) {
+  var chat = data.message && data.message.chat;
+  if (chat && chat.id) {
+    var infoText = '👋 <b>ALL WINDOWS Bot</b>\n\n' +
+      '🆔 <b>ID этого чата:</b> <code>' + chat.id + '</code>\n' +
+      '📌 <b>Тип:</b> ' + (chat.type || 'private') + '\n\n' +
+      'Скопируйте этот ID и вставьте в массив <code>TELEGRAM_CHAT_IDS</code> в настройках Google Apps Script.';
+    try {
+      sendTelegramMessageToChat(CONFIG.TELEGRAM_BOT_TOKEN, chat.id, infoText, []);
+    } catch (e) {
+      Logger.log('Ошибка отправки ответа на вебхук: ' + e.toString());
+    }
+  }
+  return ContentService.createTextOutput(JSON.stringify({ status: 'ok' })).setMimeType(ContentService.MimeType.JSON);
 }
 
 /**
@@ -120,9 +196,8 @@ function saveLeadToSheet(data) {
   var timestamp = Utilities.formatDate(new Date(), CONFIG.TIMEZONE, 'dd.MM.yyyy HH:mm:ss');
   var name = data.name || data.formName || 'Не указано';
   
-  // В Google Таблицах строки, начинающиеся с '+', воспринимаются как математические формулы,
-  // что вызывает ошибку #ERROR! (Formula parse error). 
-  // Одиночный апостроф "'" принудительно сохраняет номер как чистый текст (в ячейке сам апостроф скрыт).
+  // В Google Таблицах строки, начинающиеся с '+', воспринимаются как формулы (#ERROR!).
+  // Одиночный апостроф "'" принудительно сохраняет номер как чистый текст.
   var rawPhone = (data.phone || data.formPhone || '').toString().trim();
   var phone = rawPhone ? ("'" + rawPhone) : 'Не указано';
 
@@ -131,6 +206,32 @@ function saveLeadToSheet(data) {
   var color = data.color || data.formColor || 'Стандарт';
   var glass = data.glass || data.formGlass || 'Не выбрано';
   var dimensions = (data.width && data.height) ? (data.width + ' × ' + data.height + ' мм') : 'Не указаны';
+  
+  // Если переданы несколько изделий, форматируем списком для ячеек таблицы
+  if (data.items && Array.isArray(data.items) && data.items.length > 1) {
+    category = data.items.map(function(item, idx) { 
+      return (idx + 1) + ') ' + (item.categoryTitle || 'Конструкция'); 
+    }).join('\n');
+
+    product = data.items.map(function(item, idx) { 
+      var qty = item.quantity ? (' [' + item.quantity + ' шт]') : '';
+      return (idx + 1) + ') ' + (item.productTitle || 'Не выбрано') + qty; 
+    }).join('\n');
+
+    color = data.items.map(function(item, idx) { 
+      return (idx + 1) + ') ' + (item.color || 'Стандарт'); 
+    }).join('\n');
+
+    glass = data.items.map(function(item, idx) { 
+      return (idx + 1) + ') ' + (item.glass || '—'); 
+    }).join('\n');
+
+    dimensions = data.items.map(function(item, idx) { 
+      var d = (item.width && item.height) ? (item.width + ' × ' + item.height + ' мм') : 'Не указаны';
+      return (idx + 1) + ') ' + d; 
+    }).join('\n');
+  }
+
   var comment = data.comment || data.formComment || '—';
   var source = data.source || 'Веб-сайт (ALL WINDOWS)';
   var status = 'Новая';
@@ -198,14 +299,18 @@ function setupSheetHeaders(sheet) {
 }
 
 /**
- * Отправка сообщения в Telegram с кнопками быстрого звонка
+ * Подготовка текста заявки и отправка во ВСЕ настроенные Telegram-чаты
  */
 function sendTelegramNotification(data) {
   var token = CONFIG.TELEGRAM_BOT_TOKEN;
-  var chatId = CONFIG.TELEGRAM_CHAT_ID;
+  var chatIds = getTelegramChatIds();
 
-  if (!token || !chatId || token === 'YOUR_BOT_TOKEN_HERE') {
-    return { success: false, error: 'Token или Chat ID не заданы в CONFIG' };
+  if (!token || token === 'YOUR_BOT_TOKEN_HERE') {
+    return { success: false, error: 'TELEGRAM_BOT_TOKEN не настроен в CONFIG' };
+  }
+
+  if (chatIds.length === 0) {
+    return { success: false, error: 'Ни один Chat ID не указан в CONFIG (TELEGRAM_CHAT_IDS / TELEGRAM_CHAT_ID)' };
   }
 
   var name = escapeHtml(data.name || data.formName || 'Не указано');
@@ -223,13 +328,34 @@ function sendTelegramNotification(data) {
 
   var text = '✨ <b>НОВАЯ ЗАЯВКА НА РАСЧЁТ | ALL WINDOWS</b>\n\n' +
     '👤 <b>Клиент:</b> ' + name + '\n' +
-    '📞 <b>Телефон:</b> <a href="tel:' + cleanPhone + '">' + displayPhone + '</a> (<code>' + cleanPhone + '</code>)\n' +
-    '🏢 <b>Категория:</b> ' + category + '\n' +
-    '🪟 <b>Система:</b> ' + product + '\n' +
-    '🎨 <b>Цвет:</b> ' + color + '\n' +
-    '🔲 <b>Стекло:</b> ' + glass + '\n' +
-    '📐 <b>Размеры:</b> ' + dimensions + '\n' +
-    '💬 <b>Комментарий:</b> <i>' + comment + '</i>\n' +
+    '📞 <b>Телефон:</b> <a href="tel:' + cleanPhone + '">' + displayPhone + '</a> (<code>' + cleanPhone + '</code>)\n';
+
+  // Если передано несколько изделий, формируем детальный блок
+  if (data.items && Array.isArray(data.items) && data.items.length > 0) {
+    text += '\n📦 <b>Выбранные конструкции (' + data.items.length + ' поз.):</b>\n';
+    for (var i = 0; i < data.items.length; i++) {
+      var itm = data.items[i];
+      var itmCat = escapeHtml(itm.categoryTitle || 'Конструкция');
+      var itmProd = escapeHtml(itm.productTitle || 'Не выбрано');
+      var itmDim = (itm.width && itm.height) ? (itm.width + ' × ' + itm.height + ' мм') : 'Размеры не указаны';
+      var itmQty = itm.quantity ? (' (' + itm.quantity + ' шт)') : '';
+      var itmColor = itm.color ? escapeHtml(itm.color) : 'Стандарт';
+      var itmGlass = itm.glass ? escapeHtml(itm.glass) : 'Стандарт';
+      
+      text += '  <b>' + (i + 1) + '. ' + itmCat + ':</b> ' + itmProd + itmQty + '\n' +
+              '     • <i>Размеры:</i> ' + itmDim + '\n' +
+              '     • <i>Цвет:</i> ' + itmColor + ' | <i>Стекло:</i> ' + itmGlass + '\n';
+    }
+    text += '\n';
+  } else {
+    text += '🏢 <b>Категория:</b> ' + category + '\n' +
+      '🪟 <b>Система:</b> ' + product + '\n' +
+      '🎨 <b>Цвет:</b> ' + color + '\n' +
+      '🔲 <b>Стекло:</b> ' + glass + '\n' +
+      '📐 <b>Размеры:</b> ' + dimensions + '\n';
+  }
+
+  text += '💬 <b>Комментарий:</b> <i>' + comment + '</i>\n' +
     '📍 <b>Источник:</b> ' + source + '\n' +
     '⏱ <b>Время:</b> ' + timeStr;
 
@@ -250,13 +376,53 @@ function sendTelegramNotification(data) {
     }
   }
 
+  var sentCount = 0;
+  var errors = [];
+
+  // Отправляем сообщение в каждый настроенный чат по отдельности
+  // Ошибка в одном чате не прерывает отправку в другие чаты!
+  for (var c = 0; c < chatIds.length; c++) {
+    var targetChatId = chatIds[c];
+    try {
+      var sendRes = sendTelegramMessageToChat(token, targetChatId, text, keyboard);
+      if (sendRes.success) {
+        sentCount++;
+      } else {
+        errors.push('Чат ' + targetChatId + ': ' + sendRes.error);
+      }
+    } catch (chatErr) {
+      errors.push('Чат ' + targetChatId + ': ' + chatErr.toString());
+    }
+  }
+
+  if (sentCount === 0 && errors.length > 0) {
+    return { 
+      success: false, 
+      error: errors.join('; '),
+      sentCount: 0,
+      totalChats: chatIds.length
+    };
+  }
+
+  return { 
+    success: true, 
+    sentCount: sentCount, 
+    totalChats: chatIds.length,
+    errors: errors.length > 0 ? errors.join('; ') : null 
+  };
+}
+
+/**
+ * Отправка сообщения конкретному получателю (chatId) с автоматическим fallback без кнопок
+ */
+function sendTelegramMessageToChat(token, chatId, text, keyboard) {
   var payload = {
     chat_id: chatId,
     text: text,
     parse_mode: 'HTML'
   };
 
-  if (keyboard.length > 0) {
+  if (keyboard && keyboard.length > 0) {
     payload.reply_markup = JSON.stringify({
       inline_keyboard: keyboard
     });
@@ -275,10 +441,10 @@ function sendTelegramNotification(data) {
   var resText = response.getContentText();
 
   // ⚠️ ЖЕЛЕЗНЫЙ FALLBACK:
-  // Если Telegram вернул ошибку (например, блокировка или ошибка в reply_markup),
+  // Если Telegram вернул ошибку при отправке с кнопками (например, ограничение группы или inline_keyboard),
   // пробуем немедленно отправить сообщение без кнопок, чтобы заявка гарантированно дошла!
   if (resCode !== 200 && payload.reply_markup) {
-    Logger.log('Предупреждение: ошибка Telegram API при отправке с кнопками (' + resCode + '): ' + resText + '. Повторная отправка без кнопок...');
+    Logger.log('Предупреждение: ошибка чата ' + chatId + ' при отправке с кнопками (' + resCode + '). Повторная отправка чистого текста...');
     delete payload.reply_markup;
     options.payload = JSON.stringify(payload);
     response = UrlFetchApp.fetch(url, options);
@@ -287,9 +453,10 @@ function sendTelegramNotification(data) {
   }
 
   if (resCode !== 200) {
-    Logger.log('Telegram API Error (' + resCode + '): ' + resText);
-    return { success: false, error: 'Telegram API returned ' + resCode + ': ' + resText };
+    Logger.log('Telegram API Error для чата ' + chatId + ' (' + resCode + '): ' + resText);
+    return { success: false, error: 'HTTP ' + resCode + ': ' + resText };
   }
+
   return { success: true };
 }
 
@@ -317,15 +484,17 @@ function testSendTelegram() {
     glass: 'Двухкамерный энергосберегающий Low-E',
     width: '2100',
     height: '1500',
-    comment: 'Тестовая отправка из Google Apps Script',
-    source: 'Тест'
+    comment: 'Тестовая отправка из Google Apps Script на несколько чатов',
+    source: 'Тест нескольких получателей'
   };
 
   Logger.log('1. Сохранение в таблицу...');
   var row = saveLeadToSheet(testLead);
   Logger.log('Строка в таблице: ' + row);
 
-  Logger.log('2. Отправка в Telegram...');
+  Logger.log('2. Проверка настроенных Chat ID: ' + JSON.stringify(getTelegramChatIds()));
+
+  Logger.log('3. Отправка в Telegram...');
   var res = sendTelegramNotification(testLead);
-  Logger.log('Результат: ' + JSON.stringify(res));
+  Logger.log('Результат отправки: ' + JSON.stringify(res));
 }

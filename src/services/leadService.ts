@@ -1,6 +1,17 @@
+export interface LeadProductItem {
+  categoryTitle: string;
+  productTitle: string;
+  color?: string;
+  glass?: string;
+  width?: string | number;
+  height?: string | number;
+  quantity?: string | number;
+}
+
 export interface LeadData {
   name: string;
   phone: string;
+  items?: LeadProductItem[];
   categoryTitle?: string;
   productTitle?: string;
   color?: string;
@@ -18,7 +29,7 @@ export interface SubmitLeadResponse {
 }
 
 // Hardcoded Google Apps Script Web App URL (no .env dependency)
-const HARDCODED_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzE2yL06GjU346Bny7kebZypsbVh5kn-N3ZWb8xvs3LiGf6ffcV9DK9olwS350_UVojEg/exec';
+const HARDCODED_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyeIeTPwKwyFuteRtrm5in1apZbjTw7Cr1cF1A9qWjzNKY2Aq6lSoWP5-bXjOXyeD3RHQ/exec';
 
 /**
  * Отправка данных заявки в Google Apps Script Web App

@@ -3,8 +3,8 @@ import { AnimatePresence, motion, useInView, animate } from 'framer-motion';
 import { Link, Route, Switch, useLocation, useParams } from 'wouter';
 import { 
   ArrowRight, ArrowUpRight, Award, Check, CheckCircle2, ChevronDown, ChevronLeft, ChevronRight, ChevronUp,
-  ExternalLink, Factory, FileCheck2, GlassWater, Images, Instagram, MapPin, Maximize2, Menu, Phone, Ruler, Send, 
-  ShieldCheck, Sparkles, X, Wrench, Zap 
+  ExternalLink, Factory, FileCheck2, GlassWater, Images, Instagram, Layers, MapPin, Maximize2, Menu, Phone, Plus, Ruler, Send, 
+  ShieldCheck, Sparkles, Trash2, X, Wrench, Zap 
 } from 'lucide-react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ErrorBoundary } from '@/components/error-boundary';
@@ -18,10 +18,19 @@ import { projects, type Project } from '@/data/projects';
 import { ProjectGalleryModal } from '@/components/ProjectGalleryModal';
 import { windowColors, type WindowColor } from '@/data/colors';
 import { ColorPicker } from '@/components/ColorPicker';
-import { submitLead } from '@/services/leadService';
+import { submitLead, type LeadProductItem } from '@/services/leadService';
 import { translations, type Lang, type TranslationDictionary } from '@/data/translations';
 import { getTranslatedProduct } from '@/data/productTranslations';
 import { formatPhoneNumber, handlePhoneKeyDown } from '@/lib/utils';
+import {
+  FORM_CATEGORIES,
+  getFormCategory,
+  getFormCategoryOptions,
+  getFormProductOptions,
+  createDefaultFormItem,
+  CUSTOM_PRODUCT_VALUE,
+  type FormProductItem
+} from '@/data/formCategories';
 
 const queryClient = new QueryClient();
 
@@ -1371,8 +1380,8 @@ function ModalNumberInput({
 
   return (
     <div>
-      <span className="block text-[11px] font-medium text-white/60 mb-1">{label}</span>
-      <div className="flex items-center justify-between gap-1 rounded-lg border border-white/10 bg-[#0e0e0e] px-2.5 py-1.5 transition focus-within:border-[#c6a15b]">
+      <span className="block text-[11px] font-medium text-white/60 mb-1 truncate">{label}</span>
+      <div className="flex items-center justify-between gap-1.5 rounded-lg border border-white/10 bg-[#0e0e0e] px-2.5 py-1.5 transition focus-within:border-[#c6a15b]">
         <input
           type="number"
           value={value}
@@ -1380,7 +1389,7 @@ function ModalNumberInput({
           placeholder={placeholder}
           min={min}
           max={max}
-          className="w-full bg-transparent text-xs sm:text-sm font-semibold text-white outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none placeholder:text-white/30"
+          className="w-full min-w-0 bg-transparent text-xs sm:text-sm font-semibold text-white outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none placeholder:text-white/30"
           data-testid={testId}
         />
         <div className="flex items-center gap-0.5 shrink-0">
@@ -1414,6 +1423,152 @@ const getModalGlassOptions = (lang: Lang) => [
   { label: lang === 'uz' ? 'Toblangan shisha (Tempered)' : 'Закаленное стекло (Tempered)', value: 'Закаленное стекло', desc: lang === 'uz' ? 'To‘siqlar va vitrajlar uchun' : 'Для перегородок и витражей' },
 ];
 
+function resolveInitialItem(initialProduct: string, initialColor: string): FormProductItem {
+  const defaultColor = initialColor || windowColors[0].name;
+  if (!initialProduct) {
+    return createDefaultFormItem('aluminium-windows', defaultColor);
+  }
+
+  const query = initialProduct.toLowerCase().trim();
+  
+  // 1. Поиск по продуктам FORM_CATEGORIES
+  for (const cat of FORM_CATEGORIES) {
+    const pMatch = cat.products.find(p => 
+      p.value.toLowerCase() === query ||
+      p.labelRu.toLowerCase().includes(query) ||
+      p.labelUz.toLowerCase().includes(query)
+    );
+    if (pMatch) {
+      return {
+        id: `item_init_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`,
+        categorySlug: cat.slug,
+        productSlug: pMatch.value,
+        customProductTitle: '',
+        color: defaultColor,
+        glass: 'Двухкамерный энергосберегающий',
+        width: cat.defaultWidth,
+        height: cat.defaultHeight,
+        quantity: '1'
+      };
+    }
+  }
+
+  // 2. Прямое совпадение со slug категории
+  const directCat = FORM_CATEGORIES.find(c => c.slug.toLowerCase() === query);
+  if (directCat) {
+    return createDefaultFormItem(directCat.slug, defaultColor);
+  }
+
+  // 3. Совпадение по ключевым словам
+  if (query.includes('двер') || query.includes('eshik') || query.includes('door')) {
+    if (query.includes('пвх') || query.includes('pvc')) {
+      return createDefaultFormItem('pvc-doors', defaultColor);
+    }
+    return createDefaultFormItem('aluminium-doors', defaultColor);
+  }
+  if (query.includes('пвх') || query.includes('pvc') || query.includes('deceuninck') || query.includes('engelberg') || query.includes('trio') || query.includes('quattro')) {
+    return createDefaultFormItem('pvc-windows', defaultColor);
+  }
+  if (query.includes('sliding') || query.includes('раздвиж') || query.includes('surma') || query.includes('гильотин') || query.includes('bkh')) {
+    return createDefaultFormItem('sliding', defaultColor);
+  }
+  if (query.includes('facade') || query.includes('фасад') || query.includes('bkf')) {
+    return createDefaultFormItem('facade', defaultColor);
+  }
+  if (query.includes('partition') || query.includes('перегород') || query.includes('to‘siq') || query.includes('bko')) {
+    return createDefaultFormItem('office-partitions', defaultColor);
+  }
+  if (query.includes('stained') || query.includes('витраж') || query.includes('спайдер') || query.includes('spider')) {
+    return createDefaultFormItem('stained-glass', defaultColor);
+  }
+  if (query.includes('shutter') || query.includes('рольставн') || query.includes('роллет') || query.includes('darvoza')) {
+    return createDefaultFormItem('rolling-shutters', defaultColor);
+  }
+  if (query.includes('railing') || query.includes('перил') || query.includes('огражден') || query.includes('panjara')) {
+    return createDefaultFormItem('glass-railings', defaultColor);
+  }
+  if (query.includes('net') || query.includes('сетк') || query.includes('chivin')) {
+    return createDefaultFormItem('mosquito-nets', defaultColor);
+  }
+
+  // Если это произвольный текст (например, из карточки проекта)
+  const def = createDefaultFormItem('aluminium-windows', defaultColor);
+  def.productSlug = CUSTOM_PRODUCT_VALUE;
+  def.customProductTitle = initialProduct;
+  return def;
+}
+
+function prepareLeadSubmission(items: FormProductItem[], name: string, phone: string, comment: string, source: string, lang: Lang) {
+  const leadItems: LeadProductItem[] = items.map(item => {
+    const catConfig = getFormCategory(item.categorySlug);
+    const catTitle = lang === 'uz' ? catConfig.titleUz : catConfig.titleRu;
+    let prodTitle = '';
+    if (item.productSlug === CUSTOM_PRODUCT_VALUE) {
+      prodTitle = item.customProductTitle.trim() || (lang === 'uz' ? 'O‘z varianti' : 'Индивидуальный вариант');
+    } else {
+      const pOption = catConfig.products.find(p => p.value === item.productSlug);
+      prodTitle = (lang === 'uz' ? pOption?.labelUz : pOption?.labelRu) || pOption?.labelRu || item.productSlug;
+    }
+    return {
+      categoryTitle: catTitle,
+      productTitle: prodTitle,
+      color: item.color,
+      glass: item.glass,
+      width: item.width,
+      height: item.height,
+      quantity: item.quantity || '1',
+    };
+  });
+
+  const primaryItem = leadItems[0] || {
+    categoryTitle: 'Алюминиевые окна',
+    productTitle: 'Akfa TERMO 77',
+    color: 'Антрацит матовый',
+    glass: 'Двухкамерный энергосберегающий',
+    width: '1800',
+    height: '1400',
+    quantity: '1'
+  };
+  const isMulti = leadItems.length > 1;
+
+  const categorySummary = isMulti
+    ? leadItems.map((it, idx) => `${idx + 1}) ${it.categoryTitle}`).join(', ')
+    : primaryItem.categoryTitle;
+
+  const productSummary = isMulti
+    ? leadItems.map((it, idx) => `${idx + 1}) ${it.productTitle} [${it.width}×${it.height} мм, ${it.quantity || 1} шт]`).join('; ')
+    : (primaryItem.quantity && parseInt(String(primaryItem.quantity), 10) > 1 
+        ? `${primaryItem.productTitle} (${primaryItem.quantity} шт)` 
+        : primaryItem.productTitle);
+
+  const dimensionsSummary = isMulti
+    ? leadItems.map((it, idx) => `${idx + 1}) ${it.width}×${it.height} мм`).join('; ')
+    : `${primaryItem.width} × ${primaryItem.height} мм`;
+
+  const colorSummary = isMulti
+    ? Array.from(new Set(leadItems.map(it => it.color).filter(Boolean))).join(', ')
+    : primaryItem.color;
+
+  const glassSummary = isMulti
+    ? Array.from(new Set(leadItems.map(it => it.glass).filter(Boolean))).join(', ')
+    : primaryItem.glass;
+
+  return {
+    name: name.trim(),
+    phone: phone.trim(),
+    items: leadItems,
+    categoryTitle: categorySummary,
+    productTitle: productSummary,
+    dimensions: dimensionsSummary,
+    width: primaryItem.width,
+    height: primaryItem.height,
+    color: colorSummary,
+    glass: glassSummary,
+    comment: comment.trim(),
+    source,
+  };
+}
+
 function EstimateModal({
   open,
   onClose,
@@ -1429,14 +1584,10 @@ function EstimateModal({
 }) {
   const t = copy(lang);
   const modalGlassOptions = getModalGlassOptions(lang);
+  const categoryOptions = getFormCategoryOptions(lang);
 
   const [status, setStatus] = useState<'form' | 'loading' | 'done'>('form');
-  const [categorySlug, setCategorySlug] = useState<string>(categories[0]?.slug || 'aluminium');
-  const [productSlug, setProductSlug] = useState<string>('');
-  const [color, setColor] = useState<string>(initialColor || windowColors[0].name);
-  const [glass, setGlass] = useState('Двухкамерный энергосберегающий');
-  const [width, setWidth] = useState('1800');
-  const [height, setHeight] = useState('1400');
+  const [items, setItems] = useState<FormProductItem[]>(() => [resolveInitialItem(initialProduct, initialColor)]);
   const [name, setName] = useState(''); 
   const [phone, setPhone] = useState('+998 '); 
   const [comment, setComment] = useState('');
@@ -1447,74 +1598,35 @@ function EstimateModal({
       setStatus('form'); 
       setPhone('+998 '); 
       setModalError(null);
-      if (initialColor) {
-        setColor(initialColor);
-      }
-      if (initialProduct) {
-        const pMatch = products.find(
-          p => p.title.toLowerCase() === initialProduct.toLowerCase() || 
-               p.slug.toLowerCase() === initialProduct.toLowerCase()
-        );
-        const cMatch = categories.find(
-          c => c.title.toLowerCase() === initialProduct.toLowerCase() || 
-               c.slug.toLowerCase() === initialProduct.toLowerCase()
-        );
-        if (pMatch) {
-          setCategorySlug(pMatch.categorySlug);
-          setProductSlug(pMatch.slug);
-        } else if (cMatch) {
-          setCategorySlug(cMatch.slug);
-          const firstInCat = products.find(p => p.categorySlug === cMatch.slug);
-          setProductSlug(firstInCat?.slug || '');
-        } else {
-          setCategorySlug(categories[0]?.slug || 'aluminium');
-          const firstInCat = products.find(p => p.categorySlug === (categories[0]?.slug || 'aluminium'));
-          setProductSlug(firstInCat?.slug || '');
-        }
-      } else {
-        const cat = categories[0]?.slug || 'aluminium';
-        setCategorySlug(cat);
-        const firstInCat = products.find(p => p.categorySlug === cat);
-        setProductSlug(firstInCat?.slug || '');
-      }
+      setItems([resolveInitialItem(initialProduct, initialColor)]);
     } 
   }, [open, initialProduct, initialColor]);
 
-  const onCategoryChange = (newCatSlug: string) => {
-    setCategorySlug(newCatSlug);
-    const catProds = products.filter(p => p.categorySlug === newCatSlug);
-    if (catProds.length > 0) {
-      setProductSlug(catProds[0].slug);
-    } else {
-      setProductSlug('');
-    }
+  const updateItem = (id: string, updates: Partial<FormProductItem>) => {
+    setItems(prev => prev.map(item => {
+      if (item.id !== id) return item;
+      const next = { ...item, ...updates };
+      if (updates.categorySlug && updates.categorySlug !== item.categorySlug) {
+        const catConfig = getFormCategory(updates.categorySlug);
+        next.productSlug = catConfig.products[0]?.value || '';
+        next.customProductTitle = '';
+        next.width = catConfig.defaultWidth;
+        next.height = catConfig.defaultHeight;
+      }
+      return next;
+    }));
   };
 
-  const availableProducts = products
-    .filter(p => p.categorySlug === categorySlug)
-    .map(p => getTranslatedProduct(p, lang));
-  const rawProductObj = products.find(p => p.slug === productSlug) || availableProducts[0];
-  const selectedProductObj = rawProductObj ? getTranslatedProduct(rawProductObj, lang) : undefined;
-  const selectedCategoryObj = categories.find(c => c.slug === categorySlug) || categories[0];
+  const addItem = () => {
+    const last = items[items.length - 1];
+    const newItem = createDefaultFormItem('aluminium-windows', last?.color || initialColor || windowColors[0].name);
+    setItems(prev => [...prev, newItem]);
+  };
 
-  const categoryOptions = categories.map(c => {
-    const count = products.filter(p => p.categorySlug === c.slug).length;
-    const catTitle = t.categories[c.slug]?.title || c.title;
-    const catSubtitle = t.categories[c.slug]?.subtitle || c.subtitle;
-    return {
-      label: catTitle,
-      value: c.slug,
-      desc: catSubtitle,
-      badge: String(count),
-    };
-  });
-
-  const productOptions = availableProducts.map(p => ({
-    label: p.title,
-    value: p.slug,
-    badge: p.brandCountry || p.brand,
-    desc: p.subtitle,
-  }));
+  const removeItem = (id: string) => {
+    if (items.length <= 1) return;
+    setItems(prev => prev.filter(item => item.id !== id));
+  };
 
   const submit = async (e: FormEvent) => { 
     e.preventDefault(); 
@@ -1532,25 +1644,21 @@ function EstimateModal({
 
     setStatus('loading'); 
     try {
-      await submitLead({
-        name: name.trim(),
-        phone: phone.trim(),
-        categoryTitle: t.categories[selectedCategoryObj?.slug]?.title || selectedCategoryObj?.title,
-        productTitle: selectedProductObj?.title,
-        color,
-        glass,
-        width,
-        height,
-        comment: comment.trim(),
-        source: 'Модальное окно расчёта (Сайт)'
-      });
+      const payload = prepareLeadSubmission(
+        items,
+        name,
+        phone,
+        comment,
+        'Модальное окно расчёта (Сайт)',
+        lang
+      );
+      await submitLead(payload);
+      setStatus('done');
     } catch {
       setModalError(lang === 'uz' ? 'Yuborishda xatolik yuz berdi. Iltimos, qayta urinib ko‘ring.' : 'Ошибка отправки. Пожалуйста, попробуйте еще раз.');
       setStatus('form');
     }
   };
-
-  const categoryDisplayName = t.categories[selectedCategoryObj?.slug]?.title || selectedCategoryObj?.title;
 
   return (
     <AnimatePresence>
@@ -1563,7 +1671,7 @@ function EstimateModal({
           onClick={onClose}
         >
           <motion.div 
-            className="relative my-auto w-full max-w-xl rounded-2xl border border-[#c6a15b]/35 bg-[#151515] p-5 sm:p-6.5 shadow-2xl max-h-[92svh] overflow-y-auto custom-scrollbar" 
+            className="relative my-auto w-full max-w-2xl rounded-2xl border border-[#c6a15b]/35 bg-[#151515] p-4.5 sm:p-6 shadow-2xl max-h-[92svh] overflow-y-auto custom-scrollbar" 
             initial={{ opacity: 0, y: 18, scale: 0.98 }} 
             animate={{ opacity: 1, y: 0, scale: 1 }} 
             exit={{ opacity: 0, y: 14, scale: 0.98 }} 
@@ -1574,7 +1682,7 @@ function EstimateModal({
               <X size={18} />
             </button>
             {status === 'done' ? (
-              <div className="py-8 text-center">
+              <div className="py-6 text-center">
                 <div className="mx-auto mb-4 grid size-14 place-items-center rounded-full bg-[#c6a15b] text-[#101010] shadow-lg">
                   <Check size={26} />
                 </div>
@@ -1582,15 +1690,40 @@ function EstimateModal({
                   {t.calculator.successTitle}
                 </h2>
                 <p className="mt-2.5 text-xs sm:text-sm text-white/70 max-w-md mx-auto leading-relaxed">
-                  {t.calculator.successText(name, selectedProductObj?.title || categoryDisplayName, categoryDisplayName, color)}
+                  {lang === 'uz' 
+                    ? `Rahmat, ${name}. Arizangiz qabul qilindi. ALL WINDOWS mutaxassisi 24 soat ichida siz bilan bog‘lanadi.` 
+                    : `Спасибо, ${name}. Ваша заявка успешно принята. Специалист ALL WINDOWS свяжется с вами в течение 24 часов.`}
                 </p>
-                <div className="mt-4 flex flex-wrap justify-center gap-2 text-[11px] text-white/40">
-                  <span>{lang === 'uz' ? 'O‘lchami:' : 'Размер:'} {width} × {height} мм</span>
-                  <span>•</span>
-                  <span>{lang === 'uz' ? 'Rangi:' : 'Цвет:'} {color}</span>
-                  <span>•</span>
-                  <span>{lang === 'uz' ? 'Shisha:' : 'Стекло:'} {glass}</span>
+
+                {/* Сводка по позициям */}
+                <div className="mt-4 max-w-md mx-auto rounded-xl border border-white/10 bg-[#0e0e0e] p-3 text-left">
+                  <p className="text-[10px] font-semibold uppercase tracking-wider text-[#d4b16a] mb-2">
+                    {lang === 'uz' ? `Tanlangan konstruksiyalar (${items.length} ta):` : `Выбранные конструкции (${items.length}):`}
+                  </p>
+                  <div className="space-y-1.5 text-xs text-white/80 max-h-40 overflow-y-auto custom-scrollbar pr-1">
+                    {items.map((it, idx) => {
+                      const cat = getFormCategory(it.categorySlug);
+                      const catTitle = lang === 'uz' ? cat.titleUz : cat.titleRu;
+                      let prodName = '';
+                      if (it.productSlug === CUSTOM_PRODUCT_VALUE) {
+                        prodName = it.customProductTitle || (lang === 'uz' ? 'O‘z varianti' : 'Индивидуально');
+                      } else {
+                        const pOpt = cat.products.find(p => p.value === it.productSlug);
+                        prodName = (lang === 'uz' ? pOpt?.labelUz : pOpt?.labelRu) || it.productSlug;
+                      }
+                      return (
+                        <div key={it.id} className="border-b border-white/5 pb-1.5 last:border-0 last:pb-0 flex items-start justify-between gap-2">
+                          <div>
+                            <span className="font-semibold text-white">{idx + 1}. {catTitle}</span>
+                            <span className="text-white/50 text-[11px] block">{prodName} • {it.width} × {it.height} мм ({it.quantity || 1} {t.calculator.quantityUnit})</span>
+                          </div>
+                          <span className="text-[10px] text-white/40 shrink-0">{it.color}</span>
+                        </div>
+                      );
+                    })}
+                  </div>
                 </div>
+
                 <button onClick={onClose} className="mt-6 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-6 py-2.5 text-xs sm:text-sm font-semibold text-white hover:bg-white/20 transition cursor-pointer" data-testid="button-modal-done">
                   {t.actions.backToHome}
                 </button>
@@ -1604,76 +1737,157 @@ function EstimateModal({
                 <p className="mt-1 text-xs leading-relaxed text-white/55">
                   {t.calculator.subtitle}
                 </p>
+
                 <form onSubmit={submit} className="mt-4 space-y-3">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3">
-                    <div>
-                      <span className="block text-[11px] font-medium text-white/60 mb-1">
-                        {t.calculator.stepCategory}
-                      </span>
-                      <ModalDarkSelect
-                        value={categorySlug}
-                        onChange={onCategoryChange}
-                        options={categoryOptions}
-                        placeholder={lang === 'uz' ? 'Toifani tanlang' : 'Выберите категорию'}
-                        testId="select-estimate-category"
-                      />
-                    </div>
+                  {/* Список добавленных конструкций */}
+                  <div className="space-y-3">
+                    {items.map((item, idx) => (
+                      <div key={item.id} className="rounded-xl border border-white/10 bg-[#0e0e0e] p-3 sm:p-3.5 space-y-2.5 relative">
+                        {/* Заголовок карточки изделия */}
+                        <div className="flex items-center justify-between border-b border-white/10 pb-2">
+                          <div className="flex items-center gap-2">
+                            <span className="grid size-5 place-items-center rounded-full bg-[#c6a15b]/20 text-[#d4b16a] text-[10px] font-bold">
+                              {idx + 1}
+                            </span>
+                            <span className="text-xs font-bold text-white">
+                              {t.calculator.itemHeading(idx + 1)}
+                            </span>
+                            <span className="rounded-full bg-white/5 px-2 py-0.5 text-[9.5px] text-white/50 hidden sm:inline-block">
+                              {lang === 'uz' ? getFormCategory(item.categorySlug).titleUz : getFormCategory(item.categorySlug).titleRu}
+                            </span>
+                          </div>
 
-                    <div>
-                      <span className="block text-[11px] font-medium text-white/60 mb-1">
-                        {t.calculator.stepProduct}
-                      </span>
-                      <ModalDarkSelect
-                        value={productSlug}
-                        onChange={setProductSlug}
-                        options={productOptions}
-                        placeholder={lang === 'uz' ? 'Tizimni tanlang...' : 'Выберите систему...'}
-                        testId="select-estimate-product"
-                      />
-                    </div>
+                          {items.length > 1 && (
+                            <button
+                              type="button"
+                              onClick={() => removeItem(item.id)}
+                              className="flex items-center gap-1 text-[11px] font-medium text-red-400 hover:text-red-300 transition cursor-pointer px-2 py-0.5 rounded hover:bg-red-500/10"
+                              aria-label={t.calculator.removeProduct}
+                              title={t.calculator.removeProduct}
+                            >
+                              <Trash2 size={12} />
+                              <span>{t.calculator.removeProduct}</span>
+                            </button>
+                          )}
+                        </div>
 
-                    <div className="sm:col-span-2 rounded-xl border border-white/10 bg-[#0e0e0e] p-3">
-                      <ColorPicker
-                        selectedColorId={windowColors.find(c => c.name === color || c.id === color)?.id || windowColors[0].id}
-                        onSelectColor={(c) => setColor(c.name)}
-                        maxVisible={7}
-                        variant="dark"
-                        lang={lang}
-                      />
-                    </div>
+                        {/* Селекторы категории и системы */}
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                          <div>
+                            <span className="block text-[11px] font-medium text-white/60 mb-1">
+                              {t.calculator.stepCategory}
+                            </span>
+                            <ModalDarkSelect
+                              value={item.categorySlug}
+                              onChange={(val) => updateItem(item.id, { categorySlug: val })}
+                              options={categoryOptions}
+                              placeholder={lang === 'uz' ? 'Toifani tanlang' : 'Выберите категорию'}
+                              testId={`select-estimate-category-${idx}`}
+                            />
+                          </div>
 
-                    <div>
-                      <span className="block text-[11px] font-medium text-white/60 mb-1">
-                        {t.calculator.stepGlass}
-                      </span>
-                      <ModalDarkSelect
-                        value={glass}
-                        onChange={setGlass}
-                        options={modalGlassOptions}
-                        placeholder={lang === 'uz' ? 'Shisha paketi turi' : 'Тип стеклопакета'}
-                        testId="select-estimate-glass"
-                      />
-                    </div>
+                          <div>
+                            <span className="block text-[11px] font-medium text-white/60 mb-1">
+                              {t.calculator.stepProduct}
+                            </span>
+                            <ModalDarkSelect
+                              value={item.productSlug}
+                              onChange={(val) => updateItem(item.id, { productSlug: val })}
+                              options={getFormProductOptions(item.categorySlug, lang)}
+                              placeholder={lang === 'uz' ? 'Tizimni tanlang...' : 'Выберите систему...'}
+                              testId={`select-estimate-product-${idx}`}
+                            />
+                          </div>
 
-                    <div className="grid grid-cols-2 gap-2">
-                      <ModalNumberInput
-                        label={t.calculator.width}
-                        value={width}
-                        onChange={setWidth}
-                        placeholder="1800"
-                        step={50}
-                        testId="input-estimate-width"
-                      />
-                      <ModalNumberInput
-                        label={t.calculator.height}
-                        value={height}
-                        onChange={setHeight}
-                        placeholder="1400"
-                        step={50}
-                        testId="input-estimate-height"
-                      />
-                    </div>
+                          {/* Поле ввода для своего варианта */}
+                          {item.productSlug === CUSTOM_PRODUCT_VALUE && (
+                            <div className="sm:col-span-2">
+                              <label className="block text-[11px] font-medium text-[#d4b16a] mb-1">
+                                {lang === 'uz' ? 'O‘zingizning tizimingiz / istaklaringiz:' : 'Название или параметры вашей системы:'}
+                                <input
+                                  type="text"
+                                  value={item.customProductTitle}
+                                  onChange={(e) => updateItem(item.id, { customProductTitle: e.target.value })}
+                                  placeholder={t.calculator.customProductPlaceholder}
+                                  className="mt-1 w-full rounded-lg border border-[#c6a15b]/40 bg-[#141414] px-3 py-2 text-xs sm:text-sm text-white outline-none focus:border-[#c6a15b] placeholder:text-white/30 shadow-inner"
+                                  required
+                                />
+                              </label>
+                            </div>
+                          )}
 
+                          {/* Выбор цвета */}
+                          <div className="sm:col-span-2 rounded-lg border border-white/5 bg-[#121212] p-2.5">
+                            <ColorPicker
+                              selectedColorId={windowColors.find(c => c.name === item.color || c.id === item.color)?.id || windowColors[0].id}
+                              onSelectColor={(c) => updateItem(item.id, { color: c.name })}
+                              maxVisible={7}
+                              variant="dark"
+                              lang={lang}
+                            />
+                          </div>
+
+                          {/* Выбор стеклопакета */}
+                          <div className="sm:col-span-2">
+                            <span className="block text-[11px] font-medium text-white/60 mb-1">
+                              {t.calculator.stepGlass}
+                            </span>
+                            <ModalDarkSelect
+                              value={item.glass}
+                              onChange={(val) => updateItem(item.id, { glass: val })}
+                              options={modalGlassOptions}
+                              placeholder={lang === 'uz' ? 'Shisha paketi turi' : 'Тип стеклопакета'}
+                              testId={`select-estimate-glass-${idx}`}
+                            />
+                          </div>
+
+                          {/* Размеры и количество (на отдельной строке во всю ширину) */}
+                          <div className="sm:col-span-2 grid grid-cols-3 gap-2 sm:gap-3">
+                            <ModalNumberInput
+                              label={t.calculator.width}
+                              value={item.width}
+                              onChange={(val) => updateItem(item.id, { width: val })}
+                              placeholder="1800"
+                              step={50}
+                              testId={`input-estimate-width-${idx}`}
+                            />
+                            <ModalNumberInput
+                              label={t.calculator.height}
+                              value={item.height}
+                              onChange={(val) => updateItem(item.id, { height: val })}
+                              placeholder="1400"
+                              step={50}
+                              testId={`input-estimate-height-${idx}`}
+                            />
+                            <ModalNumberInput
+                              label={`${t.calculator.quantityLabel} (${t.calculator.quantityUnit})`}
+                              value={item.quantity || '1'}
+                              onChange={(val) => updateItem(item.id, { quantity: val })}
+                              placeholder="1"
+                              step={1}
+                              min={1}
+                              max={100}
+                              testId={`input-estimate-qty-${idx}`}
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Кнопка добавления ещё одной конструкции */}
+                  <button
+                    type="button"
+                    onClick={addItem}
+                    className="flex w-full items-center justify-center gap-2 rounded-xl border border-dashed border-[#c6a15b]/50 bg-[#c6a15b]/10 hover:bg-[#c6a15b]/15 py-2.5 text-xs font-bold text-[#d4b16a] transition cursor-pointer active:scale-[0.99]"
+                    data-testid="button-add-item-modal"
+                  >
+                    <Plus size={15} />
+                    <span>{t.calculator.addAnotherProduct}</span>
+                  </button>
+
+                  {/* Контактные данные */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1">
                     <div>
                       <label className="block text-[11px] font-medium text-white/60">
                         {t.calculator.nameLabel}
@@ -1963,33 +2177,38 @@ function Home({ onEstimate, lang }: { onEstimate: (p?: string) => void; lang: La
     return [...pool].sort(() => Math.random() - 0.5).slice(0, 3);
   });
 
-  const [selectedCategorySlug, setSelectedCategorySlug] = useState<string>(categories[0]?.slug || 'aluminium');
-  const availableProducts = products
-    .filter(p => p.categorySlug === selectedCategorySlug)
-    .map(p => getTranslatedProduct(p, lang));
-  const [selectedProductSlug, setSelectedProductSlug] = useState<string>(availableProducts[0]?.slug || '');
-
-  const [formGlass, setFormGlass] = useState('Двухкамерный энергосберегающий');
-  const [formColor, setFormColor] = useState(windowColors[0].name);
-  const [formWidth, setFormWidth] = useState('1800');
-  const [formHeight, setFormHeight] = useState('1400');
+  const [homeItems, setHomeItems] = useState<FormProductItem[]>(() => [createDefaultFormItem('aluminium-windows', windowColors[0].name)]);
   const [formName, setFormName] = useState('');
   const [formPhone, setFormPhone] = useState('+998 ');
   const [formComment, setFormComment] = useState('');
   const [formStatus, setFormStatus] = useState<'idle' | 'loading' | 'done'>('idle');
   const [homeFormError, setHomeFormError] = useState<string | null>(null);
 
-  const onCategoryChange = (newCatSlug: string) => {
-    setSelectedCategorySlug(newCatSlug);
-    const nextProducts = products.filter(p => p.categorySlug === newCatSlug);
-    if (nextProducts.length > 0) {
-      setSelectedProductSlug(nextProducts[0].slug);
-    }
+  const updateHomeItem = (id: string, updates: Partial<FormProductItem>) => {
+    setHomeItems(prev => prev.map(item => {
+      if (item.id !== id) return item;
+      const next = { ...item, ...updates };
+      if (updates.categorySlug && updates.categorySlug !== item.categorySlug) {
+        const catConfig = getFormCategory(updates.categorySlug);
+        next.productSlug = catConfig.products[0]?.value || '';
+        next.customProductTitle = '';
+        next.width = catConfig.defaultWidth;
+        next.height = catConfig.defaultHeight;
+      }
+      return next;
+    }));
   };
 
-  const selectedCategoryObj = categories.find(c => c.slug === selectedCategorySlug) || categories[0];
-  const rawSelectedProductObj = products.find(p => p.slug === selectedProductSlug) || availableProducts[0] || products[0];
-  const selectedProductObj = rawSelectedProductObj ? getTranslatedProduct(rawSelectedProductObj, lang) : undefined;
+  const addHomeItem = () => {
+    const last = homeItems[homeItems.length - 1];
+    const newItem = createDefaultFormItem('aluminium-windows', last?.color || windowColors[0].name);
+    setHomeItems(prev => [...prev, newItem]);
+  };
+
+  const removeHomeItem = (id: string) => {
+    if (homeItems.length <= 1) return;
+    setHomeItems(prev => prev.filter(item => item.id !== id));
+  };
 
   const handleHomeSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -2007,43 +2226,23 @@ function Home({ onEstimate, lang }: { onEstimate: (p?: string) => void; lang: La
 
     setFormStatus('loading');
     try {
-      await submitLead({
-        name: formName.trim(),
-        phone: formPhone.trim(),
-        categoryTitle: t.categories[selectedCategoryObj.slug]?.title || selectedCategoryObj.title,
-        productTitle: selectedProductObj?.title,
-        color: formColor,
-        glass: formGlass,
-        width: formWidth,
-        height: formHeight,
-        comment: formComment.trim(),
-        source: 'Главная страница (Калькулятор сметы)'
-      });
+      const payload = prepareLeadSubmission(
+        homeItems,
+        formName,
+        formPhone,
+        formComment,
+        'Главная страница (Форма расчёта)',
+        lang
+      );
+      await submitLead(payload);
+      setFormStatus('done');
     } catch {
       setHomeFormError(lang === 'uz' ? 'Yuborishda xatolik yuz berdi. Iltimos, qayta urinib ko‘ring.' : 'Ошибка отправки. Пожалуйста, попробуйте еще раз.');
       setFormStatus('idle');
     }
   };
 
-  const categoryOptions = categories.map(c => {
-    const count = products.filter(p => p.categorySlug === c.slug).length;
-    const catTitle = t.categories[c.slug]?.title || c.title;
-    const catSubtitle = t.categories[c.slug]?.subtitle || c.subtitle;
-    return {
-      label: catTitle,
-      value: c.slug,
-      desc: catSubtitle,
-      badge: `${count} ${lang === 'uz' ? 'ta tizim' : count === 1 ? 'система' : count < 5 ? 'системы' : 'систем'}`,
-    };
-  });
-
-  const productOptions = availableProducts.map(p => ({
-    label: p.title,
-    value: p.slug,
-    badge: p.brandCountry || p.brand,
-    desc: p.subtitle,
-  }));
-
+  const categoryOptions = getFormCategoryOptions(lang);
   const glassOptions = getModalGlassOptions(lang);
 
   const testimonials = lang === 'uz' ? [
@@ -2055,8 +2254,6 @@ function Home({ onEstimate, lang }: { onEstimate: (p?: string) => void; lang: La
     { n: 'Малика Р.', o: 'Частный дом, Ташкент', q: 'Панорамные окна получились именно такими, как в проекте. Отдельно отмечу работу замерщика.' }, 
     { n: 'Илья К.', o: 'Fazo Residence', q: 'Понятный расчёт, собственное производство и монтаж без простоев на объекте.' }
   ];
-
-  const categoryDisplayName = t.categories[selectedCategoryObj.slug]?.title || selectedCategoryObj.title;
 
   return (
     <>
@@ -2153,11 +2350,49 @@ function Home({ onEstimate, lang }: { onEstimate: (p?: string) => void; lang: La
                   {t.calculator.successTitle}
                 </h3>
                 <p className="mt-3 text-xs sm:text-sm text-white/70 max-w-md leading-relaxed">
-                  {t.calculator.successText(formName, selectedProductObj?.title || categoryDisplayName, categoryDisplayName, formColor)}
+                  {lang === 'uz'
+                    ? `Rahmat, ${formName}. Arizangiz qabul qilindi. ALL WINDOWS mutaxassisi 24 soat ichida siz bilan bog‘lanadi.`
+                    : `Спасибо, ${formName}. Ваша заявка успешно принята. Специалист ALL WINDOWS свяжется с вами в течение 24 часов.`}
                 </p>
+
+                {/* Сводка по позициям */}
+                <div className="mt-5 w-full max-w-md rounded-xl border border-white/10 bg-[#0e0e0e] p-3.5 text-left">
+                  <p className="text-[10px] font-semibold uppercase tracking-wider text-[#d4b16a] mb-2">
+                    {lang === 'uz' ? `Tanlangan konstruksiyalar (${homeItems.length} ta):` : `Выбранные конструкции (${homeItems.length}):`}
+                  </p>
+                  <div className="space-y-2 text-xs text-white/80 max-h-48 overflow-y-auto custom-scrollbar pr-1">
+                    {homeItems.map((it, idx) => {
+                      const cat = getFormCategory(it.categorySlug);
+                      const catTitle = lang === 'uz' ? cat.titleUz : cat.titleRu;
+                      let prodName = '';
+                      if (it.productSlug === CUSTOM_PRODUCT_VALUE) {
+                        prodName = it.customProductTitle || (lang === 'uz' ? 'O‘z varianti' : 'Индивидуально');
+                      } else {
+                        const pOpt = cat.products.find(p => p.value === it.productSlug);
+                        prodName = (lang === 'uz' ? pOpt?.labelUz : pOpt?.labelRu) || it.productSlug;
+                      }
+                      return (
+                        <div key={it.id} className="border-b border-white/5 pb-2 last:border-0 last:pb-0 flex items-start justify-between gap-2">
+                          <div>
+                            <span className="font-semibold text-white">{idx + 1}. {catTitle}</span>
+                            <span className="text-white/55 text-[11px] block">{prodName} • {it.width} × {it.height} мм ({it.quantity || 1} {t.calculator.quantityUnit})</span>
+                          </div>
+                          <span className="text-[10px] text-white/40 shrink-0">{it.color}</span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+
                 <button
                   type="button"
-                  onClick={() => { setFormStatus('idle'); setFormName(''); setFormPhone('+998 '); setFormComment(''); setFormColor(windowColors[0].name); }}
+                  onClick={() => {
+                    setFormStatus('idle');
+                    setFormName('');
+                    setFormPhone('+998 ');
+                    setFormComment('');
+                    setHomeItems([createDefaultFormItem('aluminium-windows', windowColors[0].name)]);
+                  }}
                   className="mt-6 rounded-full border border-white/20 bg-white/10 px-6 py-2.5 text-xs font-semibold text-white hover:bg-white/20 transition cursor-pointer"
                 >
                   {t.calculator.newRequestBtn}
@@ -2165,70 +2400,148 @@ function Home({ onEstimate, lang }: { onEstimate: (p?: string) => void; lang: La
               </motion.div>
             ) : (
               <form onSubmit={handleHomeSubmit} className="relative z-30 max-w-4xl">
+                {/* Список позиций / изделий */}
+                <div className="space-y-4 mb-5">
+                  {homeItems.map((item, idx) => (
+                    <div key={item.id} className="rounded-2xl border border-black/10 bg-white/80 backdrop-blur-md p-4 sm:p-5 shadow-xs space-y-4">
+                      {/* Заголовок карточки позиции */}
+                      <div className="flex items-center justify-between border-b border-black/10 pb-2.5">
+                        <div className="flex items-center gap-2">
+                          <span className="grid size-6 place-items-center rounded-full bg-[#151515] text-[#d4b16a] text-xs font-bold">
+                            {idx + 1}
+                          </span>
+                          <span className="text-sm font-extrabold text-[#151515]">
+                            {t.calculator.itemHeading(idx + 1)}
+                          </span>
+                          <span className="rounded-full bg-black/5 px-2.5 py-0.5 text-[10px] font-semibold text-black/60 hidden sm:inline-block">
+                            {lang === 'uz' ? getFormCategory(item.categorySlug).titleUz : getFormCategory(item.categorySlug).titleRu}
+                          </span>
+                        </div>
+
+                        {homeItems.length > 1 && (
+                          <button
+                            type="button"
+                            onClick={() => removeHomeItem(item.id)}
+                            className="flex items-center gap-1.5 text-xs font-semibold text-red-600 hover:text-red-700 transition cursor-pointer px-2.5 py-1 rounded-lg hover:bg-red-50"
+                            aria-label={t.calculator.removeProduct}
+                            title={t.calculator.removeProduct}
+                          >
+                            <Trash2 size={13} />
+                            <span>{t.calculator.removeProduct}</span>
+                          </button>
+                        )}
+                      </div>
+
+                      <div className="grid gap-x-6 gap-y-3.5 sm:grid-cols-2">
+                        <div>
+                          <UniqueSelect
+                            label={t.calculator.stepCategory}
+                            value={item.categorySlug}
+                            onChange={(val) => updateHomeItem(item.id, { categorySlug: val })}
+                            options={categoryOptions}
+                            placeholder={lang === 'uz' ? 'Toifani tanlang' : 'Выберите категорию'}
+                            testId={`select-home-category-${idx}`}
+                          />
+                        </div>
+
+                        <div>
+                          <UniqueSelect
+                            label={t.calculator.stepProduct}
+                            value={item.productSlug}
+                            onChange={(val) => updateHomeItem(item.id, { productSlug: val })}
+                            options={getFormProductOptions(item.categorySlug, lang)}
+                            placeholder={lang === 'uz' ? 'Tizimni tanlang...' : 'Выберите систему...'}
+                            testId={`select-home-product-${idx}`}
+                          />
+                        </div>
+
+                        {/* Поле для ввода своего варианта */}
+                        {item.productSlug === CUSTOM_PRODUCT_VALUE && (
+                          <div className="sm:col-span-2 border-b border-black/20 pb-2">
+                            <label className="block text-xs font-bold text-black/80">
+                              {lang === 'uz' ? 'O‘zingizning tizimingiz / parametrlar:' : 'Название или параметры вашей системы:'}
+                              <input
+                                type="text"
+                                required
+                                value={item.customProductTitle}
+                                onChange={(e) => updateHomeItem(item.id, { customProductTitle: e.target.value })}
+                                placeholder={t.calculator.customProductPlaceholder}
+                                className="mt-1 block w-full bg-transparent py-1 text-sm font-bold text-[#151515] outline-none placeholder:text-black/40 border-b border-black/20 focus:border-black"
+                              />
+                            </label>
+                          </div>
+                        )}
+
+                        <div className="sm:col-span-2 border-b border-black/15 pb-3">
+                          <ColorPicker
+                            selectedColorId={windowColors.find(c => c.name === item.color || c.id === item.color)?.id || windowColors[0].id}
+                            onSelectColor={(c) => updateHomeItem(item.id, { color: c.name })}
+                            maxVisible={8}
+                            variant="light"
+                            lang={lang}
+                          />
+                        </div>
+
+                        <div className="sm:col-span-2">
+                          <UniqueSelect
+                            label={t.calculator.stepGlass}
+                            value={item.glass}
+                            onChange={(val) => updateHomeItem(item.id, { glass: val })}
+                            options={glassOptions}
+                            placeholder={lang === 'uz' ? 'Shisha paketi turi' : 'Тип стеклопакета'}
+                            testId={`select-home-glass-${idx}`}
+                          />
+                        </div>
+
+                        {/* Размеры и количество (на отдельной строке во всю ширину) */}
+                        <div className="sm:col-span-2 grid grid-cols-3 gap-3 sm:gap-4">
+                          <NumberStepperInput
+                            label={t.calculator.width}
+                            value={item.width}
+                            onChange={(val) => updateHomeItem(item.id, { width: val })}
+                            placeholder="1800"
+                            step={50}
+                            testId={`input-home-width-${idx}`}
+                          />
+                          <NumberStepperInput
+                            label={t.calculator.height}
+                            value={item.height}
+                            onChange={(val) => updateHomeItem(item.id, { height: val })}
+                            placeholder="1400"
+                            step={50}
+                            testId={`input-home-height-${idx}`}
+                          />
+                          <NumberStepperInput
+                            label={`${t.calculator.quantityLabel} (${t.calculator.quantityUnit})`}
+                            value={item.quantity || '1'}
+                            onChange={(val) => updateHomeItem(item.id, { quantity: val })}
+                            placeholder="1"
+                            step={1}
+                            min={1}
+                            max={100}
+                            testId={`input-home-qty-${idx}`}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Кнопка добавления ещё одной конструкции */}
+                <div className="mb-6">
+                  <button
+                    type="button"
+                    onClick={addHomeItem}
+                    className="inline-flex items-center gap-2 rounded-xl border-2 border-dashed border-black/30 hover:border-black/60 bg-black/5 hover:bg-black/10 px-5 py-2.5 text-xs sm:text-sm font-bold text-[#151515] transition cursor-pointer active:scale-95"
+                    data-testid="button-add-item-home"
+                  >
+                    <Plus size={16} />
+                    <span>{t.calculator.addAnotherProduct}</span>
+                  </button>
+                </div>
+
+                {/* Контактные данные */}
                 <div className="grid gap-x-8 gap-y-3.5 sm:grid-cols-2">
-                  <div>
-                    <UniqueSelect
-                      label={t.calculator.stepCategory}
-                      value={selectedCategorySlug}
-                      onChange={onCategoryChange}
-                      options={categoryOptions}
-                      placeholder={lang === 'uz' ? 'Toifani tanlang' : 'Выберите категорию'}
-                      testId="select-home-category"
-                    />
-                  </div>
-
-                  <div>
-                    <UniqueSelect
-                      label={`${t.calculator.stepProduct} (${categoryDisplayName})`}
-                      value={selectedProductSlug}
-                      onChange={setSelectedProductSlug}
-                      options={productOptions}
-                      placeholder={lang === 'uz' ? 'Tizimni tanlang...' : 'Выберите систему...'}
-                      testId="select-home-product"
-                    />
-                  </div>
-
-                  <div className="sm:col-span-2 border-b border-black/20 pb-3">
-                    <ColorPicker
-                      selectedColorId={windowColors.find(c => c.name === formColor || c.id === formColor)?.id || windowColors[0].id}
-                      onSelectColor={(c) => setFormColor(c.name)}
-                      maxVisible={8}
-                      variant="light"
-                      lang={lang}
-                    />
-                  </div>
-
-                  <div>
-                    <UniqueSelect
-                      label={t.calculator.stepGlass}
-                      value={formGlass}
-                      onChange={setFormGlass}
-                      options={glassOptions}
-                      placeholder={lang === 'uz' ? 'Shisha paketi turi' : 'Тип стеклопакета'}
-                      testId="select-home-glass"
-                    />
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-4">
-                    <NumberStepperInput
-                      label={t.calculator.width}
-                      value={formWidth}
-                      onChange={setFormWidth}
-                      placeholder="1800"
-                      step={50}
-                      testId="input-home-width"
-                    />
-
-                    <NumberStepperInput
-                      label={t.calculator.height}
-                      value={formHeight}
-                      onChange={setFormHeight}
-                      placeholder="1400"
-                      step={50}
-                      testId="input-home-height"
-                    />
-                  </div>
-
                   <label className="border-b border-black/20 pb-2 text-xs font-semibold">
                     {t.calculator.nameLabel}
                     <input 
