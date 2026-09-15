@@ -29,7 +29,7 @@ export interface SubmitLeadResponse {
 }
 
 // Hardcoded Google Apps Script Web App URL (no .env dependency)
-const HARDCODED_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyeIeTPwKwyFuteRtrm5in1apZbjTw7Cr1cF1A9qWjzNKY2Aq6lSoWP5-bXjOXyeD3RHQ/exec';
+const HARDCODED_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbweqe7l0HRu2y2aSMWLs25fAcOy4iIKIUgv2qtvIzTySHL08NX2NUK6br1ssbuQO8SndQ/exec';
 
 /**
  * Отправка данных заявки в Google Apps Script Web App
