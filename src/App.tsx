@@ -1112,15 +1112,15 @@ function UniqueSelect({
   }, []);
 
   return (
-    <div ref={containerRef} className={`relative border-b border-black/20 pb-3 transition-all ${open ? 'z-50' : 'z-10'}`}>
-      <span className="block text-xs font-semibold text-black/70 mb-1.5">{label}</span>
+    <div ref={containerRef} className={`relative border-b border-black/20 pb-3 transition-all min-w-0 max-w-full ${open ? 'z-50' : 'z-10'}`}>
+      <span className="block text-xs font-semibold text-black/70 mb-1.5 truncate">{label}</span>
       <button
         type="button"
         onClick={() => setOpen(!open)}
-        className="flex w-full items-center justify-between gap-3 text-left py-1 text-base md:text-lg font-bold text-[#151515] outline-none transition group cursor-pointer"
+        className="flex w-full items-center justify-between gap-2 text-left py-1 text-base md:text-lg font-bold text-[#151515] outline-none transition group cursor-pointer min-w-0"
         data-testid={testId}
       >
-        <span className="truncate">{selectedOption ? selectedOption.label : placeholder}</span>
+        <span className="truncate min-w-0 flex-1">{selectedOption ? selectedOption.label : placeholder}</span>
         <ChevronDown size={18} className={`text-black/60 transition-transform duration-200 shrink-0 ${open ? 'rotate-180 text-[#816a3f]' : ''}`} />
       </button>
 
@@ -1205,9 +1205,9 @@ function NumberStepperInput({
   };
 
   return (
-    <div className="border-b border-black/20 pb-2">
-      <span className="block text-xs font-semibold text-black/70 mb-1">{label}</span>
-      <div className="flex items-center justify-between gap-1.5">
+    <div className="border-b border-black/20 pb-2 min-w-0">
+      <span className="block text-[11px] sm:text-xs font-semibold text-black/70 mb-1 truncate" title={label}>{label}</span>
+      <div className="flex items-center justify-between gap-1 min-w-0">
         <input
           type="number"
           value={value}
@@ -1215,7 +1215,7 @@ function NumberStepperInput({
           placeholder={placeholder}
           min={min}
           max={max}
-          className="w-full bg-transparent py-1 text-base font-bold text-[#151515] outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+          className="w-full min-w-0 bg-transparent py-1 text-sm sm:text-base font-bold text-[#151515] outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
           data-testid={testId}
         />
         <div className="flex flex-col items-center justify-center rounded-lg border border-black/15 bg-black/5 p-0.5 shadow-xs shrink-0">
@@ -2037,34 +2037,6 @@ function Header({ lang, setLang, onEstimate }: { lang: Lang; setLang: (l: Lang) 
       <AnimatePresence>
         {open && (
           <motion.nav initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }} className="border-t border-white/10 bg-[#111]/95 px-5 pb-6 pt-3 xl:hidden">
-            <div className="mb-2 flex items-center justify-between border-b border-white/10 pb-3 pt-1">
-              <span className="text-xs text-white/50 font-medium">Язык сайта / Sayt tili</span>
-              <div className="relative flex items-center rounded-full border border-white/15 bg-black/50 p-0.5 text-[10px] font-bold tracking-widest">
-                {(['ru', 'uz'] as const).map((l) => (
-                  <button
-                    key={l}
-                    onClick={() => setLang(l)}
-                    className={`relative z-10 rounded-full px-3 py-1 uppercase transition-colors duration-200 ${
-                      lang === l ? 'text-[#111]' : 'text-white/50 hover:text-white/80'
-                    }`}
-                    data-testid={`button-mobile-language-${l}`}
-                  >
-                    {lang === l && (
-                      <motion.div
-                        layoutId="activeMobileLangIndicator"
-                        className="absolute inset-0 rounded-full bg-[#c6a15b] shadow-sm"
-                        transition={{
-                          type: 'spring',
-                          stiffness: 500,
-                          damping: 32,
-                        }}
-                      />
-                    )}
-                    <span className="relative z-10">{l.toUpperCase()}</span>
-                  </button>
-                ))}
-              </div>
-            </div>
             {navItems.map((item) => (
               <Link onClick={() => setOpen(false)} key={item.href} href={item.href} className="block border-b border-white/10 py-3.5 text-sm text-white/80" data-testid={`link-mobile-nav-${item.href.slice(1)}`}>
                 {item.label}<ArrowUpRight className="float-right text-[#c6a15b]" size={16} />
@@ -2331,7 +2303,7 @@ function Home({ onEstimate, lang }: { onEstimate: (p?: string) => void; lang: La
           </Link>
         </section>
 
-        <section className="bg-[#d9c8a3] px-6 sm:px-8 py-10 sm:py-14 md:py-16 text-[#151515] lg:px-12 xl:px-14 flex flex-col justify-center min-h-svh relative z-20">
+        <section className="bg-[#d9c8a3] px-4 sm:px-8 py-10 sm:py-14 md:py-16 text-[#151515] lg:px-12 xl:px-14 flex flex-col justify-center min-h-svh relative z-20 overflow-x-clip">
           <div className="mx-auto w-full max-w-360">
             <div className="mb-6 md:mb-8 max-w-3xl">
               <div className="mb-2 flex items-center gap-4">
@@ -2404,11 +2376,11 @@ function Home({ onEstimate, lang }: { onEstimate: (p?: string) => void; lang: La
                 </button>
               </motion.div>
             ) : (
-              <form onSubmit={handleHomeSubmit} className="relative z-30 max-w-4xl">
+              <form onSubmit={handleHomeSubmit} className="relative z-30 w-full max-w-4xl min-w-0">
                 {/* Список позиций / изделий */}
                 <div className="space-y-4 mb-5">
                   {homeItems.map((item, idx) => (
-                    <div key={item.id} className="rounded-2xl border border-black/10 bg-white/80 backdrop-blur-md p-4 sm:p-5 shadow-xs space-y-4">
+                    <div key={item.id} className="rounded-2xl border border-black/10 bg-white/80 backdrop-blur-md p-3.5 sm:p-5 shadow-xs space-y-4 w-full max-w-full overflow-hidden min-w-0">
                       {/* Заголовок карточки позиции */}
                       <div className="flex items-center justify-between border-b border-black/10 pb-2.5">
                         <div className="flex items-center gap-2">
@@ -2437,8 +2409,8 @@ function Home({ onEstimate, lang }: { onEstimate: (p?: string) => void; lang: La
                         )}
                       </div>
 
-                      <div className="grid gap-x-6 gap-y-3.5 sm:grid-cols-2">
-                        <div>
+                      <div className="grid gap-x-6 gap-y-3.5 sm:grid-cols-2 min-w-0">
+                        <div className="min-w-0">
                           <UniqueSelect
                             label={t.calculator.stepCategory}
                             value={item.categorySlug}
@@ -2449,7 +2421,7 @@ function Home({ onEstimate, lang }: { onEstimate: (p?: string) => void; lang: La
                           />
                         </div>
 
-                        <div>
+                        <div className="min-w-0">
                           <UniqueSelect
                             label={t.calculator.stepProduct}
                             value={item.productSlug}
@@ -2462,7 +2434,7 @@ function Home({ onEstimate, lang }: { onEstimate: (p?: string) => void; lang: La
 
                         {/* Поле для ввода своего варианта */}
                         {item.productSlug === CUSTOM_PRODUCT_VALUE && (
-                          <div className="sm:col-span-2 border-b border-black/20 pb-2">
+                          <div className="sm:col-span-2 border-b border-black/20 pb-2 min-w-0">
                             <label className="block text-xs font-bold text-black/80">
                               {lang === 'uz' ? 'O‘zingizning tizimingiz / parametrlar:' : 'Название или параметры вашей системы:'}
                               <input
@@ -2471,13 +2443,13 @@ function Home({ onEstimate, lang }: { onEstimate: (p?: string) => void; lang: La
                                 value={item.customProductTitle}
                                 onChange={(e) => updateHomeItem(item.id, { customProductTitle: e.target.value })}
                                 placeholder={t.calculator.customProductPlaceholder}
-                                className="mt-1 block w-full bg-transparent py-1 text-sm font-bold text-[#151515] outline-none placeholder:text-black/40 border-b border-black/20 focus:border-black"
+                                className="mt-1 block w-full bg-transparent py-1 text-sm font-bold text-[#151515] outline-none placeholder:text-black/40 border-b border-black/20 focus:border-black min-w-0"
                               />
                             </label>
                           </div>
                         )}
 
-                        <div className="sm:col-span-2 border-b border-black/15 pb-3">
+                        <div className="sm:col-span-2 border-b border-black/15 pb-3 min-w-0">
                           <ColorPicker
                             selectedColorId={windowColors.find(c => c.name === item.color || c.id === item.color)?.id || windowColors[0].id}
                             onSelectColor={(c) => updateHomeItem(item.id, { color: c.name })}
@@ -2487,7 +2459,7 @@ function Home({ onEstimate, lang }: { onEstimate: (p?: string) => void; lang: La
                           />
                         </div>
 
-                        <div className="sm:col-span-2">
+                        <div className="sm:col-span-2 min-w-0">
                           <UniqueSelect
                             label={t.calculator.stepGlass}
                             value={item.glass}
@@ -2499,7 +2471,7 @@ function Home({ onEstimate, lang }: { onEstimate: (p?: string) => void; lang: La
                         </div>
 
                         {/* Размеры и количество (на отдельной строке во всю ширину) */}
-                        <div className="sm:col-span-2 grid grid-cols-3 gap-3 sm:gap-4">
+                        <div className="sm:col-span-2 grid grid-cols-2 sm:grid-cols-3 gap-2.5 sm:gap-4 min-w-0">
                           <NumberStepperInput
                             label={t.calculator.width}
                             value={item.width}
@@ -2516,16 +2488,18 @@ function Home({ onEstimate, lang }: { onEstimate: (p?: string) => void; lang: La
                             step={50}
                             testId={`input-home-height-${idx}`}
                           />
-                          <NumberStepperInput
-                            label={`${t.calculator.quantityLabel} (${t.calculator.quantityUnit})`}
-                            value={item.quantity || '1'}
-                            onChange={(val) => updateHomeItem(item.id, { quantity: val })}
-                            placeholder="1"
-                            step={1}
-                            min={1}
-                            max={100}
-                            testId={`input-home-qty-${idx}`}
-                          />
+                          <div className="col-span-2 sm:col-span-1 min-w-0">
+                            <NumberStepperInput
+                              label={`${t.calculator.quantityLabel} (${t.calculator.quantityUnit})`}
+                              value={item.quantity || '1'}
+                              onChange={(val) => updateHomeItem(item.id, { quantity: val })}
+                              placeholder="1"
+                              step={1}
+                              min={1}
+                              max={100}
+                              testId={`input-home-qty-${idx}`}
+                            />
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -2546,20 +2520,20 @@ function Home({ onEstimate, lang }: { onEstimate: (p?: string) => void; lang: La
                 </div>
 
                 {/* Контактные данные */}
-                <div className="grid gap-x-8 gap-y-3.5 sm:grid-cols-2">
-                  <label className="border-b border-black/20 pb-2 text-xs font-semibold">
+                <div className="grid gap-x-8 gap-y-3.5 sm:grid-cols-2 min-w-0">
+                  <label className="border-b border-black/20 pb-2 text-xs font-semibold min-w-0 block">
                     {t.calculator.nameLabel}
                     <input 
                       required 
                       value={formName} 
                       onChange={e => setFormName(e.target.value)} 
                       placeholder={t.calculator.namePlaceholder}
-                      className="mt-1 block w-full bg-transparent py-1 text-base font-bold outline-none placeholder:text-black/40" 
+                      className="mt-1 block w-full min-w-0 bg-transparent py-1 text-base font-bold outline-none placeholder:text-black/40" 
                       data-testid="input-home-name" 
                     />
                   </label>
 
-                  <label className="border-b border-black/20 pb-2 text-xs font-semibold">
+                  <label className="border-b border-black/20 pb-2 text-xs font-semibold min-w-0 block">
                     {t.calculator.phoneLabel}
                     <input 
                       required 
@@ -2568,18 +2542,18 @@ function Home({ onEstimate, lang }: { onEstimate: (p?: string) => void; lang: La
                       onChange={e => setFormPhone(formatPhoneNumber(e.target.value))} 
                       onKeyDown={handlePhoneKeyDown}
                       placeholder="+998 (__) ___-__-__"
-                      className="mt-1 block w-full bg-transparent py-1 text-base font-bold outline-none placeholder:text-black/40" 
+                      className="mt-1 block w-full min-w-0 bg-transparent py-1 text-base font-bold outline-none placeholder:text-black/40" 
                       data-testid="input-home-phone" 
                     />
                   </label>
 
-                  <label className="border-b border-black/20 pb-2 text-xs font-semibold sm:col-span-2">
+                  <label className="border-b border-black/20 pb-2 text-xs font-semibold sm:col-span-2 min-w-0 block">
                     {t.calculator.commentLabel}
                     <input 
                       value={formComment} 
                       onChange={e => setFormComment(e.target.value)} 
                       placeholder={t.calculator.commentPlaceholder}
-                      className="mt-1 block w-full bg-transparent py-1 text-sm font-medium outline-none placeholder:text-black/40" 
+                      className="mt-1 block w-full min-w-0 bg-transparent py-1 text-sm font-medium outline-none placeholder:text-black/40" 
                       data-testid="input-home-comment" 
                     />
                   </label>

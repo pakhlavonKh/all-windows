@@ -32,20 +32,20 @@ export function ColorPicker({
   return (
     <div className="space-y-2.5">
       {showTitle && (
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Palette size={14} className={isLight ? 'text-[#816a3f]' : 'text-[#d4b16a]'} />
-            <span className={`text-xs font-semibold ${isLight ? 'text-black/70' : 'text-white/80'}`}>
+        <div className="flex items-center justify-between gap-2 flex-wrap sm:flex-nowrap min-w-0">
+          <div className="flex items-center gap-1.5 min-w-0 max-w-full">
+            <Palette size={14} className={`shrink-0 ${isLight ? 'text-[#816a3f]' : 'text-[#d4b16a]'}`} />
+            <span className={`text-xs font-semibold shrink-0 ${isLight ? 'text-black/70' : 'text-white/80'}`}>
               {isUz ? 'Profil rangi:' : 'Цвет профиля:'}
             </span>
-            <span className={`text-xs font-bold ${isLight ? 'text-[#151515]' : 'text-[#d4b16a]'}`}>
+            <span className={`text-xs font-bold truncate ${isLight ? 'text-[#151515]' : 'text-[#d4b16a]'}`}>
               {isUz ? selected.nameUz : selected.name}
             </span>
           </div>
           <button
             type="button"
             onClick={() => setModalOpen(true)}
-            className={`text-[11px] underline underline-offset-2 transition cursor-pointer ${
+            className={`text-[11px] underline underline-offset-2 transition cursor-pointer shrink-0 ${
               isLight ? 'text-black/60 hover:text-black font-medium' : 'text-white/50 hover:text-[#d4b16a]'
             }`}
           >
@@ -55,7 +55,7 @@ export function ColorPicker({
       )}
 
       {/* Row of circles */}
-      <div className="flex items-center gap-2 flex-wrap">
+      <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap min-w-0">
         {visibleColors.map((color) => {
           const isSelected = color.id === selected.id;
           return (
@@ -64,7 +64,7 @@ export function ColorPicker({
               key={color.id}
               onClick={() => onSelectColor(color)}
               title={color.name}
-              className={`group relative size-8 sm:size-9 rounded-full overflow-hidden transition-all duration-200 cursor-pointer ${
+              className={`group relative size-7 sm:size-8.5 rounded-full overflow-hidden transition-all duration-200 cursor-pointer shrink-0 ${
                 isSelected
                   ? isLight
                     ? 'ring-2 ring-black ring-offset-2 ring-offset-[#d9c8a3] scale-110 shadow-md'
@@ -94,7 +94,7 @@ export function ColorPicker({
             type="button"
             onClick={() => setModalOpen(true)}
             title={`Посмотреть все ${windowColors.length} цветов`}
-            className={`group flex size-8 sm:size-9 items-center justify-center rounded-full border border-dashed transition-all hover:scale-105 cursor-pointer ${
+            className={`group flex size-7 sm:size-8.5 items-center justify-center rounded-full border border-dashed transition-all hover:scale-105 cursor-pointer shrink-0 ${
               isLight
                 ? 'border-black/40 bg-black/10 text-black hover:bg-black hover:text-white'
                 : 'border-[#c6a15b]/60 bg-[#c6a15b]/10 text-[#d4b16a] hover:bg-[#c6a15b] hover:text-black'

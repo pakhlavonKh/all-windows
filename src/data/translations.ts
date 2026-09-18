@@ -218,7 +218,7 @@ export const translations: Record<Lang, TranslationDictionary> = {
       successText: (name, product, category, color) =>
         `Спасибо, ${name}. Заявка на систему «${product}» (${category}) в цвете «${color}» успешно получена. Специалист ALL WINDOWS свяжется с вами в течение рабочего дня.`,
       newRequestBtn: 'Отправить другую заявку',
-      addAnotherProduct: '+ Добавить ещё конструкцию',
+      addAnotherProduct: 'Добавить ещё конструкцию',
       removeProduct: 'Удалить',
       itemHeading: (index: number) => `Конструкция #${index}`,
       customProductPlaceholder: 'Укажите название или параметры системы...',
@@ -439,7 +439,7 @@ export const translations: Record<Lang, TranslationDictionary> = {
       successText: (name, product, category, color) =>
         `Rahmat, ${name}. «${product}» (${category}) tizimiga «${color}» rangida arizangiz muvaffaqiyatli qabul qilindi. ALL WINDOWS mutaxassisi tez orada siz bilan bog‘lanadi.`,
       newRequestBtn: 'Boshqa ariza yuborish',
-      addAnotherProduct: '+ Yangi mahsulot qo‘shish',
+      addAnotherProduct: 'Yangi mahsulot qo‘shish',
       removeProduct: 'O‘chirish',
       itemHeading: (index: number) => `Konstruksiya #${index}`,
       customProductPlaceholder: 'Tizim nomi yoki parametrlarini kiriting...',
