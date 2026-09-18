@@ -81,7 +81,7 @@ export const productsData: Product[] = [
     category: 'aluminium',
     subcategory: 'TERMO серия',
     series: 'TERMO 70',
-    image: '/imgs/img-1503387762-592de.jpg',
+    image: '/imgs/img-1503387762-592de.webp',
     specs: [
       { label: 'Монтажная глубина рамы', value: '70 мм' },
       { label: 'Ширина рамы', value: '70 мм' },
@@ -113,7 +113,7 @@ export const productsData: Product[] = [
     category: 'aluminium',
     subcategory: 'TERMO серия',
     series: 'TERMO 77',
-    image: '/imgs/img-1600607687920-4e.jpg',
+    image: '/imgs/img-1600607687920-4e.webp',
     specs: [
       { label: 'Монтажная глубина рамы', value: '69 мм' },
       { label: 'Ширина створки', value: '77 мм' },
@@ -145,7 +145,7 @@ export const productsData: Product[] = [
     category: 'aluminium',
     subcategory: 'TERMO серия',
     series: 'TERMO 98',
-    image: '/imgs/img-1497366754035-f2.jpg',
+    image: '/imgs/img-1497366754035-f2.webp',
     specs: [
       { label: 'Монтажная глубина рамы', value: '70 мм' },
       { label: 'Толщина стеклопакета (min/max)', value: '20 мм / 50 мм' },
@@ -175,7 +175,7 @@ export const productsData: Product[] = [
     category: 'aluminium',
     subcategory: 'TERMO серия',
     series: 'YWD 78',
-    image: '/imgs/img-1581092160607-ee.jpg',
+    image: '/imgs/img-1581092160607-ee.webp',
     specs: [
       { label: 'Монтажная глубина рамы', value: '75,5 мм' },
       { label: 'Толщина стеклопакета (min/max)', value: '20 мм / 36 мм' },
@@ -205,7 +205,7 @@ export const productsData: Product[] = [
     category: 'aluminium',
     subcategory: 'Aldox серия',
     series: 'Aldox',
-    image: '/imgs/img-1618220179428-22.jpg',
+    image: '/imgs/img-1618220179428-22.webp',
     specs: [
       { label: 'Монтажная глубина рамы', value: '45,5 мм' },
       { label: 'Толщина стеклопакета/заполнения (min/max)', value: '4 мм / 20 мм' },
@@ -234,7 +234,7 @@ export const productsData: Product[] = [
     category: 'aluminium',
     subcategory: 'Aldox серия',
     series: 'Aldox 2',
-    image: '/imgs/img-1618220179428-22.jpg',
+    image: '/imgs/img-1618220179428-22.webp',
     specs: [
       { label: 'Монтажная глубина рамы', value: '45,5 мм' },
       { label: 'Толщина стеклопакета/заполнения (min/max)', value: '4 мм / 20 мм' },
@@ -263,7 +263,7 @@ export const productsData: Product[] = [
     category: 'aluminium',
     subcategory: 'Aldox серия',
     series: 'AKF 47',
-    image: '/imgs/img-1581092160607-ee.jpg',
+    image: '/imgs/img-1581092160607-ee.webp',
     specs: [
       { label: 'Монтажная глубина рамы', value: '47 мм' },
       { label: 'Толщина стеклопакета (min/max)', value: '4 мм / 24 мм' },
@@ -292,7 +292,7 @@ export const productsData: Product[] = [
     category: 'aluminium',
     subcategory: 'Sistem Aluminium',
     series: '65 серия',
-    image: '/imgs/sistemAl65.jpg',
+    image: '/imgs/sistemAl65.webp',
     specs: [
       { label: 'Монтажная глубина рамы', value: '65 мм' },
       { label: 'Монтажная глубина створки', value: '75 мм' },
@@ -320,7 +320,7 @@ export const productsData: Product[] = [
     category: 'aluminium',
     subcategory: 'Sistem Aluminium',
     series: '75 серия',
-    image: '/imgs/sistemAl75.jpg',
+    image: '/imgs/sistemAl75.webp',
     specs: [
       { label: 'Монтажная глубина рамы', value: '75 мм' },
       { label: 'Монтажная глубина створки', value: '85 мм' },
@@ -347,7 +347,7 @@ export const productsData: Product[] = [
     category: 'aluminium',
     subcategory: 'Sistem Aluminium',
     series: '85 серия',
-    image: '/imgs/sistemAL85.jpg',
+    image: '/imgs/sistemAL85.webp',
     specs: [
       { label: 'Монтажная глубина рамы', value: '85 мм' },
       { label: 'Монтажная глубина створки', value: '95 мм' },
@@ -375,7 +375,7 @@ export const productsData: Product[] = [
     category: 'aluminium',
     subcategory: 'ASAŞ Rescara',
     series: '64 серия',
-    image: '/imgs/asas64.png',
+    image: '/imgs/asas64.webp',
     specs: [
       { label: 'Монтажная глубина рамы', value: '64 мм' },
       { label: 'Монтажная глубина створки', value: '74 мм' },
@@ -403,7 +403,7 @@ export const productsData: Product[] = [
     category: 'aluminium',
     subcategory: 'ASAŞ Rescara',
     series: '75 серия',
-    image: '/imgs/asas75.png',
+    image: '/imgs/asas75.webp',
     specs: [
       { label: 'Монтажная глубина рамы', value: '75 мм' },
       { label: 'Монтажная глубина створки', value: '85 мм' },
@@ -434,7 +434,7 @@ export const productsData: Product[] = [
     category: 'pvc',
     subcategory: 'Engelberg',
     series: '7000 серия',
-    image: '/imgs/img-1600566753190-17.jpg',
+    image: '/imgs/img-1600566753190-17.webp',
     specs: [
       { label: 'Количество камер', value: '5 камер' },
       { label: 'Монтажная глубина рамы', value: '70 мм' },
@@ -463,7 +463,7 @@ export const productsData: Product[] = [
     category: 'pvc',
     subcategory: 'Engelberg',
     series: '7600 серия',
-    image: '/imgs/img-1600607687920-4e.jpg',
+    image: '/imgs/img-1600607687920-4e.webp',
     specs: [
       { label: 'Количество камер', value: '6 камер' },
       { label: 'Монтажная глубина рамы', value: '76 мм' },
@@ -491,7 +491,7 @@ export const productsData: Product[] = [
     category: 'pvc',
     subcategory: 'Engelberg',
     series: '8000 серия',
-    image: '/imgs/img-1600566753190-17.jpg',
+    image: '/imgs/img-1600566753190-17.webp',
     specs: [
       { label: 'Количество камер', value: '6 камер' },
       { label: 'Монтажная глубина рамы', value: '80 мм' },
@@ -519,7 +519,7 @@ export const productsData: Product[] = [
     category: 'pvc',
     subcategory: 'Akfa Trio',
     series: 'Trio 6000',
-    image: '/imgs/img-1545324418-cc1a3.jpg',
+    image: '/imgs/img-1545324418-cc1a3.webp',
     specs: [
       { label: 'Количество камер', value: '3 камеры' },
       { label: 'Монтажная глубина рамы', value: '60 мм' },
@@ -548,7 +548,7 @@ export const productsData: Product[] = [
     category: 'pvc',
     subcategory: 'Akfa Quattro',
     series: 'Quattro 5800',
-    image: '/imgs/img-1507089947368-19.jpg',
+    image: '/imgs/img-1507089947368-19.webp',
     specs: [
       { label: 'Количество камер', value: '4 камеры' },
       { label: 'Монтажная глубина рамы', value: '58 мм' },
@@ -577,7 +577,7 @@ export const productsData: Product[] = [
     category: 'pvc',
     subcategory: 'Akfa Quattro',
     series: 'Quattro 6000',
-    image: '/imgs/img-1513694203232-71.jpg',
+    image: '/imgs/img-1513694203232-71.webp',
     specs: [
       { label: 'Количество камер', value: '4 камеры' },
       { label: 'Монтажная глубина рамы', value: '60 мм' },
@@ -606,7 +606,7 @@ export const productsData: Product[] = [
     category: 'pvc',
     subcategory: 'Akfa Trio',
     series: 'Trio 5800',
-    image: '/imgs/img-1545324418-cc1a3.jpg',
+    image: '/imgs/img-1545324418-cc1a3.webp',
     specs: [
       { label: 'Количество камер', value: '3 камеры' },
       { label: 'Монтажная глубина рамы', value: '58 мм' },
@@ -635,7 +635,7 @@ export const productsData: Product[] = [
     category: 'pvc',
     subcategory: 'Akfa Quattro',
     series: 'Quattro 5200',
-    image: '/imgs/img-1513694203232-71.jpg',
+    image: '/imgs/img-1513694203232-71.webp',
     specs: [
       { label: 'Количество камер', value: '4 камеры' },
       { label: 'Монтажная глубина рамы', value: '52 мм' },
@@ -664,7 +664,7 @@ export const productsData: Product[] = [
     category: 'pvc',
     subcategory: 'Deceuninck',
     series: '6000 серия',
-    image: '/imgs/Deceuninck6000.png',
+    image: '/imgs/Deceuninck6000.webp',
     specs: [
       { label: 'Ширина профиля (монтажная глубина)', value: '71 мм' },
       { label: 'Количество воздушных камер', value: '5 камер' },
@@ -692,7 +692,7 @@ export const productsData: Product[] = [
     category: 'pvc',
     subcategory: 'Deceuninck',
     series: '7000 серия',
-    image: '/imgs/Deceuninck7000.png',
+    image: '/imgs/Deceuninck7000.webp',
     specs: [
       { label: 'Ширина профиля (монтажная глубина)', value: '71 мм' },
       { label: 'Количество воздушных камер', value: '5 камер' },
@@ -722,7 +722,7 @@ export const productsData: Product[] = [
     category: 'pvc',
     subcategory: 'Deceuninck',
     series: '8000 серия',
-    image: '/imgs/Deceuninck8000.png',
+    image: '/imgs/Deceuninck8000.webp',
     specs: [
       { label: 'Ширина профиля (монтажная глубина)', value: '76 мм' },
       { label: 'Количество воздушных камер', value: '6 камер' },
@@ -755,7 +755,7 @@ export const productsData: Product[] = [
     category: 'sliding',
     subcategory: 'BKG Раздвижные',
     series: 'BKG 40',
-    image: '/imgs/img-1512917774080-99.jpg',
+    image: '/imgs/img-1512917774080-99.webp',
     specs: [
       { label: 'Монтажная глубина рамы', value: '40 мм' },
       { label: 'Ширина профиля створки', value: '40 мм (видимая часть 75 мм)' },
@@ -784,7 +784,7 @@ export const productsData: Product[] = [
     category: 'sliding',
     subcategory: 'BKH Раздвижные',
     series: 'BKH 38',
-    image: '/imgs/img-1600607687939-ce.jpg',
+    image: '/imgs/img-1600607687939-ce.webp',
     specs: [
       { label: 'Монтажная глубина рамы (2 рельса)', value: '102 мм' },
       { label: 'Монтажная глубина рамы (3 рельса)', value: '165 мм' },
@@ -813,7 +813,7 @@ export const productsData: Product[] = [
     category: 'sliding',
     subcategory: 'BKH Lift & Slide',
     series: 'BKH 60',
-    image: '/imgs/img-1600607687920-4e.jpg',
+    image: '/imgs/img-1600607687920-4e.webp',
     specs: [
       { label: 'Монтажная глубина рамы (2 рельса)', value: '145 мм' },
       { label: 'Толщина стеклопакета (min/max)', value: '20 мм / 32 мм' },
@@ -840,7 +840,7 @@ export const productsData: Product[] = [
     category: 'sliding',
     subcategory: 'BKH Lift & Slide',
     series: 'BKH 65',
-    image: '/imgs/img-1600607687939-ce.jpg',
+    image: '/imgs/img-1600607687939-ce.webp',
     specs: [
       { label: 'Монтажная глубина рамы (2 рельса)', value: '148 мм' },
       { label: 'Монтажная глубина рамы (3 рельса)', value: '232 мм' },
@@ -869,7 +869,7 @@ export const productsData: Product[] = [
     category: 'sliding',
     subcategory: 'Гильотинные системы',
     series: 'Guillotine Motion',
-    image: '/imgs/guillotine.jpg',
+    image: '/imgs/guillotine.webp',
     specs: [
       { label: 'Тип открывания', value: 'Вертикально-сдвижное (2, 3 или 4 панели)' },
       { label: 'Управление', value: 'Электропривод Somfy / Becker с пульта ДУ' },
@@ -899,7 +899,7 @@ export const productsData: Product[] = [
     category: 'sliding',
     subcategory: 'Складные (Гармошка)',
     series: '85 серия',
-    image: '/imgs/img-1512917774080-99.jpg',
+    image: '/imgs/img-1512917774080-99.webp',
     specs: [
       { label: 'Тип конструкции', value: 'Складывающаяся раздвижная система («Гармошка»)' },
       { label: 'Монтажная глубина рамы', value: '85 мм' },
@@ -930,7 +930,7 @@ export const productsData: Product[] = [
     category: 'facade',
     subcategory: 'BKF Фасады',
     series: 'BKF 48',
-    image: '/imgs/img-1497366754035-f2.jpg',
+    image: '/imgs/img-1497366754035-f2.webp',
     specs: [
       { label: 'Ширина профиля стойки/ригеля', value: '48 мм' },
       { label: 'Варианты остекления', value: 'Декоративные капоты / Структурное' },
@@ -959,7 +959,7 @@ export const productsData: Product[] = [
     category: 'facade',
     subcategory: 'BKF Фасады',
     series: 'BKF 50',
-    image: '/imgs/img-1486406146926-c6.jpg',
+    image: '/imgs/img-1486406146926-c6.webp',
     specs: [
       { label: 'Ширина профиля стойки/ригеля', value: '50 мм' },
       { label: 'Варианты остекления', value: 'Декоративные крышки / Структурное' },
@@ -987,7 +987,7 @@ export const productsData: Product[] = [
     category: 'facade',
     subcategory: 'BKF Фасады',
     series: 'BKF Max',
-    image: '/imgs/img-1600210492486-72.jpg',
+    image: '/imgs/img-1600210492486-72.webp',
     specs: [
       { label: 'Ширина стойки и ригеля', value: '22 мм (сверхтонкий профиль)' },
       { label: 'Варианты остекления', value: 'Декоративные крышки' },
@@ -1013,7 +1013,7 @@ export const productsData: Product[] = [
     category: 'facade',
     subcategory: 'JP Стойка-ригель',
     series: 'JP 50 / JP 60',
-    image: '/imgs/img-1497366754035-f2.jpg',
+    image: '/imgs/img-1497366754035-f2.webp',
     specs: [
       { label: 'Ширина видимой стойки', value: '50–60 мм' },
       { label: 'Глубина стойки', value: '50–250 мм' },
@@ -1039,7 +1039,7 @@ export const productsData: Product[] = [
     category: 'office-partitions',
     subcategory: 'BKO Перегородки',
     series: 'BKO 38',
-    image: '/imgs/img-1497215728101-85.jpg',
+    image: '/imgs/img-1497215728101-85.webp',
     specs: [
       { label: 'Ширина профиля стойки/ригеля', value: '38 мм' },
       { label: 'Варианты остекления', value: 'Двойное / Комбинированное' },
@@ -1065,7 +1065,7 @@ export const productsData: Product[] = [
     category: 'office-partitions',
     subcategory: 'BKO Перегородки',
     series: 'BKO 40',
-    image: '/imgs/img-1497366754035-f2.jpg',
+    image: '/imgs/img-1497366754035-f2.webp',
     specs: [
       { label: 'Ширина профиля стойки/ригеля', value: '40 мм' },
       { label: 'Высота профиля стойки', value: '57 мм' },
@@ -1096,7 +1096,7 @@ export const productsData: Product[] = [
     brandCountry: 'Узбекистан 🇺🇿',
     category: 'stained-glass',
     series: 'Spider System',
-    image: '/imgs/spiderSystem.jpg',
+    image: '/imgs/spiderSystem.webp',
     specs: [
       { label: 'Крепления', value: 'Спайдеры из нержавеющей стали AISI 304/316 (1–4 луча)' },
       { label: 'Стекло', value: 'Закаленный триплекс 12–24 мм или стеклопакеты' },
@@ -1116,7 +1116,7 @@ export const productsData: Product[] = [
     brandCountry: 'Узбекистан 🇺🇿',
     category: 'shutters',
     series: 'Security Rollers',
-    image: '/imgs/ролльставни.jpeg',
+    image: '/imgs/ролльставни.webp',
     specs: [
       { label: 'Профиль с пенонаполнителем (сэндвич)', value: 'Ширина 55 / 77 мм, вес 0,17 / 0,35 кг/м' },
       { label: 'Профиль алюминиевый', value: 'Ширина 55 / 77 мм, вес 0,52 / 0,35 кг/м' },
@@ -1138,7 +1138,7 @@ export const productsData: Product[] = [
     brandCountry: 'Узбекистан 🇺🇿',
     category: 'shutters',
     series: 'Garage Gate 77',
-    image: '/imgs/роллетныеВорота.jpeg',
+    image: '/imgs/роллетныеВорота.webp',
     specs: [
       { label: 'Ширина ламели', value: '77 мм (сэндвич с пеной или усиленный алюминий)' },
       { label: 'Вес 1 м профиля', value: '0,35 кг' },
@@ -1160,7 +1160,7 @@ export const productsData: Product[] = [
     brandCountry: 'Узбекистан 🇺🇿',
     category: 'railings',
     series: 'BKGF 90',
-    image: '/imgs/перила.jpg',
+    image: '/imgs/перила.webp',
     specs: [
       { label: 'Отличительная черта (Distinctive feature)', value: 'BKGF 90 look very impressive and modern' },
       { label: 'Профиль', value: 'Базовый несущий алюминиевый профиль BKGF 90' },
@@ -1182,7 +1182,7 @@ export const productsData: Product[] = [
     brandCountry: 'Узбекистан 🇺🇿',
     category: 'mosquito-nets',
     series: 'Inside Frame',
-    image: '/imgs/внутрирамная.jpeg',
+    image: '/imgs/внутрирамная.webp',
     specs: [
       { label: 'Способ монтажа', value: 'Внутрь рамы, без сверления профиля' },
       { label: 'Крепления', value: 'Поворотные механизмы к уплотнителю' },
@@ -1202,7 +1202,7 @@ export const productsData: Product[] = [
     brandCountry: 'Узбекистан 🇺🇿',
     category: 'mosquito-nets',
     series: 'Hinged Door',
-    image: '/imgs/наПетлях.jpeg',
+    image: '/imgs/наПетлях.webp',
     specs: [
       { label: 'Конструкция', value: 'Распашная створка на петлях' },
       { label: 'Фиксация', value: 'Магнитные защелки' },
@@ -1222,7 +1222,7 @@ export const productsData: Product[] = [
     brandCountry: 'Узбекистан 🇺🇿',
     category: 'mosquito-nets',
     series: 'Classic Frame',
-    image: '/imgs/рамочная.jpeg',
+    image: '/imgs/рамочная.webp',
     specs: [
       { label: 'Каркас', value: 'Экструдированный алюминиевый профиль' },
       { label: 'Крепления', value: 'Наружные z-кронштейны' },
@@ -1242,7 +1242,7 @@ export const productsData: Product[] = [
     brandCountry: 'Узбекистан 🇺🇿',
     category: 'mosquito-nets',
     series: 'Sliding Plisse',
-    image: '/imgs/раздвижная.jpeg',
+    image: '/imgs/раздвижная.webp',
     specs: [
       { label: 'Тип механизма', value: 'Складная раздвижная система' },
       { label: 'Монтаж', value: 'Без сверления или со сверлением' },

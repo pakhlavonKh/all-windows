@@ -12,6 +12,7 @@ import { Toaster } from '@/components/ui/toaster';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import NotFound from '@/pages/not-found';
 import '@/index.css';
+import { SEO } from '@/components/SEO';
 
 import { localImages as pics } from '@/assets/imgs';
 import { projects, type Project } from '@/data/projects';
@@ -1004,22 +1005,22 @@ export const products: Product[] = [
     related: ['mosquito-inside-frame', 'mosquito-hinged', 'mosquito-frame']
   }];
 
-function Meta({ title, description }: { title: string; description: string }) {
-  useEffect(() => {
-    document.title = title;
-    const setMeta = (selector: string, attr: string, value: string) => {
-      let node = document.querySelector(selector);
-      if (!node) { node = document.createElement('meta'); document.head.appendChild(node); }
-      node.setAttribute(attr, value);
-    };
-    setMeta('meta[name="description"]', 'name', 'description');
-    setMeta('meta[name="description"]', 'content', description);
-    setMeta('meta[property="og:title"]', 'property', 'og:title');
-    setMeta('meta[property="og:title"]', 'content', title);
-    setMeta('meta[property="og:description"]', 'property', 'og:description');
-    setMeta('meta[property="og:description"]', 'content', description);
-  }, [title, description]);
-  return null;
+function Meta({ 
+  title, 
+  description, 
+  image, 
+  type, 
+  schema, 
+  lang 
+}: { 
+  title: string; 
+  description: string; 
+  image?: string; 
+  type?: 'website' | 'article' | 'product'; 
+  schema?: any; 
+  lang?: Lang; 
+}) {
+  return <SEO title={title} description={description} image={image} type={type} schema={schema} lang={lang} />;
 }
 
 function CountUp({ 
@@ -1243,7 +1244,7 @@ function NumberStepperInput({
 function Logo() {
   return (
     <Link href="/" className="flex items-center gap-3" data-testid="link-logo">
-      <img src="/favicon.png" alt="ALL WINDOWS" className="size-8 sm:size-9 object-contain shrink-0" />
+      <img src="/favicon.webp" alt="ALL WINDOWS" className="size-8 sm:size-9 object-contain shrink-0" />
       <span className="hidden border-l border-[#c6a15b]/40 pl-3 text-[9px] leading-tight tracking-[.2em] text-white/60 sm:block">
         ALL<br />WINDOWS
       </span>
@@ -2257,9 +2258,13 @@ function Home({ onEstimate, lang }: { onEstimate: (p?: string) => void; lang: La
 
   return (
     <>
-      <Meta 
-        title={lang === 'uz' ? 'ALL WINDOWS — Toshkentda deraza, eshik va fasadlar' : 'ALL WINDOWS — окна, двери и фасады в Ташкенте'} 
-        description={lang === 'uz' ? 'Toshkentda alyuminiy va PVX deraza, eshik, fasad va surma tizimlarini ishlab chiqarish.' : 'Производство алюминиевых и ПВХ окон, дверей, фасадных и раздвижных систем в Ташкенте.'} 
+      <SEO 
+        title={lang === 'uz' ? 'ALL WINDOWS — Toshkentda deraza, eshik va fasad tizimlari' : 'ALL WINDOWS — Производство и монтаж окон, дверей и фасадов в Ташкенте'} 
+        description={lang === 'uz' ? 'Toshkentda alyuminiy va PVX deraza, eshik, fasad va surma tizimlarini ishlab chiqarish hamda professional montaj qilish. 10 yilgacha kafolat.' : 'Премиальное производство и профессиональный монтаж алюминиевых и ПВХ окон, дверей, витражей, фасадных систем и рольставней в Ташкенте с гарантией качества.'} 
+        canonicalPath="/"
+        image="/og.webp"
+        imageAlt="ALL WINDOWS — Окна, двери и фасады в Ташкенте"
+        lang={lang}
       />
       <main>
         <section className="relative flex h-svh max-h-svh min-h-135 flex-col justify-end overflow-hidden border-b border-white/10 pb-6 sm:pb-10 md:pb-14 pt-20 sm:pt-24 md:pt-28">
@@ -2762,6 +2767,8 @@ function ProductsPage({ onEstimate, lang }: { onEstimate: (p?: string) => void; 
       intro={lang === 'uz' 
         ? 'Deraza, eshik, fasad, surma va interyer yechimlari — O‘zbekiston iqlimi, arxitekturasi va ishonchli foydalanish uchun loyihalangan.' 
         : 'Оконные, дверные, фасадные, раздвижные и интерьерные решения — спроектированы для климата, архитектуры и надежной эксплуатации в Узбекистане.'}
+      lang={lang}
+      canonicalPath="/products"
     >
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {categories.map((c, i) => {
@@ -2824,6 +2831,8 @@ function CategoryProductsPage({ onEstimate, lang }: { onEstimate: (p?: string) =
       eyebrow={`${t.nav.products} / ${catTitle}`} 
       title={catTitle} 
       intro={catDesc}
+      lang={lang}
+      canonicalPath={`/products/${category.slug}`}
     >
       <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
         <Link href="/products" className="inline-flex items-center gap-2 text-xs font-semibold text-[#d4b16a] hover:underline">
@@ -2932,8 +2941,39 @@ function ProductDetail({ onEstimate, lang }: { onEstimate: (p?: string, c?: stri
 
   const catTitle = t.categories[category.slug]?.title || category.title;
 
+  const productSchema = {
+    '@type': 'Product',
+    name: product.title,
+    description: product.description,
+    image: product.image ? (product.image.startsWith('http') ? product.image : `https://allwindows.uz${product.image}`) : 'https://allwindows.uz/og.webp',
+    brand: {
+      '@type': 'Brand',
+      name: product.brand || 'ALL WINDOWS'
+    },
+    category: catTitle,
+    offers: {
+      '@type': 'Offer',
+      priceCurrency: 'UZS',
+      availability: 'https://schema.org/InStock',
+      url: `https://allwindows.uz/products/${category.slug}/${product.slug}`,
+      seller: {
+        '@type': 'Organization',
+        name: 'ALL WINDOWS'
+      }
+    }
+  };
+
   return (
-    <PageFrame title={product.title} eyebrow={`${t.nav.products} / ${catTitle} / ${product.title}`} intro={product.description}>
+    <PageFrame 
+      title={product.title} 
+      eyebrow={`${t.nav.products} / ${catTitle} / ${product.title}`} 
+      intro={product.description}
+      image={product.image}
+      type="product"
+      schema={productSchema}
+      lang={lang}
+      canonicalPath={`/products/${category.slug}/${product.slug}`}
+    >
       <div className="mb-6 flex flex-wrap items-center gap-3">
         <Link href={`/products/${category.slug}`} className="inline-flex items-center gap-2 text-xs font-semibold text-[#d4b16a] hover:underline">
           <ChevronLeft size={16} /> {lang === 'uz' ? `«${catTitle}» tizimlariga qaytish` : `Назад к системам «${category.title}»`}
@@ -3025,10 +3065,38 @@ function ProductDetail({ onEstimate, lang }: { onEstimate: (p?: string, c?: stri
   ); 
 }
 
-function PageFrame({ eyebrow, title, intro, children }: { eyebrow: string; title: string; intro: string; children: ReactNode }) { 
+function PageFrame({ 
+  eyebrow, 
+  title, 
+  intro, 
+  image, 
+  type = 'website', 
+  schema, 
+  lang, 
+  canonicalPath, 
+  children 
+}: { 
+  eyebrow: string; 
+  title: string; 
+  intro: string; 
+  image?: string; 
+  type?: 'website' | 'article' | 'product'; 
+  schema?: any; 
+  lang?: Lang; 
+  canonicalPath?: string; 
+  children: ReactNode 
+}) { 
   return (
     <>
-      <Meta title={`${title} — ALL WINDOWS`} description={intro} />
+      <SEO 
+        title={`${title} — ALL WINDOWS`} 
+        description={intro} 
+        image={image || '/og.webp'} 
+        type={type} 
+        schema={schema} 
+        lang={lang} 
+        canonicalPath={canonicalPath} 
+      />
       <main className="mx-auto max-w-360 px-6 sm:px-8 pb-24 pt-28 sm:pt-32 md:pt-36 lg:px-12 xl:px-14">
         <div className="mb-10 sm:mb-12 max-w-4xl">
           <p className="mb-4 flex items-center gap-4 text-[10px] uppercase tracking-[.28em] text-[#d4b16a]">
@@ -3090,6 +3158,8 @@ function ProjectsPage({ onEstimate, lang }: { onEstimate?: (p?: string) => void;
       intro={lang === 'uz'
         ? 'ALL WINDOWS jamoasi tomonidan Toshkentda amalga oshirilgan real fasadlar, derazalar va kirish guruhlari. Fotogalereyani ochish uchun istalgan obyekt ustiga bosing.'
         : 'Реальные фасады, окна и входные группы, выполненные командой ALL WINDOWS в Ташкенте. Нажмите на любой объект, чтобы открыть фотогалерею.'}
+      lang={lang}
+      canonicalPath="/projects"
     >
       <div className="mb-8 flex flex-wrap gap-2">
         {filters.map(f => {
@@ -3194,7 +3264,13 @@ function AboutPage({ lang }: { lang: Lang }) {
   const t = copy(lang);
 
   return (
-    <PageFrame eyebrow={t.about.eyebrow} title={t.about.title} intro={t.about.intro}>
+    <PageFrame 
+      eyebrow={t.about.eyebrow} 
+      title={t.about.title} 
+      intro={t.about.intro}
+      lang={lang}
+      canonicalPath="/about"
+    >
       <div className="grid gap-3 md:grid-cols-2">
         <img src={pics.workshop} alt="Производственный цех ALL WINDOWS" className="h-112.5 w-full rounded-xl object-cover" />
         <div className="rounded-xl bg-[#d9c8a3] p-8 text-[#151515] md:p-12">
@@ -3235,13 +3311,13 @@ function AboutPage({ lang }: { lang: Lang }) {
           >
             <div className="relative flex-1 min-h-90 flex items-center justify-center overflow-hidden rounded-xl border border-white/10 bg-black/40 p-2">
               <img 
-                src={pics.certificate1 || '/imgs/certificate1.jpg'} 
+                src={pics.certificate1 || '/imgs/certificate1.webp'} 
                 alt="Сертификат соответствия ALL WINDOWS" 
                 className="max-h-115 w-full object-contain rounded-lg transition duration-500 group-hover:scale-[1.02]"
                 onError={(e) => {
                   const target = e.currentTarget as HTMLImageElement;
-                  if (target.src !== window.location.origin + '/imgs/certificate1.jpg') {
-                    target.src = '/imgs/certificate1.jpg';
+                  if (target.src !== window.location.origin + '/imgs/certificate1.webp') {
+                    target.src = '/imgs/certificate1.webp';
                   }
                 }}
               />
@@ -3336,13 +3412,13 @@ function AboutPage({ lang }: { lang: Lang }) {
                 <X size={20} />
               </button>
               <img
-                src={pics.certificate1 || '/imgs/certificate1.jpg'}
+                src={pics.certificate1 || '/imgs/certificate1.webp'}
                 alt="Сертификат соответствия ALL WINDOWS"
                 className="max-h-[85vh] w-auto rounded-xl object-contain mx-auto"
                 onError={(e) => {
                   const target = e.currentTarget as HTMLImageElement;
-                  if (target.src !== window.location.origin + '/imgs/certificate1.jpg') {
-                    target.src = '/imgs/certificate1.jpg';
+                  if (target.src !== window.location.origin + '/imgs/certificate1.webp') {
+                    target.src = '/imgs/certificate1.webp';
                   }
                 }}
               />
@@ -3364,7 +3440,13 @@ function ServicesPage({ lang }: { lang: Lang }) {
   }));
 
   return (
-    <PageFrame eyebrow={t.services.eyebrow} title={t.services.title} intro={t.services.intro}>
+    <PageFrame 
+      eyebrow={t.services.eyebrow} 
+      title={t.services.title} 
+      intro={t.services.intro}
+      lang={lang}
+      canonicalPath="/services"
+    >
       <div className="grid gap-px overflow-hidden rounded-xl border border-white/10 bg-white/10 sm:grid-cols-2 lg:grid-cols-3">
         {services.map((s, i) => (
           <div key={s.title} className="bg-[#151515] p-7 md:p-9">
@@ -3391,7 +3473,13 @@ function ServicesPage({ lang }: { lang: Lang }) {
 function ContactsPage({ onEstimate, lang }: { onEstimate: (p?: string) => void; lang: Lang }) { 
   const t = copy(lang);
   return (
-    <PageFrame eyebrow={t.contacts.eyebrow} title={t.contacts.title} intro={t.contacts.intro}>
+    <PageFrame 
+      eyebrow={t.contacts.eyebrow} 
+      title={t.contacts.title} 
+      intro={t.contacts.intro}
+      lang={lang}
+      canonicalPath="/contacts"
+    >
       <div className="grid gap-3 lg:grid-cols-[.8fr_1.2fr]">
         <div className="flex flex-col justify-between rounded-xl bg-[#d9c8a3] p-8 text-[#151515] md:p-10 shadow-sm">
           <div>

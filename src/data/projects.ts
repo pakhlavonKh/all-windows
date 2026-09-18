@@ -1,86 +1,86 @@
 // Sultania
-import sultania1 from '@/assets/imgs/projects/sultania1.jpg';
-import sultania2 from '@/assets/imgs/projects/sultania2.jpg';
-import sultania3 from '@/assets/imgs/projects/sultania3.jpg';
+import sultania1 from '@/assets/imgs/projects/sultania1.webp';
+import sultania2 from '@/assets/imgs/projects/sultania2.webp';
+import sultania3 from '@/assets/imgs/projects/sultania3.webp';
 
 // TMZ
-import tmz1 from '@/assets/imgs/projects/tmz1.jpg';
-import tmz2 from '@/assets/imgs/projects/tmz2.jpg';
-import tmz3 from '@/assets/imgs/projects/tmz3.jpg';
-import tmz4 from '@/assets/imgs/projects/tmz4.jpg';
-import tmz5 from '@/assets/imgs/projects/tmz5.jpg';
+import tmz1 from '@/assets/imgs/projects/tmz1.webp';
+import tmz2 from '@/assets/imgs/projects/tmz2.webp';
+import tmz3 from '@/assets/imgs/projects/tmz3.webp';
+import tmz4 from '@/assets/imgs/projects/tmz4.webp';
+import tmz5 from '@/assets/imgs/projects/tmz5.webp';
 
 // Salar
-import salar1 from '@/assets/imgs/projects/salar1.jpg';
-import salar2 from '@/assets/imgs/projects/salar2.jpg';
-import salar3 from '@/assets/imgs/projects/salar3.jpg';
+import salar1 from '@/assets/imgs/projects/salar1.webp';
+import salar2 from '@/assets/imgs/projects/salar2.webp';
+import salar3 from '@/assets/imgs/projects/salar3.webp';
 
 // Labzak
-import labzak from '@/assets/imgs/projects/labzak.jpg';
+import labzak from '@/assets/imgs/projects/labzak.webp';
 
 // Bobur
-import bobur1 from '@/assets/imgs/projects/bobur1.jpg';
-import bobur2 from '@/assets/imgs/projects/bobur2.jpg';
-import bobur3 from '@/assets/imgs/projects/bobur3.jpg';
+import bobur1 from '@/assets/imgs/projects/bobur1.webp';
+import bobur2 from '@/assets/imgs/projects/bobur2.webp';
+import bobur3 from '@/assets/imgs/projects/bobur3.webp';
 
 // Feruza
-import feruza1 from '@/assets/imgs/projects/feruza1.jpg';
-import feruza2 from '@/assets/imgs/projects/feruza2.jpg';
-import feruza3 from '@/assets/imgs/projects/feruza3.jpg';
-import feruza4 from '@/assets/imgs/projects/feruza4.jpg';
-import feruza5 from '@/assets/imgs/projects/feruza5.jpg';
+import feruza1 from '@/assets/imgs/projects/feruza1.webp';
+import feruza2 from '@/assets/imgs/projects/feruza2.webp';
+import feruza3 from '@/assets/imgs/projects/feruza3.webp';
+import feruza4 from '@/assets/imgs/projects/feruza4.webp';
+import feruza5 from '@/assets/imgs/projects/feruza5.webp';
 
 // Sayram
-import sayram from '@/assets/imgs/projects/sayram.jpg';
+import sayram from '@/assets/imgs/projects/sayram.webp';
 
 // Abu Dabi
-import abudabi1 from '@/assets/imgs/projects/abudabi1.jpg';
-import abudabi2 from '@/assets/imgs/projects/abudabi2.jpg';
-import abudabi3 from '@/assets/imgs/projects/abudabi3.jpg';
+import abudabi1 from '@/assets/imgs/projects/abudabi1.webp';
+import abudabi2 from '@/assets/imgs/projects/abudabi2.webp';
+import abudabi3 from '@/assets/imgs/projects/abudabi3.webp';
 
 // Ventum Plaza
-import ventumplaza1 from '@/assets/imgs/projects/ventumplaza1.jpg';
-import ventumplaza2 from '@/assets/imgs/projects/ventumplaza2.jpg';
-import ventumplaza3 from '@/assets/imgs/projects/ventumplaza3.jpg';
-import ventumplaza4 from '@/assets/imgs/projects/ventumplaza4.jpg';
+import ventumplaza1 from '@/assets/imgs/projects/ventumplaza1.webp';
+import ventumplaza2 from '@/assets/imgs/projects/ventumplaza2.webp';
+import ventumplaza3 from '@/assets/imgs/projects/ventumplaza3.webp';
+import ventumplaza4 from '@/assets/imgs/projects/ventumplaza4.webp';
 
 // Luminar
-import luminar1 from '@/assets/imgs/projects/luminar.jpg';
-import luminar2 from '@/assets/imgs/projects/luminar2.jpg';
-import luminar3 from '@/assets/imgs/projects/luminar3.jpg';
-import luminar4 from '@/assets/imgs/projects/luminar4.jpg';
+import luminar1 from '@/assets/imgs/projects/luminar.webp';
+import luminar2 from '@/assets/imgs/projects/luminar2.webp';
+import luminar3 from '@/assets/imgs/projects/luminar3.webp';
+import luminar4 from '@/assets/imgs/projects/luminar4.webp';
 
 // Fazo Residence
-import fazo1 from '@/assets/imgs/projects/fazo1.jpg';
-import fazo2 from '@/assets/imgs/projects/fazo2.jpg';
-import fazo3 from '@/assets/imgs/projects/fazo3.jpg';
+import fazo1 from '@/assets/imgs/projects/fazo1.webp';
+import fazo2 from '@/assets/imgs/projects/fazo2.webp';
+import fazo3 from '@/assets/imgs/projects/fazo3.webp';
 
 // Oyoyun
-import oyoyun1 from '@/assets/imgs/projects/oyoyun1.jpg';
-import oyoyun2 from '@/assets/imgs/projects/oyoyun2.jpg';
+import oyoyun1 from '@/assets/imgs/projects/oyoyun1.webp';
+import oyoyun2 from '@/assets/imgs/projects/oyoyun2.webp';
 
 // Chinobod
-import chinibod from '@/assets/imgs/projects/chinibod.jpg';
+import chinibod from '@/assets/imgs/projects/chinibod.webp';
 
 // Apex Tower
-import apex1 from '@/assets/imgs/projects/apex1.jpg';
-import apex2 from '@/assets/imgs/projects/apex2.jpg';
-import apex3 from '@/assets/imgs/projects/apex3.jpg';
+import apex1 from '@/assets/imgs/projects/apex1.webp';
+import apex2 from '@/assets/imgs/projects/apex2.webp';
+import apex3 from '@/assets/imgs/projects/apex3.webp';
 
 // Jangoh
-import jangoh1 from '@/assets/imgs/projects/jangoh1.jpg';
-import jangoh2 from '@/assets/imgs/projects/jangoh2.jpg';
+import jangoh1 from '@/assets/imgs/projects/jangoh1.webp';
+import jangoh2 from '@/assets/imgs/projects/jangoh2.webp';
 
 // MTT
-import mtt from '@/assets/imgs/projects/mtt.jpg';
+import mtt from '@/assets/imgs/projects/mtt.webp';
 
 // Clinic
-import clinic from '@/assets/imgs/projects/clinic.jpg';
+import clinic from '@/assets/imgs/projects/clinic.webp';
 
 // Sky Avenue
-import skyavenue1 from '@/assets/imgs/projects/skyavenue1.jpg';
-import skyavenue2 from '@/assets/imgs/projects/skyavenue2.jpg';
-import skyavenue3 from '@/assets/imgs/projects/skyavenue3.jpg';
+import skyavenue1 from '@/assets/imgs/projects/skyavenue1.webp';
+import skyavenue2 from '@/assets/imgs/projects/skyavenue2.webp';
+import skyavenue3 from '@/assets/imgs/projects/skyavenue3.webp';
 
 export interface Project {
   slug: string;

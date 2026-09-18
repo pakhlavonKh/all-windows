@@ -1,0 +1,23 @@
+{
+  "name": "ALL WINDOWS — Окна, Двери, Фасады",
+  "short_name": "ALL WINDOWS",
+  "description": "Производство и монтаж оконных, дверных и фасадных систем в Ташкенте.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0d0d0d",
+  "theme_color": "#0d0d0d",
+  "icons": [
+    {
+      "src": "/favicon.webp",
+      "sizes": "192x192 512x512",
+      "type": "image/webp",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/favicon.png",
+      "sizes": "192x192 512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
